@@ -16,7 +16,7 @@ App simples de finanças pessoais, feito para o celular, que mostra **quanto ent
 Não precisa instalar nada.
 
 - **No computador:** baixe o repositório e abra o arquivo `index.html` no navegador.
-- **No celular:** acesse o endereço do GitHub Pages (veja abaixo).
+- **No celular:** acesse **https://brunofsposito.github.io/financas-app/**
 
 > Os dados ficam salvos **só no navegador em que você usou o app**. Se abrir em outro celular ou outro navegador, ele começa vazio.
 
@@ -47,7 +47,7 @@ Não precisa instalar nada.
 - [ ] **Entrega 2:** editar e excluir lançamentos
 - [ ] **Entrega 3:** navegar entre meses
 - [ ] **Entrega 4:** filtrar por categoria e por tipo
-- [ ] **Entrega 5:** publicar no GitHub Pages
+- [x] **Entrega 5:** publicar no GitHub Pages (feita antes, para eu já usar no celular)
 
 ## Aprendizados
 
