@@ -49,3 +49,15 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Decisão:** tornar o repositório público em vez de pagar o GitHub Pro ou usar outro serviço de hospedagem.
 **Por quê:** no plano gratuito, o GitHub Pages só funciona com repositório público. Além disso, o repositório precisa ser público para servir de portfólio.
 **Cuidado que isso exige:** nada de dados reais no código. Os lançamentos ficam só no navegador (localStorage) e nunca vão para o GitHub.
+
+### D09 · 🛠️ Mesmo formulário para criar e editar
+**Data:** 12/10/2026
+**Decisão:** tocar num lançamento abre o formulário de cadastro já preenchido, com o botão "Excluir".
+**Por quê:** é uma tela só para aprender e manter, e o usuário já conhece o formulário.
+
+### D10 · 🛠️ Exclusão física (apaga de verdade), com confirmação
+**Data:** 12/10/2026
+**Decisão:** excluir remove o lançamento do armazenamento, depois de perguntar "tem certeza?".
+**Por quê:** é um app pessoal, sem auditoria nem contas de terceiros. Guardar lançamentos "apagados" seria complexidade sem uso agora.
+**Contraponto de mercado:** em banco e fintech, transação não se apaga. Faz-se um *estorno* ou uma marcação de "excluído" (exclusão lógica), para manter a trilha de auditoria.
+**Quando rever:** na Fase 3 (conciliação bancária), ou se o app virar produto com mais de um usuário.

@@ -9,6 +9,7 @@ App simples de finanças pessoais, feito para o celular, que mostra **quanto ent
 - Resumo do mês atual: entrou, saiu e saldo.
 - Cadastro de entradas e saídas com valor, descrição, categoria, data e tipo (pessoal ou profissional).
 - Lista dos lançamentos do mês.
+- Editar e excluir: toque num lançamento da lista.
 - Os dados ficam salvos no próprio navegador (continuam lá ao fechar e abrir).
 
 ## Como rodar
@@ -28,7 +29,7 @@ Não precisa instalar nada.
 | `css/style.css` | O visual, pensado primeiro para o celular |
 | `js/categorias.js` | A lista fixa de categorias (como uma tabela de apoio) |
 | `js/storage.js` | O "banco de dados": lê e grava no localStorage |
-| `js/lancamentos.js` | As regras: criar lançamentos, filtrar por mês e somar |
+| `js/lancamentos.js` | As regras: criar, editar, excluir, filtrar por mês e somar |
 | `js/app.js` | Liga a tela às regras: cliques e desenho da lista |
 
 ## Fases
@@ -44,7 +45,7 @@ Não precisa instalar nada.
 ### Fase 1, por entrega
 
 - [x] **Entrega 1:** resumo do mês, cadastro de lançamentos e lista do mês
-- [ ] **Entrega 2:** editar e excluir lançamentos
+- [x] **Entrega 2:** editar e excluir lançamentos
 - [ ] **Entrega 3:** navegar entre meses
 - [ ] **Entrega 4:** filtrar por categoria e por tipo
 - [x] **Entrega 5:** publicar no GitHub Pages (feita antes, para eu já usar no celular)
@@ -57,3 +58,10 @@ Não precisa instalar nada.
 - **Dinheiro em centavos:** valores são guardados como inteiros (R$ 15,90 = `1590`) para evitar erros de arredondamento. É assim que bancos e fintechs fazem.
 - **Categorização de transações:** o lançamento guarda só o código da categoria, e o nome e o ícone vêm de uma lista central. É a base de todo relatório de "para onde foi o dinheiro".
 - **Mobile first:** o layout nasce para a tela do celular. Campos com fonte de 16px evitam o zoom automático do iPhone.
+
+### Entrega 2
+- **CRUD:** criar, ler, atualizar e excluir (*Create, Read, Update, Delete*). São as quatro operações básicas de qualquer sistema, como `INSERT`, `SELECT`, `UPDATE` e `DELETE` no SQL.
+- **Identificador único (id):** é o que permite dizer "edite *este* lançamento". Funciona como a chave primária de uma tabela.
+- **Reaproveitar a tela:** o mesmo formulário serve para criar e para editar. Só muda o "modo" (`editandoId`). É menos código para manter.
+- **Confirmar ações destrutivas:** excluir pergunta antes, porque não tem volta. É um princípio básico de UX.
+- **Exclusão física × lógica** (fintech): aqui o lançamento é apagado de verdade. Bancos nunca apagam uma transação: fazem um **estorno** (um lançamento contrário), para manter a trilha de auditoria. Veja a D10 no DECISOES.md.
