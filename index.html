@@ -42,7 +42,7 @@
   <!-- Formulário de lançamento (abre por cima da tela) -->
   <dialog id="dialogo" class="dialogo">
     <form id="formulario" method="dialog" novalidate>
-      <h2>Novo lançamento</h2>
+      <h2 id="titulo-formulario">Novo lançamento</h2>
 
       <fieldset class="alternador alternador-movimento">
         <legend class="sr-only">Movimento</legend>
@@ -82,6 +82,7 @@
         <button type="button" id="botao-cancelar" class="botao botao-secundario">Cancelar</button>
         <button type="submit" class="botao botao-primario">Salvar</button>
       </div>
+      <button type="button" id="botao-excluir" class="botao-excluir" hidden>Excluir lançamento</button>
     </form>
   </dialog>
 

@@ -106,13 +106,24 @@ main {
 }
 .lista:empty { display: none; }
 
+.lista li + li { border-top: 1px solid var(--borda); }
+
+/* O item é um <button>: zeramos o visual padrão de botão */
 .item {
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
   padding: 12px 14px;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
-.item + .item { border-top: 1px solid var(--borda); }
+.item:active { background: var(--fundo); }
+.item:focus-visible { outline: 2px solid var(--marca); outline-offset: -2px; }
 
 .item-icone { font-size: 1.4rem; }
 .item-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; }
@@ -215,6 +226,19 @@ main {
 }
 .botao-primario { background: var(--marca); border-color: var(--marca); color: #fff; font-weight: 600; }
 .botao-secundario { background: transparent; color: var(--texto); }
+
+.botao-excluir {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px;
+  font: inherit;
+  background: none;
+  border: none;
+  color: var(--saida);
+  cursor: pointer;
+}
+.botao-excluir[hidden] { display: none; }
 @media (prefers-color-scheme: dark) {
   .botao-primario { color: #0b1215; }
 }

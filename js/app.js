@@ -7,6 +7,7 @@ const hoje = new Date();
 const estado = {
   ano: hoje.getFullYear(),
   mes: hoje.getMonth() + 1, // getMonth() começa em 0 (janeiro = 0)
+  editandoId: null, // id do lançamento aberto no formulário (null = novo)
 };
 
 const el = {
@@ -19,6 +20,8 @@ const el = {
   botaoNovo: document.getElementById('botao-novo'),
   dialogo: document.getElementById('dialogo'),
   formulario: document.getElementById('formulario'),
+  tituloFormulario: document.getElementById('titulo-formulario'),
+  botaoExcluir: document.getElementById('botao-excluir'),
   botaoCancelar: document.getElementById('botao-cancelar'),
   erro: document.getElementById('erro'),
 };
@@ -46,20 +49,23 @@ function criarItemDaLista(l) {
   const sinal = l.movimento === 'entrada' ? '+' : '−';
 
   const li = document.createElement('li');
-  li.className = `item item-${l.movimento}`;
+  // Cada item é um botão: tocar nele abre o lançamento para editar
   li.innerHTML = `
-    <span class="item-icone" aria-hidden="true">${categoria.icone}</span>
-    <span class="item-texto">
-      <span class="item-descricao"></span>
-      <span class="item-detalhe"></span>
-    </span>
-    <span class="item-valor">${sinal} ${Dinheiro.formatar(l.valor)}</span>
+    <button type="button" class="item item-${l.movimento}">
+      <span class="item-icone" aria-hidden="true">${categoria.icone}</span>
+      <span class="item-texto">
+        <span class="item-descricao"></span>
+        <span class="item-detalhe"></span>
+      </span>
+      <span class="item-valor">${sinal} ${Dinheiro.formatar(l.valor)}</span>
+    </button>
   `;
   // textContent (e não innerHTML) para o texto digitado pelo usuário: evita que
   // uma descrição com código HTML seja interpretada pelo navegador.
   li.querySelector('.item-descricao').textContent = l.descricao;
   li.querySelector('.item-detalhe').textContent =
     `${dia}/${mes} · ${categoria.nome} · ${l.tipo === 'pessoal' ? 'Pessoal' : 'Profissional'}`;
+  li.querySelector('button').addEventListener('click', () => abrirFormulario(l));
   return li;
 }
 
@@ -75,13 +81,32 @@ function dataDeHojeISO() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-function abrirFormulario() {
+// Sem lançamento: modo "novo". Com lançamento: modo "editar", já preenchido.
+function abrirFormulario(lancamento = null) {
+  const f = el.formulario.elements;
   el.formulario.reset();
   el.erro.textContent = '';
-  preencherCategorias('saida');
-  el.formulario.elements.data.value = dataDeHojeISO();
+  estado.editandoId = lancamento ? lancamento.id : null;
+
+  el.tituloFormulario.textContent = lancamento ? 'Editar lançamento' : 'Novo lançamento';
+  el.botaoExcluir.hidden = !lancamento;
+
+  if (lancamento) {
+    f.movimento.value = lancamento.movimento;
+    preencherCategorias(lancamento.movimento);
+    f.valor.value = Dinheiro.paraCampo(lancamento.valor);
+    f.descricao.value = lancamento.descricao;
+    f.categoria.value = lancamento.categoria;
+    f.data.value = lancamento.data;
+    f.tipo.value = lancamento.tipo;
+  } else {
+    preencherCategorias('saida');
+    f.data.value = dataDeHojeISO();
+  }
+
   el.dialogo.showModal();
-  el.formulario.elements.valor.focus();
+  // No modo novo, já abre o teclado no valor. Na edição, não: evita cobrir a tela.
+  if (!lancamento) f.valor.focus();
 }
 
 function lerFormulario() {
@@ -103,7 +128,7 @@ function lerFormulario() {
   };
 }
 
-el.botaoNovo.addEventListener('click', abrirFormulario);
+el.botaoNovo.addEventListener('click', () => abrirFormulario());
 el.botaoCancelar.addEventListener('click', () => el.dialogo.close());
 
 // Ao trocar entre Entrada e Saída, a lista de categorias muda junto
@@ -118,7 +143,16 @@ el.formulario.addEventListener('submit', (evento) => {
     el.erro.textContent = erro;
     return;
   }
-  Lancamentos.criar(dados);
+  if (estado.editandoId) Lancamentos.atualizar(estado.editandoId, dados);
+  else Lancamentos.criar(dados);
+  el.dialogo.close();
+  renderizar();
+});
+
+el.botaoExcluir.addEventListener('click', () => {
+  if (!estado.editandoId) return;
+  if (!confirm('Excluir este lançamento? Essa ação não pode ser desfeita.')) return;
+  Lancamentos.excluir(estado.editandoId);
   el.dialogo.close();
   renderizar();
 });
