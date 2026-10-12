@@ -43,3 +43,9 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Data:** 12/10/2026
 **Decisão:** ao escolher "Entrada", o formulário mostra só as categorias de entrada, e o mesmo vale para "Saída".
 **Por quê:** evita erros como lançar o salário como "Mercado" e deixa a lista de opções menor no celular.
+
+### D08 · 🧭 Repositório público para publicar no GitHub Pages
+**Data:** 12/10/2026
+**Decisão:** tornar o repositório público em vez de pagar o GitHub Pro ou usar outro serviço de hospedagem.
+**Por quê:** no plano gratuito, o GitHub Pages só funciona com repositório público. Além disso, o repositório precisa ser público para servir de portfólio.
+**Cuidado que isso exige:** nada de dados reais no código. Os lançamentos ficam só no navegador (localStorage) e nunca vão para o GitHub.
