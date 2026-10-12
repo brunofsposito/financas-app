@@ -26,6 +26,11 @@ const Dinheiro = {
   formatar(centavos) {
     return (centavos / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   },
+
+  // Centavos -> texto para o campo do formulário. Ex.: 150050 -> "1.500,50"
+  paraCampo(centavos) {
+    return (centavos / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+  },
 };
 
 const Lancamentos = {
@@ -58,6 +63,36 @@ const Lancamentos = {
     todos.push(lancamento);
     Storage.salvar(todos);
     return lancamento;
+  },
+
+  // SELECT * FROM lancamentos WHERE id = ?
+  buscar(id) {
+    return this.listar().find((l) => l.id === id) || null;
+  },
+
+  // UPDATE lancamentos SET ... WHERE id = ?
+  atualizar(id, dados) {
+    const todos = this.listar();
+    const indice = todos.findIndex((l) => l.id === id);
+    if (indice === -1) return null;
+    todos[indice] = {
+      ...todos[indice], // mantém o que não muda (id, criadoEm)
+      movimento: dados.movimento,
+      valor: dados.valor,
+      data: dados.data,
+      descricao: dados.descricao.trim(),
+      categoria: dados.categoria,
+      tipo: dados.tipo,
+      atualizadoEm: new Date().toISOString(),
+    };
+    Storage.salvar(todos);
+    return todos[indice];
+  },
+
+  // DELETE FROM lancamentos WHERE id = ?
+  excluir(id) {
+    const restantes = this.listar().filter((l) => l.id !== id);
+    Storage.salvar(restantes);
   },
 
   // SELECT SUM(valor) ... GROUP BY movimento
