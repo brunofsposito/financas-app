@@ -57,15 +57,34 @@ el.fraseTexto.addEventListener('input', () => {
 const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
 let reconhecedor = null;
 let ouvindo = false;
+let vozFalhou = false; // falhou por falta de suporte: esconde o botão até recarregar
+let erroDaVoz = null; // código do erro da última tentativa (ex.: 'not-allowed')
 
 function vozDisponivel() {
-  return Boolean(Reconhecimento);
+  return Boolean(Reconhecimento) && !vozFalhou;
+}
+
+// Erros que significam "este aparelho/navegador não consegue": não adianta tentar de novo
+const ERROS_SEM_SUPORTE = ['service-not-allowed', 'audio-capture', 'language-not-supported'];
+
+// Mostra a mensagem com o código técnico entre parênteses (ajuda a diagnosticar por print)
+function mostrarErroVoz(codigo) {
+  const mensagem = ERROS_VOZ[codigo] || 'Não consegui ouvir. Tente de novo ou use o microfone do teclado.';
+  el.fraseErro.textContent = `${mensagem} (${codigo})`;
+  if (ERROS_SEM_SUPORTE.includes(codigo)) {
+    vozFalhou = true;
+    atualizarBotoesFrase();
+    el.fraseTexto.focus(); // abre o teclado, que tem o próprio microfone
+  }
 }
 
 const ERROS_VOZ = {
   'not-allowed': 'O microfone não foi liberado. Libere nas configurações do Safari ou use o microfone do teclado.',
   'service-not-allowed': 'O reconhecimento de voz não está disponível aqui. Use o microfone do teclado.',
   'no-speech': 'Não ouvi nada. Toque no microfone e fale de novo.',
+  'sem-resultado': 'O reconhecimento terminou sem ouvir nada. Tente de novo ou use o microfone do teclado.',
+  'falha-ao-iniciar': 'Não foi possível ligar o reconhecimento de voz. Use o microfone do teclado.',
+  'language-not-supported': 'O reconhecimento de voz não aceita português neste aparelho. Use o microfone do teclado.',
   'audio-capture': 'Não encontrei um microfone.',
   'network': 'O reconhecimento de voz precisa de internet.',
 };
@@ -81,16 +100,20 @@ function iniciarVoz() {
     el.fraseTexto.value = Array.from(evento.results).map((r) => r[0].transcript).join(' ').trim();
   };
   reconhecedor.onerror = (evento) => {
-    if (evento.error !== 'aborted') el.fraseErro.textContent = ERROS_VOZ[evento.error] || 'Não consegui ouvir. Tente de novo.';
+    erroDaVoz = evento.error;
+    if (evento.error !== 'aborted') mostrarErroVoz(evento.error);
   };
   reconhecedor.onend = () => {
     pararVisualVoz();
     // Terminou de falar e há texto: segue direto para a confirmação
     if (el.fraseTexto.value.trim()) enviarFrase();
+    // Terminou sem texto e sem erro: nunca fica em silêncio, sempre explica
+    else if (!erroDaVoz) mostrarErroVoz('sem-resultado');
   };
 
   el.fraseTexto.value = '';
   el.fraseErro.textContent = '';
+  erroDaVoz = null;
   ouvindo = true;
   el.fraseForm.classList.add('ouvindo');
   el.fraseTexto.placeholder = 'Ouvindo… fale o gasto';
@@ -100,7 +123,9 @@ function iniciarVoz() {
     reconhecedor.start();
   } catch {
     pararVisualVoz();
-    el.fraseErro.textContent = ERROS_VOZ['service-not-allowed'];
+    mostrarErroVoz('falha-ao-iniciar');
+    vozFalhou = true;
+    atualizarBotoesFrase();
   }
 }
 
