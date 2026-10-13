@@ -27,6 +27,14 @@ const Dinheiro = {
     return (centavos / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   },
 
+  // Centavos -> pedaços para o "número herói". Ex.: 325010 -> { sinal: '', inteiro: '3.250', centavos: ',10' }
+  partes(centavos) {
+    const [inteiro, decimais] = (Math.abs(centavos) / 100)
+      .toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      .split(',');
+    return { sinal: centavos < 0 ? '−' : '', inteiro, centavos: `,${decimais}` };
+  },
+
   // Centavos -> texto para o campo do formulário. Ex.: 150050 -> "1.500,50"
   paraCampo(centavos) {
     return (centavos / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });

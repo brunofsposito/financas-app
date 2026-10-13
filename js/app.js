@@ -14,6 +14,7 @@ const estado = {
 
 const el = {
   tituloMes: document.getElementById('titulo-mes'),
+  topoAno: document.getElementById('topo-ano'),
   mesAnterior: document.getElementById('mes-anterior'),
   mesSeguinte: document.getElementById('mes-seguinte'),
   botaoHoje: document.getElementById('botao-hoje'),
@@ -68,7 +69,8 @@ el.botaoHoje.addEventListener('click', irParaHoje);
 // ---------- Desenhar a tela ----------
 
 function renderizar() {
-  el.tituloMes.textContent = `${MESES[estado.mes - 1]} ${estado.ano}`;
+  el.tituloMes.textContent = MESES[estado.mes - 1];
+  el.topoAno.textContent = estado.ano;
   el.botaoHoje.hidden = ehMesAtual();
 
   // Primeiro o mês, depois os filtros. O resumo e a lista usam o mesmo resultado.
@@ -79,7 +81,7 @@ function renderizar() {
 
   el.entrou.textContent = Dinheiro.formatar(entrou);
   el.saiu.textContent = Dinheiro.formatar(saiu);
-  el.saldo.textContent = Dinheiro.formatar(saldo);
+  renderizarValorHeroi(el.saldo, saldo);
   el.saldo.classList.toggle('negativo', saldo < 0);
   el.rotuloSaldo.textContent = filtrando ? 'Saldo do mês (filtrado)' : 'Saldo do mês';
 
@@ -95,6 +97,19 @@ function renderizar() {
   renderizarPrevisao(saldo); // tela-contas.js
   renderizarDashboard(doMes); // tela-dashboard.js
   renderizarOrcamentos(); // tela-orcamentos.js
+}
+
+// O saldo em destaque: inteiro grande e fino, centavos e "R$" pequenos ao lado
+function renderizarValorHeroi(elemento, centavos) {
+  const { sinal, inteiro, centavos: dec } = Dinheiro.partes(centavos);
+  const pedaco = (classe, texto) => {
+    const span = document.createElement('span');
+    span.className = classe;
+    span.textContent = texto;
+    return span;
+  };
+  elemento.replaceChildren(pedaco('inteiro', sinal + inteiro), pedaco('centavos', dec), pedaco('moeda', 'R$'));
+  elemento.setAttribute('aria-label', Dinheiro.formatar(centavos));
 }
 
 // ---------- Filtros ----------
