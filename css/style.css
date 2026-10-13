@@ -216,6 +216,21 @@ button { -webkit-tap-highlight-color: transparent; }
 @media (prefers-reduced-motion: reduce) {
   .frase-rapida.ouvindo .frase-botao { animation: none; }
 }
+.reativar-voz {
+  display: block;
+  margin: -2px 0 12px 22px;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: var(--pilula);
+  border: none;
+  background: var(--lima);
+  color: var(--sobre-neon);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.reativar-voz[hidden] { display: none; }
 .frase-erro { margin: 0 0 8px 22px; min-height: 1.1em; font-size: 0.8rem; color: var(--perigo); }
 
 /* ---------- Filtros ---------- */

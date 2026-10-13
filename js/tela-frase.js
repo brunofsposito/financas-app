@@ -53,9 +53,14 @@ el.fraseTexto.addEventListener('input', () => {
 // No iPhone, o Safari oferece isso como "webkitSpeechRecognition".
 // Se não existir, o botão do microfone simplesmente não aparece
 // (o microfone do teclado do iPhone continua funcionando no campo de texto).
+//
+// iPhone: criar um "ouvinte" novo a cada toque funciona só na primeira vez.
+// Por isso criamos UM ouvinte e o reaproveitamos. Se mesmo assim a voz travar
+// depois do primeiro uso, oferecemos "Reativar voz" (recarrega o app; os dados
+// ficam salvos no aparelho, nada se perde).
 
 const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
-let reconhecedor = null;
+let reconhecedor = null; // o ouvinte único, criado no primeiro toque
 let ouvindo = false;
 let vozFalhou = false; // falhou por falta de suporte: esconde o botão até recarregar
 let erroDaVoz = null; // código do erro da última tentativa (ex.: 'not-allowed')
@@ -63,9 +68,10 @@ let chegouPalavra = false; // o reconhecimento entregou algum texto nesta tentat
 let vozJaFuncionou = false; // se funcionou uma vez, o aparelho suporta: nunca esconder o botão
 let vigia = null; // temporizador que desiste se nenhuma palavra chegar
 
-// Navegadores dentro de outros apps (Claude, WhatsApp, Instagram) no iPhone ligam o
-// microfone mas não entregam o texto. Sem nenhuma palavra em 6 s, desistimos e explicamos.
+// Sem nenhuma palavra em 6 s, desistimos e explicamos (evita ficar "ouvindo" para sempre)
 const ESPERA_PRIMEIRA_PALAVRA = 6000;
+
+el.reativarVoz = document.getElementById('reativar-voz');
 
 function vozDisponivel() {
   return Boolean(Reconhecimento) && !vozFalhou;
@@ -74,10 +80,24 @@ function vozDisponivel() {
 // Erros que significam "este aparelho/navegador não consegue": não adianta tentar de novo
 const ERROS_SEM_SUPORTE = ['service-not-allowed', 'audio-capture', 'language-not-supported'];
 
+const ERROS_VOZ = {
+  'not-allowed': 'O microfone não foi liberado. Libere nas configurações do Safari ou use o microfone do teclado.',
+  'service-not-allowed': 'O reconhecimento de voz não está disponível aqui. Use o microfone do teclado.',
+  'no-speech': 'Não ouvi nada. Toque no microfone e fale de novo.',
+  'sem-resultado': 'O reconhecimento terminou sem ouvir nada. Tente de novo ou use o microfone do teclado.',
+  'sem-transcricao': 'Nenhuma palavra chegou. Se o app está aberto dentro de outro app (como o Claude ou o WhatsApp), abra no Safari ou pelo ícone na Tela de Início. Ou use o microfone do teclado.',
+  'voz-travada': 'O iPhone travou a voz depois do primeiro uso. Toque em "Reativar voz" e fale de novo.',
+  'falha-ao-iniciar': 'Não foi possível ligar o reconhecimento de voz. Use o microfone do teclado.',
+  'language-not-supported': 'O reconhecimento de voz não aceita português neste aparelho. Use o microfone do teclado.',
+  'audio-capture': 'Não encontrei um microfone.',
+  'network': 'O reconhecimento de voz precisa de internet.',
+};
+
 // Mostra a mensagem com o código técnico entre parênteses (ajuda a diagnosticar por print)
 function mostrarErroVoz(codigo) {
   const mensagem = ERROS_VOZ[codigo] || 'Não consegui ouvir. Tente de novo ou use o microfone do teclado.';
   el.fraseErro.textContent = `${mensagem} (${codigo})`;
+  el.reativarVoz.hidden = codigo !== 'voz-travada';
   // Só desiste de vez se a voz NUNCA funcionou nesta sessão
   if (ERROS_SEM_SUPORTE.includes(codigo) && !vozJaFuncionou) {
     vozFalhou = true;
@@ -86,29 +106,9 @@ function mostrarErroVoz(codigo) {
   }
 }
 
-const ERROS_VOZ = {
-  'not-allowed': 'O microfone não foi liberado. Libere nas configurações do Safari ou use o microfone do teclado.',
-  'service-not-allowed': 'O reconhecimento de voz não está disponível aqui. Use o microfone do teclado.',
-  'no-speech': 'Não ouvi nada. Toque no microfone e fale de novo.',
-  'sem-resultado': 'O reconhecimento terminou sem ouvir nada. Tente de novo ou use o microfone do teclado.',
-  'sem-transcricao': 'Nenhuma palavra chegou. Se o app está aberto dentro de outro app (como o Claude ou o WhatsApp), abra no Safari ou pelo ícone na Tela de Início. Ou use o microfone do teclado.',
-  'falha-ao-iniciar': 'Não foi possível ligar o reconhecimento de voz. Use o microfone do teclado.',
-  'language-not-supported': 'O reconhecimento de voz não aceita português neste aparelho. Use o microfone do teclado.',
-  'audio-capture': 'Não encontrei um microfone.',
-  'network': 'O reconhecimento de voz precisa de internet.',
-};
-
-// Encerra a sessão anterior por completo: no iPhone, uma sessão que não foi
-// encerrada pode "prender" o microfone e a próxima não recebe nada.
-function encerrarSessaoDeVoz() {
-  if (!reconhecedor) return;
-  reconhecedor.onresult = reconhecedor.onerror = reconhecedor.onend = null;
-  try { reconhecedor.abort(); } catch { /* já encerrada */ }
-  reconhecedor = null;
-}
-
-function iniciarVoz() {
-  encerrarSessaoDeVoz();
+// Cria o ouvinte uma vez só e reaproveita nas próximas vezes
+function obterReconhecedor() {
+  if (reconhecedor) return reconhecedor;
   reconhecedor = new Reconhecimento();
   reconhecedor.lang = 'pt-BR';
   reconhecedor.interimResults = true; // mostra o texto enquanto a pessoa fala
@@ -116,6 +116,7 @@ function iniciarVoz() {
   reconhecedor.maxAlternatives = 1;
 
   reconhecedor.onresult = (evento) => {
+    if (!ouvindo) return;
     chegouPalavra = true;
     vozJaFuncionou = true;
     el.fraseTexto.value = Array.from(evento.results).map((r) => r[0].transcript).join(' ').trim();
@@ -125,17 +126,22 @@ function iniciarVoz() {
     if (evento.error !== 'aborted') mostrarErroVoz(evento.error);
   };
   reconhecedor.onend = () => {
+    if (!ouvindo) return; // fim de uma sessão que já demos por encerrada
     clearTimeout(vigia);
-    encerrarSessaoDeVoz(); // libera o microfone para a próxima vez
     pararVisualVoz();
     // Terminou de falar e há texto: segue direto para a confirmação
     if (el.fraseTexto.value.trim()) enviarFrase();
     // Terminou sem texto e sem erro: nunca fica em silêncio, sempre explica
-    else if (!erroDaVoz) mostrarErroVoz('sem-resultado');
+    else if (!erroDaVoz) mostrarErroVoz(vozJaFuncionou ? 'voz-travada' : 'sem-resultado');
   };
+  return reconhecedor;
+}
 
+function iniciarVoz() {
+  const ouvinte = obterReconhecedor();
   el.fraseTexto.value = '';
   el.fraseErro.textContent = '';
+  el.reativarVoz.hidden = true;
   erroDaVoz = null;
   chegouPalavra = false;
   ouvindo = true;
@@ -144,19 +150,18 @@ function iniciarVoz() {
   el.fraseVoz.setAttribute('aria-label', 'Parar de ouvir');
   atualizarBotoesFrase();
   try {
-    reconhecedor.start();
+    ouvinte.start();
     vigia = setTimeout(() => {
       if (chegouPalavra || !ouvindo) return;
-      erroDaVoz = 'sem-transcricao';
-      encerrarSessaoDeVoz();
+      try { ouvinte.abort(); } catch { /* alguns navegadores não têm abort */ }
       pararVisualVoz();
-      mostrarErroVoz('sem-transcricao');
+      // Já funcionou antes nesta sessão e agora nada chega: é a trava do iPhone
+      mostrarErroVoz(vozJaFuncionou ? 'voz-travada' : 'sem-transcricao');
     }, ESPERA_PRIMEIRA_PALAVRA);
   } catch {
     clearTimeout(vigia);
-    encerrarSessaoDeVoz();
     pararVisualVoz();
-    mostrarErroVoz('falha-ao-iniciar');
+    mostrarErroVoz(vozJaFuncionou ? 'voz-travada' : 'falha-ao-iniciar');
     if (!vozJaFuncionou) {
       vozFalhou = true;
       atualizarBotoesFrase();
@@ -176,5 +181,8 @@ el.fraseVoz.addEventListener('click', () => {
   if (ouvindo && reconhecedor) reconhecedor.stop(); // tocar de novo encerra (e segue para a confirmação)
   else iniciarVoz();
 });
+
+// Plano B: recarregar o app "destrava" a voz no iPhone. Os dados ficam salvos.
+el.reativarVoz.addEventListener('click', () => location.reload());
 
 atualizarBotoesFrase();
