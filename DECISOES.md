@@ -61,3 +61,10 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Por quê:** é um app pessoal, sem auditoria nem contas de terceiros. Guardar lançamentos "apagados" seria complexidade sem uso agora.
 **Contraponto de mercado:** em banco e fintech, transação não se apaga. Faz-se um *estorno* ou uma marcação de "excluído" (exclusão lógica), para manter a trilha de auditoria.
 **Quando rever:** na Fase 3 (conciliação bancária), ou se o app virar produto com mais de um usuário.
+
+### D11 · 🧭 Dashboard em duas partes, depois da Fase 1
+**Data:** 13/10/2026
+**Decisão:** terminar a Fase 1 (navegar entre meses e filtros) e só depois fazer o dashboard, dividido em duas partes:
+- **Parte A (Entrega 6):** gastos por categoria no mês, útil desde o primeiro mês;
+- **Parte B (backlog):** gráfico de linhas com a evolução mês a mês, só depois de 2 ou 3 meses de dados.
+**Por quê:** um gráfico ao longo do tempo sem histórico nasce vazio. Entregar primeiro o que dá para usar já. A navegação por mês é pré-requisito das duas partes.

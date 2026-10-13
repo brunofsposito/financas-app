@@ -49,6 +49,9 @@ Não precisa instalar nada.
 - [ ] **Entrega 3:** navegar entre meses
 - [ ] **Entrega 4:** filtrar por categoria e por tipo
 - [x] **Entrega 5:** publicar no GitHub Pages (feita antes, para eu já usar no celular)
+- [ ] **Entrega 6:** dashboard parte A, gastos por categoria do mês
+
+**Backlog:** dashboard parte B, gráfico de linhas com a evolução mês a mês (quando houver 2 ou 3 meses de dados). Ver D11.
 
 ## Aprendizados
 
