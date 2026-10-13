@@ -135,3 +135,9 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Decisão:** a previsão para o fim do mês desconta do saldo todas as contas fixas ainda não pagas daquele mês, inclusive as atrasadas, pelo valor previsto. Ela aparece só no mês atual e nos futuros, só quando há contas fixas, e respeita os filtros da tela.
 **Por quê:** é a forma mais simples de responder "quanto vai sobrar?" com os dados que o app já tem.
 **Limitação:** as contas fixas são só saídas. Num mês futuro, o salário ainda não lançado não entra, e a previsão fica pessimista. Ir para o backlog: "entradas fixas".
+
+### D23 · 🛠️ Dashboard parte A: barras horizontais, uma cor, com destaque
+**Data:** 13/10/2026
+**Decisão:** a seção "Para onde foi o dinheiro" mostra as saídas do mês por categoria em barras horizontais, da maior para a menor, numa cor só. Ela mostra as 5 maiores, com "Ver todas" para o resto. Respeita o filtro de tipo (pessoal/profissional). Tocar numa barra liga o filtro de categoria: a barra fica destacada e as outras em cinza.
+**Por quê:** a tarefa é comparar tamanhos, e barras ordenadas são a forma mais fácil de ler. Pizza com até 12 fatias seria ilegível e exigiria 12 cores. As cores foram validadas para daltonismo e contraste nos modos claro e escuro. O cinza tem pouco contraste, então cada barra traz nome e valor escritos.
+**Contexto:** feito antes da semana de uso, por decisão do Bruno (seguindo o D17).

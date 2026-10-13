@@ -11,6 +11,7 @@ App simples de finanças pessoais, feito para o celular, que mostra **quanto ent
 - Cadastro de entradas e saídas com valor, descrição, categoria, data e tipo (pessoal ou profissional).
 - Lista dos lançamentos do mês.
 - Filtros por tipo (pessoal ou profissional) e por categoria. O resumo também é filtrado.
+- **Para onde foi o dinheiro:** gráfico de barras com as saídas do mês por categoria. Tocar numa barra filtra os lançamentos daquela categoria.
 - Editar e excluir: toque num lançamento da lista.
 - **Contas fixas** (aluguel, internet, assinaturas): cadastro com dia de vencimento, status no mês (paga, vence em X dias, atrasada) e botão **Paguei**, que cria o lançamento.
 - **Alerta no topo** quando há conta atrasada ou vencendo nos próximos 5 dias.
@@ -41,6 +42,7 @@ Não precisa instalar nada.
 | `js/calendario.js` | Gera o arquivo de calendário (.ics) com as contas fixas e os alarmes |
 | `js/backup.js` | Exportar e importar os dados (montar, validar e juntar o arquivo) |
 | `js/app.js` | Liga a tela às regras: cliques e desenho da lista |
+| `js/tela-dashboard.js` | O gráfico "Para onde foi o dinheiro" (saídas por categoria) |
 | `js/tela-contas.js` | A parte da tela das contas fixas: lista, "Paguei", formulário e alerta |
 
 ## Fases
@@ -60,7 +62,7 @@ Não precisa instalar nada.
 - [x] **Entrega 3:** navegar entre meses
 - [x] **Entrega 4:** filtrar por categoria e por tipo
 - [x] **Entrega 5:** publicar no GitHub Pages (feita antes, para eu já usar no celular)
-- [ ] **Entrega 6:** dashboard parte A, gastos por categoria do mês
+- [x] **Entrega 6:** dashboard parte A, gastos por categoria do mês
 
 - [x] **Extra:** exportar e importar backup (antes da semana de uso)
 
@@ -73,7 +75,6 @@ Não precisa instalar nada.
 
 **Backlog:**
 - Dashboard parte B, gráfico de linhas com a evolução mês a mês (quando houver 2 ou 3 meses de dados). Ver D11.
-- Entrega 6 (dashboard por categoria): depois da Fase 2 (D17).
 - Notificação push de verdade, se o app virar produto (D16).
 - Entradas fixas (ex.: salário recorrente) para a previsão de meses futuros (D22).
 
@@ -131,3 +132,10 @@ Não precisa instalar nada.
 - **Invariante:** pagar uma conta pelo valor previsto *não muda* a previsão, porque o dinheiro só passa de "a pagar" para "pago". Quando um número que deveria ficar parado não muda, é sinal de que a regra está certa. É um bom teste.
 - **Reuso:** a previsão usa o mesmo filtro (`Lancamentos.filtrar`) e o mesmo status das contas. Nenhuma regra nova de "paga ou não paga" foi escrita.
 - **Fluxo de caixa projetado** (fintech): "quanto vai sobrar" é a pergunta central de qualquer gestor financeiro, de app de banco e de crédito. É a base de funcionalidades como "saldo previsto" e "limite inteligente".
+
+### Entrega 6: para onde foi o dinheiro
+- **A forma vem antes da cor:** primeiro se pergunta "qual é o trabalho do gráfico?". Comparar quanto foi para cada categoria pede **barras ordenadas numa cor só**, não pizza. Comparar comprimentos é muito mais fácil do que comparar ângulos, e 12 fatias exigiriam 12 cores.
+- **`GROUP BY` na prática:** `saidasPorCategoria` soma as saídas por categoria e ordena da maior para a menor. É o `SELECT categoria, SUM(valor) ... GROUP BY categoria ORDER BY 2 DESC` que você conhece.
+- **Destaque em vez de várias cores:** a categoria escolhida fica na cor do app e as outras em cinza. É a forma mais clara de dizer "olhe esta aqui".
+- **Gráfico que leva à ação:** tocar numa barra liga o filtro que já existia (Entrega 4). O gráfico vira uma porta de entrada para os lançamentos, e não um enfeite.
+- **Análise de gastos** (fintech): "para onde vai o dinheiro" é a funcionalidade de engajamento mais comum em apps de banco (como os resumos de gastos do Nubank e do Itaú). Ela só funciona porque a categorização foi feita desde o início.
