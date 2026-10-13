@@ -91,3 +91,14 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Decisão:** exportar gera um arquivo JSON (no celular, pelo menu de compartilhar). Importar junta o arquivo com os dados atuais: o mesmo id é atualizado, o id novo é inserido, e nada é apagado.
 **Por quê:** um backup sem restauração não protege nada. Juntar em vez de substituir evita perder um lançamento feito depois do backup. E importar o mesmo arquivo duas vezes não duplica nada.
 **Validação:** um arquivo que não é do app, ou que tem algum lançamento inválido, é recusado inteiro.
+
+### D16 · 🧭 Lembretes: alerta no app + Calendário do iPhone, sem push
+**Data:** 13/10/2026
+**Decisão:** os lembretes de contas usam (A) um alerta dentro do app e (B) a exportação para o Calendário do iPhone, com alarme. A notificação push de verdade (C) vai para o backlog.
+**Por quê:** um site sem servidor não consegue "acordar" o celular num dia agendado. O Calendário é nativo, confiável e notifica com o app fechado, sem quebrar a regra "sem servidor" do briefing.
+**Quando rever:** se o app virar produto, porque aí o push passa a ser necessário (exige backend, ver seção 5 do briefing).
+
+### D17 · 🧭 Adiantar a Fase 2 antes da semana de uso e do dashboard
+**Data:** 13/10/2026
+**Decisão:** começar a Fase 2 (contas recorrentes) já, sem esperar a semana de uso da Fase 1. O dashboard (Entrega 6) fica para depois.
+**Por quê:** os lembretes de contas são a dor nº 1 (seção 2 do briefing). Com a Fase 2, o app pode substituir os lembretes atuais já na semana de uso.
