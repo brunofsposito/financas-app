@@ -6,7 +6,8 @@ App simples de finanças pessoais, feito para o celular, que mostra **quanto ent
 
 ## O que o app faz hoje
 
-- Resumo do mês atual: entrou, saiu e saldo.
+- Resumo do mês: entrou, saiu e saldo.
+- Navegar entre meses pelas setas ‹ › no topo, com atalho para voltar ao mês atual.
 - Cadastro de entradas e saídas com valor, descrição, categoria, data e tipo (pessoal ou profissional).
 - Lista dos lançamentos do mês.
 - Editar e excluir: toque num lançamento da lista.
@@ -46,7 +47,7 @@ Não precisa instalar nada.
 
 - [x] **Entrega 1:** resumo do mês, cadastro de lançamentos e lista do mês
 - [x] **Entrega 2:** editar e excluir lançamentos
-- [ ] **Entrega 3:** navegar entre meses
+- [x] **Entrega 3:** navegar entre meses
 - [ ] **Entrega 4:** filtrar por categoria e por tipo
 - [x] **Entrega 5:** publicar no GitHub Pages (feita antes, para eu já usar no celular)
 - [ ] **Entrega 6:** dashboard parte A, gastos por categoria do mês
@@ -68,3 +69,10 @@ Não precisa instalar nada.
 - **Reaproveitar a tela:** o mesmo formulário serve para criar e para editar. Só muda o "modo" (`editandoId`). É menos código para manter.
 - **Confirmar ações destrutivas:** excluir pergunta antes, porque não tem volta. É um princípio básico de UX.
 - **Exclusão física × lógica** (fintech): aqui o lançamento é apagado de verdade. Bancos nunca apagam uma transação: fazem um **estorno** (um lançamento contrário), para manter a trilha de auditoria. Veja a D10 no DECISOES.md.
+
+### Entrega 3
+- **Estado da tela:** o app guarda "qual mês estou vendo" (`estado.ano` e `estado.mes`), e tudo é redesenhado a partir disso. Mudou o estado, chama `renderizar()`.
+- **Datas são traiçoeiras:** virada de ano, meses com 28, 30 ou 31 dias, e janeiro que vale `0` no JavaScript. Deixamos o próprio `Date` fazer essas contas em vez de inventar regras.
+- **O mesmo filtro, outro parâmetro:** a "query" por mês (`doMes`) existia desde a Entrega 1. Só a tela passou a mudar o parâmetro, sem mexer nos dados.
+- **Competência** (fintech): o lançamento conta no mês da *data* dele, não no dia em que você cadastrou. Em finanças isso se chama **regime de competência × regime de caixa**, e você vai ouvir esses termos em qualquer fintech.
+- **Área de toque:** botões com pelo menos 48px, o tamanho mínimo confortável para o dedo (recomendação do Google e da Apple).

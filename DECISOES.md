@@ -68,3 +68,9 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 - **Parte A (Entrega 6):** gastos por categoria no mês, útil desde o primeiro mês;
 - **Parte B (backlog):** gráfico de linhas com a evolução mês a mês, só depois de 2 ou 3 meses de dados.
 **Por quê:** um gráfico ao longo do tempo sem histórico nasce vazio. Entregar primeiro o que dá para usar já. A navegação por mês é pré-requisito das duas partes.
+
+### D12 · 🛠️ Ao salvar, a tela vai para o mês do lançamento
+**Data:** 13/10/2026
+**Decisão:** se você salva um lançamento com data de outro mês, o app navega até esse mês.
+**Por quê:** senão o lançamento "some" da tela atual e parece que não foi salvo.
+**Junto:** ao cadastrar vendo outro mês, a data sugerida já cai naquele mês.
