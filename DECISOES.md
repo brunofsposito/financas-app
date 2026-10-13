@@ -74,3 +74,14 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Decisão:** se você salva um lançamento com data de outro mês, o app navega até esse mês.
 **Por quê:** senão o lançamento "some" da tela atual e parece que não foi salvo.
 **Junto:** ao cadastrar vendo outro mês, a data sugerida já cai naquele mês.
+
+### D13 · 🧭 O resumo também respeita os filtros
+**Data:** 13/10/2026
+**Decisão:** com um filtro ligado, entrou, saiu e saldo mostram só os lançamentos filtrados.
+**Por quê:** permite responder perguntas como "quanto saiu só no profissional?" ou "quanto gastei de mercado?".
+**Cuidado:** um aviso "Filtro ativo · Limpar" e o rótulo "Saldo do mês (filtrado)" deixam claro que não é o total do mês.
+
+### D14 · 🛠️ Filtros continuam ligados ao trocar de mês, mas não ficam salvos
+**Data:** 13/10/2026
+**Decisão:** ao navegar entre meses, os filtros ficam. Ao fechar e abrir o app, eles zeram.
+**Por quê:** manter os filtros ao trocar de mês permite comparar meses (ex.: mercado em setembro × outubro). Zerar ao abrir garante que você sempre comece pelo quadro completo do mês.

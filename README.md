@@ -10,6 +10,7 @@ App simples de finanças pessoais, feito para o celular, que mostra **quanto ent
 - Navegar entre meses pelas setas ‹ › no topo, com atalho para voltar ao mês atual.
 - Cadastro de entradas e saídas com valor, descrição, categoria, data e tipo (pessoal ou profissional).
 - Lista dos lançamentos do mês.
+- Filtros por tipo (pessoal ou profissional) e por categoria. O resumo também é filtrado.
 - Editar e excluir: toque num lançamento da lista.
 - Os dados ficam salvos no próprio navegador (continuam lá ao fechar e abrir).
 
@@ -30,14 +31,14 @@ Não precisa instalar nada.
 | `css/style.css` | O visual, pensado primeiro para o celular |
 | `js/categorias.js` | A lista fixa de categorias (como uma tabela de apoio) |
 | `js/storage.js` | O "banco de dados": lê e grava no localStorage |
-| `js/lancamentos.js` | As regras: criar, editar, excluir, filtrar por mês e somar |
+| `js/lancamentos.js` | As regras: criar, editar, excluir, filtrar (mês, tipo, categoria) e somar |
 | `js/app.js` | Liga a tela às regras: cliques e desenho da lista |
 
 ## Fases
 
 | Fase | Tema | Status |
 |---|---|---|
-| 1 | MVP: o quadro do mês | 🚧 Em andamento |
+| 1 | MVP: o quadro do mês | ✅ Construída, em semana de uso |
 | 2 | Contas recorrentes e previsão | ⏳ |
 | 3 | Importar extrato do banco | ⏳ |
 | 4 | Estudo de Open Finance | ⏳ |
@@ -48,7 +49,7 @@ Não precisa instalar nada.
 - [x] **Entrega 1:** resumo do mês, cadastro de lançamentos e lista do mês
 - [x] **Entrega 2:** editar e excluir lançamentos
 - [x] **Entrega 3:** navegar entre meses
-- [ ] **Entrega 4:** filtrar por categoria e por tipo
+- [x] **Entrega 4:** filtrar por categoria e por tipo
 - [x] **Entrega 5:** publicar no GitHub Pages (feita antes, para eu já usar no celular)
 - [ ] **Entrega 6:** dashboard parte A, gastos por categoria do mês
 
@@ -76,3 +77,9 @@ Não precisa instalar nada.
 - **O mesmo filtro, outro parâmetro:** a "query" por mês (`doMes`) existia desde a Entrega 1. Só a tela passou a mudar o parâmetro, sem mexer nos dados.
 - **Competência** (fintech): o lançamento conta no mês da *data* dele, não no dia em que você cadastrou. Em finanças isso se chama **regime de competência × regime de caixa**, e você vai ouvir esses termos em qualquer fintech.
 - **Área de toque:** botões com pelo menos 48px, o tamanho mínimo confortável para o dedo (recomendação do Google e da Apple).
+
+### Entrega 4
+- **Filtros = `WHERE` dinâmico:** cada filtro só entra na "query" se estiver preenchido. Vazio quer dizer "todos". É o mesmo que montar um `WHERE` só com as condições que o usuário escolheu.
+- **Uma fonte da verdade:** o resumo e a lista usam o *mesmo* resultado filtrado, então nunca mostram números que não batem entre si.
+- **Estado visível:** quando há filtro, o app avisa ("Filtro ativo · Limpar") e muda o rótulo para "(filtrado)". Esconder um filtro ligado é uma das causas mais comuns de "o sistema está errado!".
+- **Análise por segmento** (fintech): ver o mesmo número "fatiado" (pessoal × profissional, por categoria) é a base de qualquer extrato inteligente e de qualquer análise de PO, como cortar uma métrica por coorte ou canal.
