@@ -18,6 +18,9 @@
   </header>
 
   <main>
+    <!-- Alerta de contas (Fase 2): aparece só quando há conta atrasada ou vencendo -->
+    <button type="button" id="alerta-contas" class="alerta" hidden></button>
+
     <!-- Filtros: valem para o resumo e para a lista -->
     <section class="filtros" aria-label="Filtros">
       <div class="chips" role="group" aria-label="Filtrar por tipo">
@@ -46,6 +49,18 @@
         <span class="rotulo">Saiu</span>
         <strong id="saiu">R$ 0,00</strong>
       </div>
+    </section>
+
+    <!-- Contas fixas do mês (Fase 2) -->
+    <section id="secao-contas" class="contas" aria-label="Contas fixas do mês">
+      <div class="subtitulo-linha">
+        <h2 class="subtitulo">Contas fixas</h2>
+        <button type="button" id="botao-nova-conta" class="link">+ Nova conta</button>
+      </div>
+      <ul id="lista-contas" class="lista"></ul>
+      <p id="contas-vazio" class="vazio vazio-contas">
+        Cadastre as contas que se repetem todo mês (aluguel, internet, assinaturas) e o app avisa quando estiverem para vencer.
+      </p>
     </section>
 
     <!-- Lista de lançamentos do mês -->
@@ -120,11 +135,54 @@
     </form>
   </dialog>
 
+  <!-- Formulário de conta fixa -->
+  <dialog id="dialogo-conta" class="dialogo">
+    <form id="formulario-conta" method="dialog" novalidate>
+      <h2 id="titulo-conta">Nova conta fixa</h2>
+
+      <label class="campo">
+        <span>Descrição</span>
+        <input name="descricao" type="text" maxlength="60" placeholder="Ex.: Aluguel" autocomplete="off" required>
+      </label>
+
+      <label class="campo">
+        <span>Valor previsto (R$)</span>
+        <input name="valor" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off" required>
+      </label>
+
+      <label class="campo">
+        <span>Vence todo dia</span>
+        <input name="dia" type="number" inputmode="numeric" min="1" max="31" placeholder="Ex.: 7" required>
+      </label>
+
+      <label class="campo">
+        <span>Categoria</span>
+        <select name="categoria" required></select>
+      </label>
+
+      <fieldset class="alternador">
+        <legend class="sr-only">Tipo</legend>
+        <label><input type="radio" name="tipo" value="pessoal" checked><span>Pessoal</span></label>
+        <label><input type="radio" name="tipo" value="profissional"><span>Profissional</span></label>
+      </fieldset>
+
+      <p id="erro-conta" class="erro" role="alert"></p>
+
+      <div class="acoes">
+        <button type="button" id="cancelar-conta" class="botao botao-secundario">Cancelar</button>
+        <button type="submit" class="botao botao-primario">Salvar</button>
+      </div>
+      <button type="button" id="excluir-conta" class="botao-excluir" hidden>Excluir conta fixa</button>
+    </form>
+  </dialog>
+
   <!-- A ordem importa: cada arquivo usa o que foi carregado antes dele -->
   <script src="js/categorias.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/lancamentos.js"></script>
+  <script src="js/contas.js"></script>
   <script src="js/backup.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/tela-contas.js"></script>
 </body>
 </html>

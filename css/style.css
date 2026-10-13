@@ -225,6 +225,81 @@ main {
 
 .vazio { text-align: center; color: var(--texto-suave); padding: 24px 0; }
 
+/* ---------- Alerta de contas (Fase 2) ---------- */
+
+:root { --aviso: #b45309; }
+@media (prefers-color-scheme: dark) { :root { --aviso: #fbbf24; } }
+
+.alerta {
+  display: block;
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: var(--raio);
+  border: 1px solid var(--aviso);
+  background: color-mix(in srgb, var(--aviso) 12%, var(--superficie));
+  color: var(--texto);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.alerta.alerta-atrasada {
+  border-color: var(--saida);
+  background: color-mix(in srgb, var(--saida) 10%, var(--superficie));
+}
+.alerta[hidden] { display: none; }
+
+/* ---------- Contas fixas (Fase 2) ---------- */
+
+.subtitulo-linha {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 24px 0 8px;
+}
+.subtitulo-linha .subtitulo { margin: 0; }
+.subtitulo-linha .link { padding: 6px 0; text-decoration: none; }
+
+.vazio-contas { font-size: 0.9rem; padding: 8px 0; text-align: left; }
+
+.conta { position: relative; }
+.conta .item { padding-bottom: 12px; }
+/* Com botão "Paguei", o item ganha espaço embaixo para ele */
+.conta:has(.botao-paguei) .item { padding-bottom: 48px; }
+
+.selo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: var(--fundo);
+  color: var(--texto-suave);
+}
+.selo-paga { color: var(--entrada); background: color-mix(in srgb, var(--entrada) 12%, transparent); }
+.selo-atrasada { color: var(--saida); background: color-mix(in srgb, var(--saida) 12%, transparent); }
+.selo-hoje,
+.selo-proxima { color: var(--aviso); background: color-mix(in srgb, var(--aviso) 14%, transparent); }
+
+.conta-paga .item-descricao { color: var(--texto-suave); }
+
+.botao-paguei {
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 16px;
+  min-height: 32px;
+  border-radius: 999px;
+  border: 1px solid var(--marca);
+  background: var(--superficie);
+  color: var(--marca);
+  cursor: pointer;
+}
+
 /* ---------- Seus dados (backup) ---------- */
 
 .dados { margin-top: 8px; }

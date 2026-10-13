@@ -8,6 +8,7 @@ const estado = {
   ano: hoje.getFullYear(),
   mes: hoje.getMonth() + 1, // getMonth() começa em 0 (janeiro = 0)
   editandoId: null, // id do lançamento aberto no formulário (null = novo)
+  pagando: null, // { contaId, competencia } quando o formulário registra o pagamento de uma conta
   filtros: { tipo: '', categoria: '' }, // '' = todos
 };
 
@@ -89,6 +90,8 @@ function renderizar() {
     : 'Nenhum lançamento com esses filtros neste mês.';
 
   renderizarFiltros(filtrando);
+  renderizarContas(); // tela-contas.js
+  renderizarAlerta(); // tela-contas.js
 }
 
 // ---------- Filtros ----------
@@ -158,7 +161,7 @@ function criarItemDaLista(l) {
   // uma descrição com código HTML seja interpretada pelo navegador.
   li.querySelector('.item-descricao').textContent = l.descricao;
   li.querySelector('.item-detalhe').textContent =
-    `${dia}/${mes} · ${categoria.nome} · ${l.tipo === 'pessoal' ? 'Pessoal' : 'Profissional'}`;
+    `${dia}/${mes} · ${categoria.nome} · ${l.tipo === 'pessoal' ? 'Pessoal' : 'Profissional'}${l.contaId ? ' · 🔁 Conta fixa' : ''}`;
   li.querySelector('button').addEventListener('click', () => abrirFormulario(l));
   return li;
 }
@@ -179,17 +182,31 @@ function dataSugeridaISO() {
   return `${estado.ano}-${String(estado.mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 }
 
-// Sem lançamento: modo "novo". Com lançamento: modo "editar", já preenchido.
-function abrirFormulario(lancamento = null) {
+// Três modos:
+// - novo: abrirFormulario()
+// - editar: abrirFormulario(lancamento)
+// - pagar conta: abrirFormulario(null, { conta, competencia, data }), já preenchido com a conta
+function abrirFormulario(lancamento = null, pagamento = null) {
   const f = el.formulario.elements;
   el.formulario.reset();
   el.erro.textContent = '';
   estado.editandoId = lancamento ? lancamento.id : null;
+  estado.pagando = pagamento ? { contaId: pagamento.conta.id, competencia: pagamento.competencia } : null;
 
-  el.tituloFormulario.textContent = lancamento ? 'Editar lançamento' : 'Novo lançamento';
+  el.tituloFormulario.textContent = lancamento ? 'Editar lançamento'
+    : pagamento ? `Pagar: ${pagamento.conta.descricao}` : 'Novo lançamento';
   el.botaoExcluir.hidden = !lancamento;
 
-  if (lancamento) {
+  if (pagamento) {
+    const { conta } = pagamento;
+    f.movimento.value = 'saida';
+    preencherCategorias('saida');
+    f.valor.value = Dinheiro.paraCampo(conta.valor); // valor previsto: dá para ajustar
+    f.descricao.value = conta.descricao;
+    f.categoria.value = conta.categoria;
+    f.data.value = pagamento.data;
+    f.tipo.value = conta.tipo;
+  } else if (lancamento) {
     f.movimento.value = lancamento.movimento;
     preencherCategorias(lancamento.movimento);
     f.valor.value = Dinheiro.paraCampo(lancamento.valor);
@@ -203,8 +220,8 @@ function abrirFormulario(lancamento = null) {
   }
 
   el.dialogo.showModal();
-  // No modo novo, já abre o teclado no valor. Na edição, não: evita cobrir a tela.
-  if (!lancamento) f.valor.focus();
+  // No modo novo, já abre o teclado no valor. Nos outros, não: evita cobrir a tela.
+  if (!lancamento && !pagamento) f.valor.focus();
 }
 
 function lerFormulario() {
@@ -242,7 +259,7 @@ el.formulario.addEventListener('submit', (evento) => {
     return;
   }
   if (estado.editandoId) Lancamentos.atualizar(estado.editandoId, dados);
-  else Lancamentos.criar(dados);
+  else Lancamentos.criar({ ...dados, ...estado.pagando });
   el.dialogo.close();
   // Vai para o mês do lançamento salvo, para ele não "sumir" da tela
   const [ano, mes] = dados.data.split('-').map(Number);
@@ -296,16 +313,19 @@ async function exportarBackup() {
 
   Backup.registrarExportacao();
   renderizarUltimoBackup();
-  el.mensagemBackup.textContent = `Backup gerado com ${Lancamentos.listar().length} lançamento(s).`;
+  el.mensagemBackup.textContent =
+    `Backup gerado com ${Lancamentos.listar().length} lançamento(s) e ${Contas.listar().length} conta(s) fixa(s).`;
 }
 
 async function importarBackup(arquivo) {
   try {
-    const lancamentos = Backup.validar(await arquivo.text());
-    const ok = confirm(`Importar ${lancamentos.length} lançamento(s) deste backup?\n\nOs lançamentos atuais são mantidos. Os que já existirem serão atualizados com a versão do backup.`);
+    const dados = Backup.validar(await arquivo.text());
+    const ok = confirm(`Importar ${dados.lancamentos.length} lançamento(s) e ${dados.contas.length} conta(s) fixa(s) deste backup?\n\nOs dados atuais são mantidos. Os que já existirem serão atualizados com a versão do backup.`);
     if (!ok) return;
-    const { novos, atualizados } = Backup.importar(lancamentos);
-    el.mensagemBackup.textContent = `Importado: ${novos} novo(s), ${atualizados} atualizado(s).`;
+    const r = Backup.importar(dados);
+    el.mensagemBackup.textContent =
+      `Importado: ${r.lancamentos.novos} lançamento(s) novo(s), ${r.contas.novos} conta(s) nova(s). `
+      + `Atualizados: ${r.lancamentos.atualizados + r.contas.atualizados}.`;
     renderizar();
   } catch (erro) {
     el.mensagemBackup.textContent = erro.message;
@@ -324,6 +344,10 @@ el.arquivoBackup.addEventListener('change', () => {
   if (arquivo) importarBackup(arquivo);
 });
 
-preencherFiltroCategoria();
-renderizarUltimoBackup();
-renderizar();
+// Começa só depois que todos os arquivos .js foram carregados
+// (renderizar() usa funções de tela-contas.js, que carrega depois deste).
+document.addEventListener('DOMContentLoaded', () => {
+  preencherFiltroCategoria();
+  renderizarUltimoBackup();
+  renderizar();
+});
