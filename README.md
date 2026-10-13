@@ -14,6 +14,7 @@ App simples de finanças pessoais, feito para o celular, que mostra **quanto ent
 - Editar e excluir: toque num lançamento da lista.
 - **Contas fixas** (aluguel, internet, assinaturas): cadastro com dia de vencimento, status no mês (paga, vence em X dias, atrasada) e botão **Paguei**, que cria o lançamento.
 - **Alerta no topo** quando há conta atrasada ou vencendo nos próximos 5 dias.
+- **Previsão para o fim do mês:** saldo do mês menos as contas fixas ainda não pagas.
 - **Adicionar ao Calendário do iPhone:** cada conta vira um evento mensal com alarmes (um dia antes e no dia, às 9h). O aviso chega mesmo com o app fechado.
 - Os dados ficam salvos no próprio navegador (continuam lá ao fechar e abrir).
 - Backup: exportar todos os lançamentos para um arquivo e importar de volta (seção "Seus dados", no fim da tela).
@@ -47,7 +48,7 @@ Não precisa instalar nada.
 | Fase | Tema | Status |
 |---|---|---|
 | 1 | MVP: o quadro do mês | ✅ Construída, em semana de uso |
-| 2 | Contas recorrentes e previsão | 🚧 Em andamento (adiantada, ver D17) |
+| 2 | Contas recorrentes e previsão | ✅ Construída (adiantada, ver D17) |
 | 3 | Importar extrato do banco | ⏳ |
 | 4 | Estudo de Open Finance | ⏳ |
 | 5 | Métricas do produto | ⏳ |
@@ -68,12 +69,13 @@ Não precisa instalar nada.
 - [x] **Entrega 2.1:** contas fixas, com status no mês e botão "Paguei"
 - [x] **Entrega 2.2:** alerta no topo do app
 - [x] **Entrega 2.3:** adicionar as contas ao Calendário do iPhone (com alarme)
-- [ ] **Entrega 2.4:** previsão de saldo até o fim do mês
+- [x] **Entrega 2.4:** previsão de saldo até o fim do mês
 
 **Backlog:**
 - Dashboard parte B, gráfico de linhas com a evolução mês a mês (quando houver 2 ou 3 meses de dados). Ver D11.
 - Entrega 6 (dashboard por categoria): depois da Fase 2 (D17).
 - Notificação push de verdade, se o app virar produto (D16).
+- Entradas fixas (ex.: salário recorrente) para a previsão de meses futuros (D22).
 
 ## Aprendizados
 
@@ -123,3 +125,9 @@ Não precisa instalar nada.
 - **Testar com uma ferramenta independente:** o arquivo foi validado por uma biblioteca de calendário externa ao app, que calculou as próximas datas. Testar só com o próprio código pode esconder o mesmo erro dos dois lados.
 - **Exportação × sincronização:** o Calendário recebe uma *cópia*. Mudou a conta no app, é preciso exportar de novo. Sincronizar sozinho exigiria um servidor publicando um calendário "assinável" (*webcal*).
 - **Lembrete de cobrança** (fintech): bancos e fintechs mandam aviso de vencimento porque isso reduz a inadimplência, que é uma métrica central de crédito. É o mesmo princípio aplicado às suas contas.
+
+### Fase 2, Entrega 2.4: previsão de saldo
+- **Realizado × previsto:** o saldo mostra o que *já aconteceu*. A previsão soma o que *vai acontecer* (as contas a pagar). No visual, o card tracejado indica "valor previsto".
+- **Invariante:** pagar uma conta pelo valor previsto *não muda* a previsão, porque o dinheiro só passa de "a pagar" para "pago". Quando um número que deveria ficar parado não muda, é sinal de que a regra está certa. É um bom teste.
+- **Reuso:** a previsão usa o mesmo filtro (`Lancamentos.filtrar`) e o mesmo status das contas. Nenhuma regra nova de "paga ou não paga" foi escrita.
+- **Fluxo de caixa projetado** (fintech): "quanto vai sobrar" é a pergunta central de qualquer gestor financeiro, de app de banco e de crédito. É a base de funcionalidades como "saldo previsto" e "limite inteligente".

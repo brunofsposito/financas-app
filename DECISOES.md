@@ -129,3 +129,9 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Decisão:** o app gera um arquivo `.ics` com um evento mensal por conta: de dia inteiro, sem marcar como "ocupado", com alarmes **um dia antes às 9h** e **no dia às 9h**. Há dois botões: "Adicionar contas ao Calendário" (todas) e "Adicionar só esta conta" (na edição de uma conta).
 **Por quê:** é o jeito de o aviso chegar com o app fechado, sem servidor (D16). Os horários dos alarmes podem ser mudados no próprio Calendário.
 **Limitação:** o Calendário guarda uma cópia. Se a conta mudar no app, é preciso apagar o evento antigo e exportar de novo.
+
+### D22 · 🛠️ Previsão = saldo do mês − contas fixas não pagas
+**Data:** 13/10/2026
+**Decisão:** a previsão para o fim do mês desconta do saldo todas as contas fixas ainda não pagas daquele mês, inclusive as atrasadas, pelo valor previsto. Ela aparece só no mês atual e nos futuros, só quando há contas fixas, e respeita os filtros da tela.
+**Por quê:** é a forma mais simples de responder "quanto vai sobrar?" com os dados que o app já tem.
+**Limitação:** as contas fixas são só saídas. Num mês futuro, o salário ainda não lançado não entra, e a previsão fica pessimista. Ir para o backlog: "entradas fixas".
