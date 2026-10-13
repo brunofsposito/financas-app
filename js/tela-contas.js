@@ -114,27 +114,29 @@ function renderizarPrevisao(saldo) {
 
 // ---------- Formulário de conta fixa ----------
 
-function abrirFormularioConta(conta = null) {
+// sugestao: dados vindos da frase rápida ("aluguel 1200 todo dia 7"), para conferir e salvar
+function abrirFormularioConta(conta = null, sugestao = null) {
   const f = el.formularioConta.elements;
   el.formularioConta.reset();
   el.erroConta.textContent = '';
   estado.editandoContaId = conta ? conta.id : null;
 
-  el.tituloConta.textContent = conta ? 'Editar conta fixa' : 'Nova conta fixa';
+  el.tituloConta.textContent = conta ? 'Editar conta fixa' : sugestao ? 'Confira a conta fixa' : 'Nova conta fixa';
   el.excluirConta.hidden = !conta;
   el.calendarioConta.hidden = !conta;
   f.categoria.replaceChildren(...CATEGORIAS.saida.map((c) => new Option(c.nome, c.id)));
 
-  if (conta) {
-    f.descricao.value = conta.descricao;
-    f.valor.value = Dinheiro.paraCampo(conta.valor);
-    f.dia.value = conta.dia;
-    f.categoria.value = conta.categoria;
-    f.tipo.value = conta.tipo;
+  const dados = conta || sugestao;
+  if (dados) {
+    f.descricao.value = dados.descricao;
+    f.valor.value = Dinheiro.paraCampo(dados.valor);
+    f.dia.value = dados.dia;
+    f.categoria.value = dados.categoria;
+    f.tipo.value = dados.tipo;
   }
 
   el.dialogoConta.showModal();
-  if (!conta) f.descricao.focus();
+  if (!dados) f.descricao.focus();
 }
 
 function lerFormularioConta() {

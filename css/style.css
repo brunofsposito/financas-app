@@ -167,6 +167,47 @@ button { -webkit-tap-highlight-color: transparent; }
 .aviso-item .aviso-acao { background: var(--texto); }
 .aviso-item.aviso-perigo .aviso-acao { background: var(--perigo); }
 
+/* ---------- Frase rápida (V4) e voz (V5) ---------- */
+
+.frase-rapida {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 62px;
+  margin: 6px 0 4px;
+  padding: 0 7px 0 22px;
+  border-radius: 31px;
+  background: var(--superficie);
+  border: 1px solid transparent;
+}
+.frase-rapida:focus-within { border-color: var(--borda-forte); }
+.frase-rapida input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  color: var(--texto);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+.frase-rapida input::placeholder { color: var(--texto-suave); }
+.frase-botao {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: none;
+  background: var(--lima);
+  color: var(--sobre-neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.frase-botao[hidden] { display: none; }
+.frase-erro { margin: 0 0 8px 22px; min-height: 1.1em; font-size: 0.8rem; color: var(--perigo); }
+
 /* ---------- Filtros ---------- */
 
 .filtros { margin-bottom: 18px; }

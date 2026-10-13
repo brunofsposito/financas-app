@@ -306,8 +306,10 @@ function abrirFormulario(lancamento = null, pagamento = null, sugestao = null) {
   ajustarLarguraValor();
 
   el.dialogo.showModal();
-  // No modo novo, já abre o teclado no valor. Nos outros, não: evita cobrir a tela.
-  if (!lancamento && !pagamento && !sugestao) f.valor.focus();
+  // No modo novo, já abre o teclado no valor. Na confirmação da frase rápida,
+  // o foco vai para o Salvar (um segundo "Enter" já salva). Nos outros, nada.
+  if (sugestao) el.formulario.querySelector('[type=submit]').focus();
+  else if (!lancamento && !pagamento) f.valor.focus();
 }
 
 function lerFormulario() {

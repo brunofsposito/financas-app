@@ -39,6 +39,20 @@
     <!-- ===== Aba Início ===== -->
     <div class="aba" data-aba="inicio">
 
+    <!-- Frase rápida (V4): "gastei 45 no mercado ontem" -> lançamento preenchido -->
+    <form id="frase-rapida" class="frase-rapida" novalidate>
+      <label for="frase-texto" class="sr-only">Lançamento rápido: escreva o gasto</label>
+      <input id="frase-texto" type="text" placeholder="Gastei 45 no mercado…" autocomplete="off" enterkeyhint="send">
+      <!-- V5: microfone (só aparece se o navegador reconhece voz e o campo está vazio) -->
+      <button type="button" id="frase-voz" class="frase-botao" aria-label="Falar o lançamento" hidden>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>
+      </button>
+      <button type="submit" id="frase-enviar" class="frase-botao" aria-label="Entender o lançamento">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </form>
+    <p id="frase-erro" class="frase-erro" role="alert"></p>
+
     <!-- Filtros: valem para o resumo e para a lista -->
     <section class="filtros" aria-label="Filtros">
       <div class="chips" role="group" aria-label="Filtrar por tipo">
@@ -309,6 +323,7 @@
   <script src="js/storage.js"></script>
   <script src="js/lancamentos.js"></script>
   <script src="js/contas.js"></script>
+  <script src="js/frase.js"></script>
   <script src="js/calendario.js"></script>
   <script src="js/orcamentos.js"></script>
   <script src="js/backup.js"></script>
@@ -317,5 +332,6 @@
   <script src="js/tela-dashboard.js"></script>
   <script src="js/tela-orcamentos.js"></script>
   <script src="js/tela-avisos.js"></script>
+  <script src="js/tela-frase.js"></script>
 </body>
 </html>
