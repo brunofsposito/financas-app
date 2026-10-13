@@ -12,6 +12,9 @@ const estado = {
 
 const el = {
   tituloMes: document.getElementById('titulo-mes'),
+  mesAnterior: document.getElementById('mes-anterior'),
+  mesSeguinte: document.getElementById('mes-seguinte'),
+  botaoHoje: document.getElementById('botao-hoje'),
   entrou: document.getElementById('entrou'),
   saiu: document.getElementById('saiu'),
   saldo: document.getElementById('saldo'),
@@ -26,10 +29,40 @@ const el = {
   erro: document.getElementById('erro'),
 };
 
+// ---------- Navegação entre meses ----------
+
+function ehMesAtual() {
+  const agora = new Date();
+  return estado.ano === agora.getFullYear() && estado.mes === agora.getMonth() + 1;
+}
+
+// delta = -1 (mês anterior) ou +1 (próximo mês)
+function mudarMes(delta) {
+  // O Date resolve a virada de ano: mês 13 de 2026 vira janeiro de 2027
+  const d = new Date(estado.ano, estado.mes - 1 + delta, 1);
+  irParaMes(d.getFullYear(), d.getMonth() + 1);
+}
+
+function irParaMes(ano, mes) {
+  estado.ano = ano;
+  estado.mes = mes;
+  renderizar();
+}
+
+function irParaHoje() {
+  const agora = new Date();
+  irParaMes(agora.getFullYear(), agora.getMonth() + 1);
+}
+
+el.mesAnterior.addEventListener('click', () => mudarMes(-1));
+el.mesSeguinte.addEventListener('click', () => mudarMes(1));
+el.botaoHoje.addEventListener('click', irParaHoje);
+
 // ---------- Desenhar a tela ----------
 
 function renderizar() {
   el.tituloMes.textContent = `${MESES[estado.mes - 1]} ${estado.ano}`;
+  el.botaoHoje.hidden = ehMesAtual();
 
   const doMes = Lancamentos.doMes(estado.ano, estado.mes);
   const { entrou, saiu, saldo } = Lancamentos.resumo(doMes);
@@ -76,9 +109,13 @@ function preencherCategorias(movimento) {
   select.replaceChildren(...CATEGORIAS[movimento].map((c) => new Option(`${c.icone} ${c.nome}`, c.id)));
 }
 
-function dataDeHojeISO() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+// Data sugerida para um lançamento novo: hoje, se a tela está no mês atual.
+// Em outro mês, o mesmo dia de hoje naquele mês (ex.: dia 31 em fevereiro vira dia 28).
+function dataSugeridaISO() {
+  const hojeDia = new Date().getDate();
+  const ultimoDiaDoMes = new Date(estado.ano, estado.mes, 0).getDate();
+  const dia = Math.min(hojeDia, ultimoDiaDoMes);
+  return `${estado.ano}-${String(estado.mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 }
 
 // Sem lançamento: modo "novo". Com lançamento: modo "editar", já preenchido.
@@ -101,7 +138,7 @@ function abrirFormulario(lancamento = null) {
     f.tipo.value = lancamento.tipo;
   } else {
     preencherCategorias('saida');
-    f.data.value = dataDeHojeISO();
+    f.data.value = dataSugeridaISO();
   }
 
   el.dialogo.showModal();
@@ -146,7 +183,9 @@ el.formulario.addEventListener('submit', (evento) => {
   if (estado.editandoId) Lancamentos.atualizar(estado.editandoId, dados);
   else Lancamentos.criar(dados);
   el.dialogo.close();
-  renderizar();
+  // Vai para o mês do lançamento salvo, para ele não "sumir" da tela
+  const [ano, mes] = dados.data.split('-').map(Number);
+  irParaMes(ano, mes);
 });
 
 el.botaoExcluir.addEventListener('click', () => {

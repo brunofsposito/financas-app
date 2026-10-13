@@ -51,10 +51,40 @@ main {
 .topo {
   background: var(--marca);
   color: #fff;
-  padding: 16px;
-  text-align: center;
+  padding: 10px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .topo h1 { margin: 0; font-size: 1.2rem; font-weight: 600; }
+.topo-centro { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+
+/* Setas grandes: área de toque de 48px, o mínimo recomendado para dedos */
+.seta {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.seta:active { background: rgba(255, 255, 255, 0.15); }
+
+.botao-hoje {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+  padding: 2px 10px;
+  opacity: 0.9;
+  cursor: pointer;
+}
+.botao-hoje[hidden] { display: none; }
 
 @media (prefers-color-scheme: dark) {
   .topo { color: #0b1215; }
