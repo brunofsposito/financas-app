@@ -61,6 +61,8 @@
       <p id="contas-vazio" class="vazio vazio-contas">
         Cadastre as contas que se repetem todo mês (aluguel, internet, assinaturas) e o app avisa quando estiverem para vencer.
       </p>
+      <button type="button" id="botao-calendario" class="botao botao-secundario botao-calendario" hidden>📅 Adicionar contas ao Calendário</button>
+      <p id="mensagem-calendario" class="mensagem-backup" role="status"></p>
     </section>
 
     <!-- Lista de lançamentos do mês -->
@@ -172,6 +174,7 @@
         <button type="button" id="cancelar-conta" class="botao botao-secundario">Cancelar</button>
         <button type="submit" class="botao botao-primario">Salvar</button>
       </div>
+      <button type="button" id="calendario-conta" class="botao botao-secundario botao-calendario" hidden>📅 Adicionar só esta conta ao Calendário</button>
       <button type="button" id="excluir-conta" class="botao-excluir" hidden>Excluir conta fixa</button>
     </form>
   </dialog>
@@ -181,6 +184,7 @@
   <script src="js/storage.js"></script>
   <script src="js/lancamentos.js"></script>
   <script src="js/contas.js"></script>
+  <script src="js/calendario.js"></script>
   <script src="js/backup.js"></script>
   <script src="js/app.js"></script>
   <script src="js/tela-contas.js"></script>

@@ -300,6 +300,10 @@ main {
   cursor: pointer;
 }
 
+.botao-calendario { display: block; width: 100%; margin-top: 10px; background: var(--superficie); }
+.botao-calendario[hidden] { display: none; }
+.dialogo .botao-calendario { margin-top: 14px; font-size: 0.9rem; }
+
 /* ---------- Seus dados (backup) ---------- */
 
 .dados { margin-top: 8px; }

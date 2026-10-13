@@ -13,6 +13,9 @@ Object.assign(el, {
   erroConta: document.getElementById('erro-conta'),
   cancelarConta: document.getElementById('cancelar-conta'),
   excluirConta: document.getElementById('excluir-conta'),
+  botaoCalendario: document.getElementById('botao-calendario'),
+  calendarioConta: document.getElementById('calendario-conta'),
+  mensagemCalendario: document.getElementById('mensagem-calendario'),
 });
 
 estado.editandoContaId = null;
@@ -25,6 +28,7 @@ function renderizarContas() {
   const ocorrencias = Contas.doMes(estado.ano, estado.mes, hojeISO());
   el.listaContas.replaceChildren(...ocorrencias.map(criarItemConta));
   el.contasVazio.hidden = ocorrencias.length > 0;
+  el.botaoCalendario.hidden = Contas.listar().length === 0;
 }
 
 // Texto curto do status, ex.: "Vence em 3 dias", "Atrasada há 2 dias"
@@ -118,6 +122,7 @@ function abrirFormularioConta(conta = null) {
 
   el.tituloConta.textContent = conta ? 'Editar conta fixa' : 'Nova conta fixa';
   el.excluirConta.hidden = !conta;
+  el.calendarioConta.hidden = !conta;
   f.categoria.replaceChildren(...CATEGORIAS.saida.map((c) => new Option(`${c.icone} ${c.nome}`, c.id)));
 
   if (conta) {
@@ -177,4 +182,31 @@ el.excluirConta.addEventListener('click', () => {
   Contas.excluir(estado.editandoContaId);
   el.dialogoConta.close();
   renderizar();
+});
+
+// ---------- Calendário (Entrega 2.3) ----------
+
+// Baixa o arquivo .ics. No iPhone, o Safari oferece "Adicionar ao Calendário".
+function exportarParaCalendario(contas) {
+  const ics = Calendario.gerar(contas);
+  const arquivo = new File([ics], Calendario.nomeDoArquivo(contas), { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(arquivo);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = arquivo.name;
+  link.click();
+  // Damos um tempo antes de liberar o arquivo: o iPhone pode demorar para abri-lo
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+  el.mensagemCalendario.textContent = contas.length === 1
+    ? `Arquivo gerado para "${contas[0].descricao}". Abra e toque em "Adicionar".`
+    : `Arquivo gerado com ${contas.length} contas. Abra e toque em "Adicionar tudo".`;
+}
+
+el.botaoCalendario.addEventListener('click', () => exportarParaCalendario(Contas.listar()));
+
+el.calendarioConta.addEventListener('click', () => {
+  const conta = Contas.buscar(estado.editandoContaId);
+  if (!conta) return;
+  el.dialogoConta.close();
+  exportarParaCalendario([conta]);
 });
