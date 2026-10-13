@@ -147,3 +147,14 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Decisão:** a semana de uso real fica para mais adiante. Antes disso, o app ganha novas funcionalidades.
 **Por quê:** o foco agora é aprender construindo e ampliar o app.
 **Risco assumido:** construir mais coisas sem o retorno do uso real aumenta a chance de fazer algo que não será usado. Para reduzir esse risco, cada funcionalidade nova passa pela pergunta "que dor isso resolve?" antes de ser construída.
+
+### D25 · 🛠️ Orçamento por categoria: limite mensal fixo, gasto + previsto
+**Data:** 13/10/2026
+**Decisão:**
+- Cada categoria de saída pode ter **um limite mensal**, igual para todos os meses. Mudar o limite muda também a visão dos meses passados.
+- O uso considera o **gasto** (saídas lançadas) mais o **previsto** (contas fixas daquela categoria ainda não pagas no mês).
+- Status: **estourou** (gasto > limite), **vai estourar** (gasto + previsto > limite), **perto** (gasto ≥ 80% do limite) e **ok**. Os do mês atual que pedem atenção entram no alerta do topo.
+- O orçamento **ignora os filtros** de tipo e categoria, porque o limite é da categoria inteira. Um aviso aparece quando há filtro ligado.
+- Backup **versão 3**, com os orçamentos. Aceita as versões 1 e 2.
+**Por quê:** é o mais simples que responde "quanto ainda posso gastar?". Contar as contas fixas evita a falsa sensação de folga antes do dia de pagar.
+**Quando rever:** se fizer falta um limite diferente por mês, ou um limite separado para pessoal e profissional.

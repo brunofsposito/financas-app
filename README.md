@@ -13,6 +13,7 @@ App simples de finanças pessoais, feito para o celular, que mostra **quanto ent
 - Filtros por tipo (pessoal ou profissional) e por categoria. O resumo também é filtrado.
 - **Para onde foi o dinheiro:** gráfico de barras com as saídas do mês por categoria. Tocar numa barra filtra os lançamentos daquela categoria.
 - Editar e excluir: toque num lançamento da lista.
+- **Orçamento por categoria:** limite mensal (ex.: Mercado até R$ 800) com barra de progresso. A barra separa o que já foi gasto do que está previsto em contas fixas, e mostra os status "perto do limite", "vai estourar" e "estourou".
 - **Contas fixas** (aluguel, internet, assinaturas): cadastro com dia de vencimento, status no mês (paga, vence em X dias, atrasada) e botão **Paguei**, que cria o lançamento.
 - **Alerta no topo** quando há conta atrasada ou vencendo nos próximos 5 dias.
 - **Previsão para o fim do mês:** saldo do mês menos as contas fixas ainda não pagas.
@@ -38,11 +39,13 @@ Não precisa instalar nada.
 | `js/categorias.js` | A lista fixa de categorias (como uma tabela de apoio) |
 | `js/storage.js` | O "banco de dados": lê e grava no localStorage, uma "tabela" por chave |
 | `js/lancamentos.js` | As regras: criar, editar, excluir, filtrar (mês, tipo, categoria) e somar |
+| `js/orcamentos.js` | Regras dos orçamentos: gasto, previsto e status de cada limite |
 | `js/contas.js` | Regras das contas fixas: vencimento, status e alertas |
 | `js/calendario.js` | Gera o arquivo de calendário (.ics) com as contas fixas e os alarmes |
 | `js/backup.js` | Exportar e importar os dados (montar, validar e juntar o arquivo) |
 | `js/app.js` | Liga a tela às regras: cliques e desenho da lista |
 | `js/tela-dashboard.js` | O gráfico "Para onde foi o dinheiro" (saídas por categoria) |
+| `js/tela-orcamentos.js` | A parte da tela dos orçamentos: barras de progresso e formulário |
 | `js/tela-contas.js` | A parte da tela das contas fixas: lista, "Paguei", formulário e alerta |
 
 ## Fases
@@ -72,6 +75,10 @@ Não precisa instalar nada.
 - [x] **Entrega 2.2:** alerta no topo do app
 - [x] **Entrega 2.3:** adicionar as contas ao Calendário do iPhone (com alarme)
 - [x] **Entrega 2.4:** previsão de saldo até o fim do mês
+
+### Novas funcionalidades (depois das Fases 1 e 2)
+
+- [x] **Orçamento por categoria**, com gasto, previsto e alertas
 
 **Backlog:**
 - Dashboard parte B, gráfico de linhas com a evolução mês a mês (quando houver 2 ou 3 meses de dados). Ver D11.
@@ -139,3 +146,10 @@ Não precisa instalar nada.
 - **Destaque em vez de várias cores:** a categoria escolhida fica na cor do app e as outras em cinza. É a forma mais clara de dizer "olhe esta aqui".
 - **Gráfico que leva à ação:** tocar numa barra liga o filtro que já existia (Entrega 4). O gráfico vira uma porta de entrada para os lançamentos, e não um enfeite.
 - **Análise de gastos** (fintech): "para onde vai o dinheiro" é a funcionalidade de engajamento mais comum em apps de banco (como os resumos de gastos do Nubank e do Itaú). Ela só funciona porque a categorização foi feita desde o início.
+
+### Orçamento por categoria
+- **Medidor × comparação:** "quanto já usei do limite" é uma razão contra um teto, e a forma certa para isso é uma barra de progresso. Comparar categorias entre si continua no gráfico de barras. Cada pergunta tem a sua forma.
+- **Comprometido = gasto + previsto:** a barra junta o que já saiu com as contas fixas ainda não pagas daquela categoria. Sem isso, Moradia apareceria "zerada" até o dia de pagar o aluguel.
+- **UPSERT:** definir um limite cria um registro se a categoria ainda não tem limite, ou atualiza o que já existe. O orçamento usa a própria categoria como chave, e não um id.
+- **Status nunca só pela cor:** cada estado tem ícone e texto (🔴 Estourou, ⚠️ Vai estourar, ✅ Restam) e a parte prevista é listrada. É acessibilidade para daltônicos e também para quem lê rápido.
+- **Gestão de orçamento** (fintech): limites por categoria e avisos de "perto do limite" são recursos clássicos de apps como Mobills, Organizze e dos próprios bancos. A ideia de "comprometido" é a mesma do limite de cartão: o que já está reservado conta, mesmo antes de sair.
