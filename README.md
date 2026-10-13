@@ -13,6 +13,7 @@ App simples de finanças pessoais, feito para o celular, que mostra **quanto ent
 - Filtros por tipo (pessoal ou profissional) e por categoria. O resumo também é filtrado.
 - Editar e excluir: toque num lançamento da lista.
 - Os dados ficam salvos no próprio navegador (continuam lá ao fechar e abrir).
+- Backup: exportar todos os lançamentos para um arquivo e importar de volta (seção "Seus dados", no fim da tela).
 
 ## Como rodar
 
@@ -21,7 +22,7 @@ Não precisa instalar nada.
 - **No computador:** baixe o repositório e abra o arquivo `index.html` no navegador.
 - **No celular:** acesse **https://brunofsposito.github.io/financas-app/**
 
-> Os dados ficam salvos **só no navegador em que você usou o app**. Se abrir em outro celular ou outro navegador, ele começa vazio.
+> Os dados ficam salvos **só no navegador em que você usou o app**. Se abrir em outro celular ou outro navegador, ele começa vazio. Para levar os dados, use **Exportar backup** num aparelho e **Importar backup** no outro.
 
 ## Como o código está organizado
 
@@ -32,6 +33,7 @@ Não precisa instalar nada.
 | `js/categorias.js` | A lista fixa de categorias (como uma tabela de apoio) |
 | `js/storage.js` | O "banco de dados": lê e grava no localStorage |
 | `js/lancamentos.js` | As regras: criar, editar, excluir, filtrar (mês, tipo, categoria) e somar |
+| `js/backup.js` | Exportar e importar os lançamentos (montar, validar e juntar o arquivo) |
 | `js/app.js` | Liga a tela às regras: cliques e desenho da lista |
 
 ## Fases
@@ -52,6 +54,8 @@ Não precisa instalar nada.
 - [x] **Entrega 4:** filtrar por categoria e por tipo
 - [x] **Entrega 5:** publicar no GitHub Pages (feita antes, para eu já usar no celular)
 - [ ] **Entrega 6:** dashboard parte A, gastos por categoria do mês
+
+- [x] **Extra:** exportar e importar backup (antes da semana de uso)
 
 **Backlog:** dashboard parte B, gráfico de linhas com a evolução mês a mês (quando houver 2 ou 3 meses de dados). Ver D11.
 
@@ -83,3 +87,9 @@ Não precisa instalar nada.
 - **Uma fonte da verdade:** o resumo e a lista usam o *mesmo* resultado filtrado, então nunca mostram números que não batem entre si.
 - **Estado visível:** quando há filtro, o app avisa ("Filtro ativo · Limpar") e muda o rótulo para "(filtrado)". Esconder um filtro ligado é uma das causas mais comuns de "o sistema está errado!".
 - **Análise por segmento** (fintech): ver o mesmo número "fatiado" (pessoal × profissional, por categoria) é a base de qualquer extrato inteligente e de qualquer análise de PO, como cortar uma métrica por coorte ou canal.
+
+### Extra: backup
+- **Serializar:** transformar os dados em texto (JSON) para salvar num arquivo e depois ler de volta. É o mesmo princípio de um `dump` de banco de dados.
+- **Nunca confie no arquivo de entrada:** antes de importar, o app confere se o arquivo é mesmo um backup dele e se cada lançamento é válido. Se algo estiver errado, não importa nada (tudo ou nada, como uma *transação* no banco).
+- **MERGE pelo id:** importar junta os dados em vez de substituir. O mesmo id é o mesmo lançamento, então importar duas vezes não duplica nada. Essa propriedade se chama **idempotência**.
+- **Portabilidade de dados** (fintech): a LGPD garante ao titular o direito de levar os próprios dados. É o mesmo princípio que sustenta o Open Finance, que veremos na Fase 4.

@@ -85,3 +85,9 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Data:** 13/10/2026
 **Decisão:** ao navegar entre meses, os filtros ficam. Ao fechar e abrir o app, eles zeram.
 **Por quê:** manter os filtros ao trocar de mês permite comparar meses (ex.: mercado em setembro × outubro). Zerar ao abrir garante que você sempre comece pelo quadro completo do mês.
+
+### D15 · 🛠️ Backup com exportar **e** importar, juntando pelo id
+**Data:** 13/10/2026
+**Decisão:** exportar gera um arquivo JSON (no celular, pelo menu de compartilhar). Importar junta o arquivo com os dados atuais: o mesmo id é atualizado, o id novo é inserido, e nada é apagado.
+**Por quê:** um backup sem restauração não protege nada. Juntar em vez de substituir evita perder um lançamento feito depois do backup. E importar o mesmo arquivo duas vezes não duplica nada.
+**Validação:** um arquivo que não é do app, ou que tem algum lançamento inválido, é recusado inteiro.
