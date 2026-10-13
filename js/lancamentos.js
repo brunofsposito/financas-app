@@ -95,6 +95,12 @@ const Lancamentos = {
     Storage.salvar(restantes);
   },
 
+  // ... WHERE tipo = ? AND categoria = ?
+  // Filtro vazio ('') significa "todos": aquela condição não entra no WHERE.
+  filtrar(lista, { tipo = '', categoria = '' } = {}) {
+    return lista.filter((l) => (!tipo || l.tipo === tipo) && (!categoria || l.categoria === categoria));
+  },
+
   // SELECT SUM(valor) ... GROUP BY movimento
   resumo(lista) {
     let entrou = 0;
