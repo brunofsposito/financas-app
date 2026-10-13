@@ -107,6 +107,24 @@ const Lancamentos = {
     return lista.filter((l) => (!tipo || l.tipo === tipo) && (!categoria || l.categoria === categoria));
   },
 
+  // Dashboard (Entrega 6): para onde foi o dinheiro.
+  // SELECT categoria, SUM(valor) FROM lista WHERE movimento = 'saida'
+  // GROUP BY categoria ORDER BY SUM(valor) DESC
+  saidasPorCategoria(lista) {
+    const somas = new Map();
+    for (const l of lista) {
+      if (l.movimento !== 'saida') continue;
+      somas.set(l.categoria, (somas.get(l.categoria) || 0) + l.valor);
+    }
+    const total = [...somas.values()].reduce((a, b) => a + b, 0);
+    return {
+      total,
+      categorias: [...somas.entries()]
+        .map(([categoria, valor]) => ({ categoria, valor, fracao: valor / total }))
+        .sort((a, b) => b.valor - a.valor),
+    };
+  },
+
   // SELECT SUM(valor) ... GROUP BY movimento
   resumo(lista) {
     let entrou = 0;
