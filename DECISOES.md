@@ -158,3 +158,15 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 - Backup **versão 3**, com os orçamentos. Aceita as versões 1 e 2.
 **Por quê:** é o mais simples que responde "quanto ainda posso gastar?". Contar as contas fixas evita a falsa sensação de folga antes do dia de pagar.
 **Quando rever:** se fizer falta um limite diferente por mês, ou um limite separado para pessoal e profissional.
+
+### D26 · 🧭 Direção visual: Lima neon + fonte Sora + paleta neon por significado
+**Data:** 13/10/2026
+**Decisão:** entre 3 direções prototipadas (Esmeralda, Lima neon, Ametista), a escolhida foi a **Lima neon**: fundo preto, números grandes e finos, botões em pílula e barra de navegação flutuante. A fonte vem da Ametista: **Sora**.
+**Paleta:** só cores neon, cada uma com um papel:
+- **Limão `#D4FF3A`:** marca, ação principal, entradas, "tudo certo";
+- **Laranja `#FF8A00`:** atenção (vence em breve, perto do limite);
+- **Rosa `#FF3D9A`:** problema (atrasada, estourou).
+Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, texto secundário `#8C8C86`.
+**Regras:** uma tela sem problemas mostra só o limão; no máximo uma cor neon além do limão por card; saídas comuns em branco, nunca em rosa; status sempre com texto; texto sobre neon sempre preto.
+**Por quê:** cores neon chamam atenção, então só funcionam se forem raras. Dar a cada cor um significado evita a tela "arco-íris". As três cores foram validadas para daltonismo (separação mínima ΔE 16,8) e para contraste sobre o fundo preto.
+**Protótipos:** canvas de direções visuais (artefato privado do Bruno).
