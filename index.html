@@ -54,6 +54,21 @@
       <ul id="lista" class="lista"></ul>
       <p id="vazio" class="vazio"></p>
     </section>
+
+    <!-- Backup -->
+    <section class="dados" aria-label="Seus dados">
+      <h2 class="subtitulo">Seus dados</h2>
+      <p class="dados-texto">
+        Os lançamentos ficam só neste navegador. Faça backup de vez em quando.
+        <br><span id="ultimo-backup">Nenhum backup feito ainda.</span>
+      </p>
+      <div class="acoes">
+        <button type="button" id="botao-exportar" class="botao botao-secundario">⬇️ Exportar backup</button>
+        <button type="button" id="botao-importar" class="botao botao-secundario">⬆️ Importar backup</button>
+      </div>
+      <input type="file" id="arquivo-backup" accept=".json,application/json" hidden>
+      <p id="mensagem-backup" class="mensagem-backup" role="status"></p>
+    </section>
   </main>
 
   <button id="botao-novo" class="botao-novo" aria-label="Novo lançamento">+</button>
@@ -109,6 +124,7 @@
   <script src="js/categorias.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/lancamentos.js"></script>
+  <script src="js/backup.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

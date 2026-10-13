@@ -257,5 +257,73 @@ el.botaoExcluir.addEventListener('click', () => {
   renderizar();
 });
 
+// ---------- Backup ----------
+
+el.botaoExportar = document.getElementById('botao-exportar');
+el.botaoImportar = document.getElementById('botao-importar');
+el.arquivoBackup = document.getElementById('arquivo-backup');
+el.ultimoBackup = document.getElementById('ultimo-backup');
+el.mensagemBackup = document.getElementById('mensagem-backup');
+
+function renderizarUltimoBackup() {
+  const data = Backup.ultimaExportacao();
+  el.ultimoBackup.textContent = data
+    ? `Último backup: ${data.toLocaleDateString('pt-BR')}`
+    : 'Nenhum backup feito ainda.';
+}
+
+async function exportarBackup() {
+  const json = JSON.stringify(Backup.gerar(), null, 2);
+  const arquivo = new File([json], Backup.nomeDoArquivo(), { type: 'application/json' });
+
+  // No celular, abre o menu de compartilhar (salvar em Arquivos, e-mail...).
+  // No computador, baixa o arquivo direto.
+  if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+    try {
+      await navigator.share({ files: [arquivo], title: 'Backup das finanças' });
+    } catch (erro) {
+      if (erro.name === 'AbortError') return; // a pessoa fechou o menu sem salvar
+      throw erro;
+    }
+  } else {
+    const url = URL.createObjectURL(arquivo);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = arquivo.name;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  Backup.registrarExportacao();
+  renderizarUltimoBackup();
+  el.mensagemBackup.textContent = `Backup gerado com ${Lancamentos.listar().length} lançamento(s).`;
+}
+
+async function importarBackup(arquivo) {
+  try {
+    const lancamentos = Backup.validar(await arquivo.text());
+    const ok = confirm(`Importar ${lancamentos.length} lançamento(s) deste backup?\n\nOs lançamentos atuais são mantidos. Os que já existirem serão atualizados com a versão do backup.`);
+    if (!ok) return;
+    const { novos, atualizados } = Backup.importar(lancamentos);
+    el.mensagemBackup.textContent = `Importado: ${novos} novo(s), ${atualizados} atualizado(s).`;
+    renderizar();
+  } catch (erro) {
+    el.mensagemBackup.textContent = erro.message;
+  }
+}
+
+el.botaoExportar.addEventListener('click', () => {
+  exportarBackup().catch(() => {
+    el.mensagemBackup.textContent = 'Não foi possível gerar o backup.';
+  });
+});
+el.botaoImportar.addEventListener('click', () => el.arquivoBackup.click());
+el.arquivoBackup.addEventListener('change', () => {
+  const arquivo = el.arquivoBackup.files[0];
+  el.arquivoBackup.value = ''; // permite escolher o mesmo arquivo de novo depois
+  if (arquivo) importarBackup(arquivo);
+});
+
 preencherFiltroCategoria();
+renderizarUltimoBackup();
 renderizar();

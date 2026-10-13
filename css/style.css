@@ -225,6 +225,13 @@ main {
 
 .vazio { text-align: center; color: var(--texto-suave); padding: 24px 0; }
 
+/* ---------- Seus dados (backup) ---------- */
+
+.dados { margin-top: 8px; }
+.dados-texto { font-size: 0.85rem; color: var(--texto-suave); margin: 0 0 10px; }
+.dados .botao { font-size: 0.9rem; background: var(--superficie); }
+.mensagem-backup { font-size: 0.85rem; margin: 8px 0 0; min-height: 1.2em; }
+
 /* ---------- Botão + ---------- */
 
 .botao-novo {
