@@ -15,6 +15,9 @@ Object.assign(el, {
   excluirConta: document.getElementById('excluir-conta'),
   botaoCalendario: document.getElementById('botao-calendario'),
   calendarioConta: document.getElementById('calendario-conta'),
+  cardPrevisao: document.getElementById('card-previsao'),
+  previsao: document.getElementById('previsao'),
+  previsaoDetalhe: document.getElementById('previsao-detalhe'),
   mensagemCalendario: document.getElementById('mensagem-calendario'),
 });
 
@@ -85,6 +88,26 @@ function pagarConta({ conta, vencimento }) {
     competencia: competencia(estado.ano, estado.mes),
     data: mesmoMes ? hoje : vencimento,
   });
+}
+
+// ---------- Previsão do fim do mês (Entrega 2.4) ----------
+
+// saldo = saldo do mês que já está no resumo (com os mesmos filtros)
+function renderizarPrevisao(saldo) {
+  const hoje = hojeISO();
+  const mesPassado = competencia(estado.ano, estado.mes) < hoje.slice(0, 7);
+  const { temContas, quantidade, total } = Contas.aPagarNoMes(estado.ano, estado.mes, hoje, estado.filtros);
+
+  // Só faz sentido no mês atual ou nos futuros, e se houver contas fixas
+  el.cardPrevisao.hidden = mesPassado || !temContas;
+  if (el.cardPrevisao.hidden) return;
+
+  const previsto = saldo - total;
+  el.previsao.textContent = Dinheiro.formatar(previsto);
+  el.previsao.classList.toggle('negativo', previsto < 0);
+  el.previsaoDetalhe.textContent = quantidade === 0
+    ? '✅ Todas as contas fixas do mês estão pagas.'
+    : `Saldo ${Dinheiro.formatar(saldo)} − ${Dinheiro.formatar(total)} de ${quantidade} ${plural(quantidade, 'conta a pagar', 'contas a pagar')}`;
 }
 
 // ---------- Alerta no topo ----------

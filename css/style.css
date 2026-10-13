@@ -176,6 +176,11 @@ main {
 .card-entrou strong { color: var(--entrada); }
 .card-saiu strong { color: var(--saida); }
 
+.card-previsao { grid-column: 1 / -1; border-style: dashed; } /* tracejado = valor previsto, não realizado */
+.card-previsao strong.negativo { color: var(--saida); }
+.previsao-detalhe { font-size: 0.8rem; color: var(--texto-suave); }
+.card-previsao[hidden] { display: none; }
+
 /* ---------- Lista ---------- */
 
 .subtitulo {

@@ -92,6 +92,7 @@ function renderizar() {
   renderizarFiltros(filtrando);
   renderizarContas(); // tela-contas.js
   renderizarAlerta(); // tela-contas.js
+  renderizarPrevisao(saldo); // tela-contas.js
 }
 
 // ---------- Filtros ----------
