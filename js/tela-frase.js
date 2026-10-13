@@ -60,6 +60,7 @@ let ouvindo = false;
 let vozFalhou = false; // falhou por falta de suporte: esconde o botão até recarregar
 let erroDaVoz = null; // código do erro da última tentativa (ex.: 'not-allowed')
 let chegouPalavra = false; // o reconhecimento entregou algum texto nesta tentativa?
+let vozJaFuncionou = false; // se funcionou uma vez, o aparelho suporta: nunca esconder o botão
 let vigia = null; // temporizador que desiste se nenhuma palavra chegar
 
 // Navegadores dentro de outros apps (Claude, WhatsApp, Instagram) no iPhone ligam o
@@ -77,7 +78,8 @@ const ERROS_SEM_SUPORTE = ['service-not-allowed', 'audio-capture', 'language-not
 function mostrarErroVoz(codigo) {
   const mensagem = ERROS_VOZ[codigo] || 'Não consegui ouvir. Tente de novo ou use o microfone do teclado.';
   el.fraseErro.textContent = `${mensagem} (${codigo})`;
-  if (ERROS_SEM_SUPORTE.includes(codigo)) {
+  // Só desiste de vez se a voz NUNCA funcionou nesta sessão
+  if (ERROS_SEM_SUPORTE.includes(codigo) && !vozJaFuncionou) {
     vozFalhou = true;
     atualizarBotoesFrase();
     el.fraseTexto.focus(); // abre o teclado, que tem o próprio microfone
@@ -96,7 +98,17 @@ const ERROS_VOZ = {
   'network': 'O reconhecimento de voz precisa de internet.',
 };
 
+// Encerra a sessão anterior por completo: no iPhone, uma sessão que não foi
+// encerrada pode "prender" o microfone e a próxima não recebe nada.
+function encerrarSessaoDeVoz() {
+  if (!reconhecedor) return;
+  reconhecedor.onresult = reconhecedor.onerror = reconhecedor.onend = null;
+  try { reconhecedor.abort(); } catch { /* já encerrada */ }
+  reconhecedor = null;
+}
+
 function iniciarVoz() {
+  encerrarSessaoDeVoz();
   reconhecedor = new Reconhecimento();
   reconhecedor.lang = 'pt-BR';
   reconhecedor.interimResults = true; // mostra o texto enquanto a pessoa fala
@@ -105,6 +117,7 @@ function iniciarVoz() {
 
   reconhecedor.onresult = (evento) => {
     chegouPalavra = true;
+    vozJaFuncionou = true;
     el.fraseTexto.value = Array.from(evento.results).map((r) => r[0].transcript).join(' ').trim();
   };
   reconhecedor.onerror = (evento) => {
@@ -113,6 +126,7 @@ function iniciarVoz() {
   };
   reconhecedor.onend = () => {
     clearTimeout(vigia);
+    encerrarSessaoDeVoz(); // libera o microfone para a próxima vez
     pararVisualVoz();
     // Terminou de falar e há texto: segue direto para a confirmação
     if (el.fraseTexto.value.trim()) enviarFrase();
@@ -134,15 +148,19 @@ function iniciarVoz() {
     vigia = setTimeout(() => {
       if (chegouPalavra || !ouvindo) return;
       erroDaVoz = 'sem-transcricao';
-      try { reconhecedor.abort(); } catch { /* alguns navegadores não têm abort */ }
+      encerrarSessaoDeVoz();
       pararVisualVoz();
       mostrarErroVoz('sem-transcricao');
     }, ESPERA_PRIMEIRA_PALAVRA);
   } catch {
+    clearTimeout(vigia);
+    encerrarSessaoDeVoz();
     pararVisualVoz();
     mostrarErroVoz('falha-ao-iniciar');
-    vozFalhou = true;
-    atualizarBotoesFrase();
+    if (!vozJaFuncionou) {
+      vozFalhou = true;
+      atualizarBotoesFrase();
+    }
   }
 }
 
@@ -155,7 +173,7 @@ function pararVisualVoz() {
 }
 
 el.fraseVoz.addEventListener('click', () => {
-  if (ouvindo) reconhecedor.stop(); // tocar de novo encerra (e segue para a confirmação)
+  if (ouvindo && reconhecedor) reconhecedor.stop(); // tocar de novo encerra (e segue para a confirmação)
   else iniciarVoz();
 });
 

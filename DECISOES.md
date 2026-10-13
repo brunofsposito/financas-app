@@ -221,3 +221,4 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - Se nenhuma palavra chegar em **6 segundos**, o app para de ouvir e orienta: abrir no Safari ou pelo ícone da Tela de Início, ou usar o microfone do teclado.
 - Se o aparelho não suportar a voz, o botão some e o teclado abre.
 **Por quê:** uma falha silenciosa parece defeito e faz a pessoa desistir. Uma falha explicada, com caminho alternativo, mantém a confiança.
+- **Atualização (13/10/2026):** no iPhone, pelo ícone da Tela de Início, a voz funcionava só na primeira vez. A causa provável é que a sessão anterior "segurava" o microfone. Agora cada sessão é encerrada explicitamente (`abort`) ao terminar, e uma nova é criada a cada toque. Além disso, se a voz já funcionou uma vez, o botão do microfone nunca some por causa de um erro.
