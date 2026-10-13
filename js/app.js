@@ -94,6 +94,7 @@ function renderizar() {
   renderizarAlerta(); // tela-contas.js
   renderizarPrevisao(saldo); // tela-contas.js
   renderizarDashboard(doMes); // tela-dashboard.js
+  renderizarOrcamentos(); // tela-orcamentos.js
 }
 
 // ---------- Filtros ----------
@@ -316,18 +317,20 @@ async function exportarBackup() {
   Backup.registrarExportacao();
   renderizarUltimoBackup();
   el.mensagemBackup.textContent =
-    `Backup gerado com ${Lancamentos.listar().length} lançamento(s) e ${Contas.listar().length} conta(s) fixa(s).`;
+    `Backup gerado com ${Lancamentos.listar().length} lançamento(s), ${Contas.listar().length} conta(s) fixa(s) `
+    + `e ${Orcamentos.listar().length} orçamento(s).`;
 }
 
 async function importarBackup(arquivo) {
   try {
     const dados = Backup.validar(await arquivo.text());
-    const ok = confirm(`Importar ${dados.lancamentos.length} lançamento(s) e ${dados.contas.length} conta(s) fixa(s) deste backup?\n\nOs dados atuais são mantidos. Os que já existirem serão atualizados com a versão do backup.`);
+    const ok = confirm(`Importar ${dados.lancamentos.length} lançamento(s), ${dados.contas.length} conta(s) fixa(s) e ${dados.orcamentos.length} orçamento(s) deste backup?\n\nOs dados atuais são mantidos. Os que já existirem serão atualizados com a versão do backup.`);
     if (!ok) return;
     const r = Backup.importar(dados);
     el.mensagemBackup.textContent =
-      `Importado: ${r.lancamentos.novos} lançamento(s) novo(s), ${r.contas.novos} conta(s) nova(s). `
-      + `Atualizados: ${r.lancamentos.atualizados + r.contas.atualizados}.`;
+      `Importado: ${r.lancamentos.novos} lançamento(s) novo(s), ${r.contas.novos} conta(s) nova(s), `
+      + `${r.orcamentos.novos} orçamento(s) novo(s). `
+      + `Atualizados: ${r.lancamentos.atualizados + r.contas.atualizados + r.orcamentos.atualizados}.`;
     renderizar();
   } catch (erro) {
     el.mensagemBackup.textContent = erro.message;

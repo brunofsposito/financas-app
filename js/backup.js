@@ -1,10 +1,10 @@
-// Backup: exportar todos os dados (lançamentos e contas) para um arquivo e importar de volta.
+// Backup: exportar todos os dados (lançamentos, contas e orçamentos) para um arquivo e importar de volta.
 // Como os dados vivem só no navegador (D02), o backup é a forma de não perdê-los
 // ao limpar o histórico ou trocar de celular.
 
 const Backup = {
-  // Versão do formato do arquivo. v1: só lançamentos. v2: lançamentos + contas.
-  VERSAO: 2,
+  // Versão do formato do arquivo. v1: só lançamentos. v2: + contas. v3: + orçamentos.
+  VERSAO: 3,
   CHAVE_ULTIMO: 'financas-app:ultimo-backup',
 
   // Monta o conteúdo do arquivo de backup
@@ -15,6 +15,7 @@ const Backup = {
       exportadoEm: new Date().toISOString(),
       lancamentos: Lancamentos.listar(),
       contas: Storage.carregar('contas'),
+      orcamentos: Orcamentos.listar(),
     };
   },
 
@@ -25,7 +26,7 @@ const Backup = {
   },
 
   // Confere se o arquivo é mesmo um backup deste app antes de usar.
-  // Devolve { lancamentos, contas } ou lança um erro com a mensagem para o usuário.
+  // Devolve { lancamentos, contas, orcamentos } ou lança um erro com a mensagem para o usuário.
   validar(texto) {
     let conteudo;
     try {
@@ -40,20 +41,23 @@ const Backup = {
       throw new Error('Este backup foi feito por uma versão mais nova do app.');
     }
     const contas = conteudo.contas || []; // backups v1 não têm contas
-    if (!Array.isArray(contas)
+    const orcamentos = conteudo.orcamentos || []; // backups v1 e v2 não têm orçamentos
+    if (!Array.isArray(contas) || !Array.isArray(orcamentos)
       || !conteudo.lancamentos.every(lancamentoValido)
-      || !contas.every(contaValida)) {
+      || !contas.every(contaValida)
+      || !orcamentos.every(orcamentoValido)) {
       throw new Error('O backup tem dados inválidos. Nada foi importado.');
     }
-    return { lancamentos: conteudo.lancamentos, contas };
+    return { lancamentos: conteudo.lancamentos, contas, orcamentos };
   },
 
   // Junta o backup com o que já existe: mesmo id = mesmo registro.
   // É como um MERGE no SQL: atualiza quem já existe e insere quem não existe.
-  importar({ lancamentos, contas }) {
+  importar({ lancamentos, contas, orcamentos }) {
     return {
       lancamentos: mesclar('lancamentos', lancamentos),
       contas: mesclar('contas', contas),
+      orcamentos: mesclar('orcamentos', orcamentos, 'categoria'), // um orçamento por categoria
     };
   },
 
@@ -75,15 +79,22 @@ const Backup = {
   },
 };
 
-function mesclar(tabela, doBackup) {
-  const porId = new Map(Storage.carregar(tabela).map((r) => [r.id, r]));
+// chave: o campo que identifica o registro (o "id" na maioria das tabelas)
+function mesclar(tabela, doBackup, chave = 'id') {
+  const porId = new Map(Storage.carregar(tabela).map((r) => [r[chave], r]));
   let novos = 0;
   for (const r of doBackup) {
-    if (!porId.has(r.id)) novos++;
-    porId.set(r.id, r);
+    if (!porId.has(r[chave])) novos++;
+    porId.set(r[chave], r);
   }
   Storage.salvar(tabela, [...porId.values()]);
   return { novos, atualizados: doBackup.length - novos };
+}
+
+function orcamentoValido(o) {
+  return o
+    && typeof o.categoria === 'string' && o.categoria
+    && Number.isInteger(o.limite) && o.limite > 0;
 }
 
 function contaValida(c) {
