@@ -43,7 +43,9 @@ Não precisa instalar nada.
 | `js/contas.js` | Regras das contas fixas: vencimento, status e alertas |
 | `js/calendario.js` | Gera o arquivo de calendário (.ics) com as contas fixas e os alarmes |
 | `js/backup.js` | Exportar e importar os dados (montar, validar e juntar o arquivo) |
-| `js/app.js` | Liga a tela às regras: cliques e desenho da lista |
+| `js/icones.js` | Catálogo de ícones de linha (SVG); categorias e telas usam o nome do ícone |
+| `js/tela-avisos.js` | Avisos: o mais urgente no topo, com a ação que resolve; os demais em "+N avisos" |
+| `js/app.js` | Liga a tela às regras: abas, mês, filtros, formulário e lista de lançamentos |
 | `js/tela-dashboard.js` | O gráfico "Para onde foi o dinheiro" (saídas por categoria) |
 | `js/tela-orcamentos.js` | A parte da tela dos orçamentos: barras de progresso e formulário |
 | `js/tela-contas.js` | A parte da tela das contas fixas: lista, "Paguei", formulário e alerta |
@@ -83,7 +85,7 @@ Não precisa instalar nada.
 ### Redesign "Lima neon" (D26)
 
 - [x] **V1 · Base visual:** cores neon por significado, fonte Sora, número herói, botões em pílula, formulário abrindo de baixo
-- [ ] **V2 · Abas:** navegação inferior (Início · Contas · Orçamentos)
+- [x] **V2 · Abas:** navegação inferior (Início · Contas · Orçamentos · Ajustes), ícones de linha no lugar dos emojis e avisos acionáveis
 - [ ] **V3 · Novo formulário:** chips de categoria, Hoje/Ontem, valor grande
 - [ ] **V4 · Frase rápida:** "gastei 45 no mercado ontem" → confirmar → salvo, com Desfazer
 - [ ] **V5 · Voz**
@@ -168,3 +170,10 @@ Não precisa instalar nada.
 - **Mudar só a pele:** os nomes das classes CSS continuaram os mesmos, então o JavaScript quase não mudou e os testes antigos passaram iguais. Separar *aparência* de *comportamento* é o que permite um redesign sem medo.
 - **Dependência externa consciente:** a fonte vem do Google Fonts. Se ele não carregar, o app usa a fonte do sistema e continua funcionando (*degradação graciosa*).
 - **Branding** (fintech): Nubank (roxo), Inter (laranja), C6 (preto) mostram que no mercado a cor É a marca. Por isso cada cor da paleta tem uma única função.
+
+### Redesign V2: abas, ícones e avisos acionáveis
+- **Aviso = próxima ação, não relatório:** "1 conta atrasada · 2 orçamentos..." informa, mas não ajuda. Agora o topo mostra **uma coisa só, a mais urgente**, com o botão que resolve ("Condomínio atrasada há 2 dias · Paguei"). Os outros avisos ficam em "+N avisos".
+- **Fila de prioridade:** os avisos são ordenados por uma tabela de urgência (atrasada > vence hoje > estourou > vence em breve > perto do limite). Resolver um faz o próximo subir sozinho.
+- **Estado na URL:** a aba aberta fica no endereço (`#contas`). Por isso o "voltar" do navegador e o recarregar funcionam, e dá para abrir uma aba por link.
+- **Ícones por nome:** as categorias guardam o *nome* do ícone (`carrinho`), não o desenho. É a mesma ideia dos tokens de cor: trocar o visual mexe num lugar só.
+- **Next best action** (fintech): apps de banco não mostram só o saldo, eles sugerem o próximo passo ("pague sua fatura", "seu limite está perto do fim"). É assim que um aviso vira engajamento em vez de ruído.

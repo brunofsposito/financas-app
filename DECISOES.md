@@ -180,3 +180,18 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - **Branco = selecionado. Limão = ação ou positivo.** Isso vale para filtros, opções e botões.
 - A fonte **Sora** vem do Google Fonts: é a primeira dependência externa. Sem internet, cai para a fonte do sistema.
 **Por quê:** separar a aparência do comportamento permite reaproveitar os testes antigos e reduz o risco do redesign.
+
+### D28 · 🧭 Avisos mostram uma ação, não uma contagem
+**Data:** 13/10/2026
+**Decisão:** o topo mostra **apenas o aviso mais urgente**, com o botão que o resolve. Os demais ficam em "+N avisos", numa lista em que cada item tem a sua ação.
+- **Ordem de urgência:** conta atrasada → vence hoje → orçamento estourado → vence em breve → orçamento vai estourar → perto do limite.
+- **Ações:** conta → **Paguei** (abre o pagamento preenchido, no mês certo); orçamento estourado ou perto → **Ver gastos** (filtra os lançamentos da categoria); orçamento que vai estourar → **Ver contas**.
+**Por quê:** o aviso anterior juntava 4 informações numa frase e não dizia o que fazer (feedback do Bruno: "poluído"). Um aviso por vez, com ação, é simples e resolve.
+
+### D29 · 🛠️ Abas na URL e ícones de linha por nome
+**Data:** 13/10/2026
+**Decisão:**
+- Quatro abas, **Início · Contas · Orçamentos · Ajustes**, numa barra flutuante com o + em limão. O mês no topo vale para todas. Os filtros ficam só no Início, e o backup foi para Ajustes.
+- A aba aberta fica no endereço (`#contas`), usando o histórico do navegador.
+- Todos os emojis viraram **ícones de linha** (SVG próprio, mesmo traço). As categorias guardam o *nome* do ícone. Os selos de status ganharam ícone junto do texto.
+**Por quê:** a tela única tinha ficado longa demais. Abas organizam o app para crescer. Os emojis variam de aparelho para aparelho e não combinavam com o visual (feedback do Bruno).
