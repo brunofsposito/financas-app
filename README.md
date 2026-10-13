@@ -96,6 +96,7 @@ Não precisa instalar nada.
 **Backlog:**
 - Dashboard parte B, gráfico de linhas com a evolução mês a mês (quando houver 2 ou 3 meses de dados). Ver D11.
 - Notificação push de verdade, se o app virar produto (D16).
+- **Voz no iPhone só funciona na primeira fala** a cada abertura do app (D35). Investigação pausada; o microfone do teclado é a alternativa.
 - Entradas fixas (ex.: salário recorrente) para a previsão de meses futuros (D22).
 
 ## Aprendizados

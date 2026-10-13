@@ -232,3 +232,9 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - O número da versão aparece no fim da aba **Ajustes**, para sabermos qual versão está rodando em cada aparelho.
 - Na voz, **qualquer** falha depois do primeiro uso (inclusive um "cancelado" silencioso) mostra "Reativar voz". A exceção é o microfone negado, que mantém a sua própria mensagem.
 **Por quê:** sem saber qual versão está no aparelho, não dá para diagnosticar. Cache é uma das causas mais comuns de "corrigi, mas no celular continua igual".
+
+### D35 · 🧭 Voz no iPhone: problema conhecido, pausado
+**Data:** 13/10/2026
+**Situação:** pelo ícone da Tela de Início, a voz funciona **na primeira fala** a cada abertura do app. Nas seguintes, o microfone liga mas nenhuma palavra chega. Tentativas que **não** resolveram: encerrar cada sessão, reaproveitar um único ouvinte, e recarregar o app ("Reativar voz").
+**Decisão (Bruno):** pausar a investigação e seguir com outras funcionalidades. Enquanto isso, quando a voz trava, o app explica e abre o teclado, para usar o microfone do teclado (que sempre funciona). O botão "Reativar voz" foi escondido.
+**Quando retomar:** testar no Safari (sem ser pela Tela de Início) para isolar se é limitação do modo "app web". Alternativas: a voz pelo teclado como caminho principal, ou um app nativo no futuro.

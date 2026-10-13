@@ -86,7 +86,7 @@ const ERROS_VOZ = {
   'no-speech': 'Não ouvi nada. Toque no microfone e fale de novo.',
   'sem-resultado': 'O reconhecimento terminou sem ouvir nada. Tente de novo ou use o microfone do teclado.',
   'sem-transcricao': 'Nenhuma palavra chegou. Se o app está aberto dentro de outro app (como o Claude ou o WhatsApp), abra no Safari ou pelo ícone na Tela de Início. Ou use o microfone do teclado.',
-  'voz-travada': 'O iPhone travou a voz depois do primeiro uso. Toque em "Reativar voz" e fale de novo.',
+  'voz-travada': 'No iPhone, a voz deste app funciona uma vez a cada abertura. Para continuar, toque no campo e use o microfone do teclado.',
   'falha-ao-iniciar': 'Não foi possível ligar o reconhecimento de voz. Use o microfone do teclado.',
   'language-not-supported': 'O reconhecimento de voz não aceita português neste aparelho. Use o microfone do teclado.',
   'audio-capture': 'Não encontrei um microfone.',
@@ -97,7 +97,8 @@ const ERROS_VOZ = {
 function mostrarErroVoz(codigo) {
   const mensagem = ERROS_VOZ[codigo] || 'Não consegui ouvir. Tente de novo ou use o microfone do teclado.';
   el.fraseErro.textContent = `${mensagem} (${codigo})`;
-  el.reativarVoz.hidden = codigo !== 'voz-travada';
+  el.reativarVoz.hidden = true; // "Reativar voz" não resolveu no iPhone (D35): fica escondido
+  if (codigo === 'voz-travada') el.fraseTexto.focus(); // já abre o teclado, que tem microfone
   // Só desiste de vez se a voz NUNCA funcionou nesta sessão
   if (ERROS_SEM_SUPORTE.includes(codigo) && !vozJaFuncionou) {
     vozFalhou = true;
