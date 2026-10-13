@@ -113,7 +113,9 @@ function renderizarPrevisao(saldo) {
 // ---------- Alerta no topo ----------
 
 function renderizarAlerta() {
-  const { atrasadas, emBreve } = Contas.alertas(hojeISO());
+  const hoje = hojeISO();
+  const { atrasadas, emBreve } = Contas.alertas(hoje);
+  const orcamentos = Orcamentos.alertas(hoje); // orçamentos do mês atual que pedem atenção
   const partes = [];
   if (atrasadas.length) {
     partes.push(`${atrasadas.length} ${plural(atrasadas.length, 'conta atrasada', 'contas atrasadas')}`);
@@ -121,17 +123,29 @@ function renderizarAlerta() {
   if (emBreve.length) {
     partes.push(`${emBreve.length} ${plural(emBreve.length, 'vence', 'vencem')} nos próximos ${Contas.DIAS_ALERTA} dias`);
   }
+  const estourados = orcamentos.filter((o) => o.status === 'estourado').length;
+  const emRisco = orcamentos.length - estourados;
+  if (estourados) partes.push(`${estourados} ${plural(estourados, 'orçamento estourado', 'orçamentos estourados')}`);
+  if (emRisco) partes.push(`${emRisco} ${plural(emRisco, 'orçamento', 'orçamentos')} perto do limite`);
+
   el.alertaContas.hidden = partes.length === 0;
   if (!partes.length) return;
 
-  el.alertaContas.classList.toggle('alerta-atrasada', atrasadas.length > 0);
-  el.alertaContas.textContent = `${atrasadas.length ? '⚠️' : '🔔'} ${partes.join(' · ')}`;
-  // Tocar no alerta leva ao mês da conta mais urgente e rola até as contas
+  const grave = atrasadas.length > 0 || estourados > 0;
+  el.alertaContas.classList.toggle('alerta-atrasada', grave);
+  el.alertaContas.textContent = `${grave ? '⚠️' : '🔔'} ${partes.join(' · ')}`;
+  // Tocar no alerta: se há conta, leva ao mês da mais urgente e rola até as contas;
+  // se só há orçamento, volta ao mês atual e rola até os orçamentos.
   const primeira = atrasadas[0] || emBreve[0];
   el.alertaContas.onclick = () => {
-    const [ano, mes] = primeira.vencimento.split('-').map(Number);
-    irParaMes(ano, mes);
-    el.secaoContas.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (primeira) {
+      const [ano, mes] = primeira.vencimento.split('-').map(Number);
+      irParaMes(ano, mes);
+      el.secaoContas.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      irParaHoje();
+      el.secaoOrcamentos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 }
 

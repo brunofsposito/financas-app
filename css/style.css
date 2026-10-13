@@ -283,6 +283,57 @@ main {
 .dashboard .link { display: block; margin: 8px auto 0; padding: 6px; text-decoration: none; }
 .dashboard .link[hidden] { display: none; }
 
+/* ---------- Orçamentos por categoria ---------- */
+
+.orcamento {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.orcamento:active { background: var(--fundo); }
+.orcamento:focus-visible { outline: 2px solid var(--marca); outline-offset: -2px; }
+
+/* Medidor: trilho claro; parte gasta cheia; parte prevista listrada (textura a 45°) */
+.medidor {
+  display: flex;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+}
+.medidor-gasto { --cor: var(--marca); background: var(--cor); }
+.medidor-previsto {
+  --cor: var(--marca);
+  background: repeating-linear-gradient(45deg, var(--cor) 0 3px, transparent 3px 6px);
+  opacity: 0.7;
+}
+/* 2px de respiro entre as duas partes */
+.medidor-gasto + .medidor-previsto { margin-left: 2px; }
+.medidor-gasto[style*="width: 0%"] + .medidor-previsto { margin-left: 0; }
+
+/* Cor de status: aviso (laranja) e crítico (vermelho), sempre com ícone e texto no selo */
+.orcamento-perto .medidor-gasto,
+.orcamento-perto .medidor-previsto,
+.orcamento-vai-estourar .medidor-gasto,
+.orcamento-vai-estourar .medidor-previsto { --cor: var(--aviso); }
+.orcamento-estourado .medidor-gasto,
+.orcamento-estourado .medidor-previsto { --cor: var(--saida); }
+
+.selo-orcamento { white-space: normal; text-align: right; }
+.orcamento-ok .selo-orcamento { color: var(--entrada); background: color-mix(in srgb, var(--entrada) 12%, transparent); }
+.orcamento-perto .selo-orcamento,
+.orcamento-vai-estourar .selo-orcamento { color: var(--aviso); background: color-mix(in srgb, var(--aviso) 14%, transparent); }
+.orcamento-estourado .selo-orcamento { color: var(--saida); background: color-mix(in srgb, var(--saida) 12%, transparent); }
+
 /* ---------- Alerta de contas (Fase 2) ---------- */
 
 :root { --aviso: #b45309; }
