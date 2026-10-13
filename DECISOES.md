@@ -123,3 +123,9 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Data:** 13/10/2026
 **Decisão:** o backup passa a incluir as contas fixas. Arquivos antigos (só com lançamentos) continuam sendo aceitos.
 **Por quê:** um backup sem as contas perderia o cadastro da Fase 2. Manter a compatibilidade garante que o backup feito ontem ainda funcione.
+
+### D21 · 🛠️ Calendário por arquivo .ics, com dois alarmes
+**Data:** 13/10/2026
+**Decisão:** o app gera um arquivo `.ics` com um evento mensal por conta: de dia inteiro, sem marcar como "ocupado", com alarmes **um dia antes às 9h** e **no dia às 9h**. Há dois botões: "Adicionar contas ao Calendário" (todas) e "Adicionar só esta conta" (na edição de uma conta).
+**Por quê:** é o jeito de o aviso chegar com o app fechado, sem servidor (D16). Os horários dos alarmes podem ser mudados no próprio Calendário.
+**Limitação:** o Calendário guarda uma cópia. Se a conta mudar no app, é preciso apagar o evento antigo e exportar de novo.

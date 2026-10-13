@@ -14,6 +14,7 @@ App simples de finanças pessoais, feito para o celular, que mostra **quanto ent
 - Editar e excluir: toque num lançamento da lista.
 - **Contas fixas** (aluguel, internet, assinaturas): cadastro com dia de vencimento, status no mês (paga, vence em X dias, atrasada) e botão **Paguei**, que cria o lançamento.
 - **Alerta no topo** quando há conta atrasada ou vencendo nos próximos 5 dias.
+- **Adicionar ao Calendário do iPhone:** cada conta vira um evento mensal com alarmes (um dia antes e no dia, às 9h). O aviso chega mesmo com o app fechado.
 - Os dados ficam salvos no próprio navegador (continuam lá ao fechar e abrir).
 - Backup: exportar todos os lançamentos para um arquivo e importar de volta (seção "Seus dados", no fim da tela).
 
@@ -36,6 +37,7 @@ Não precisa instalar nada.
 | `js/storage.js` | O "banco de dados": lê e grava no localStorage, uma "tabela" por chave |
 | `js/lancamentos.js` | As regras: criar, editar, excluir, filtrar (mês, tipo, categoria) e somar |
 | `js/contas.js` | Regras das contas fixas: vencimento, status e alertas |
+| `js/calendario.js` | Gera o arquivo de calendário (.ics) com as contas fixas e os alarmes |
 | `js/backup.js` | Exportar e importar os dados (montar, validar e juntar o arquivo) |
 | `js/app.js` | Liga a tela às regras: cliques e desenho da lista |
 | `js/tela-contas.js` | A parte da tela das contas fixas: lista, "Paguei", formulário e alerta |
@@ -65,7 +67,7 @@ Não precisa instalar nada.
 
 - [x] **Entrega 2.1:** contas fixas, com status no mês e botão "Paguei"
 - [x] **Entrega 2.2:** alerta no topo do app
-- [ ] **Entrega 2.3:** adicionar as contas ao Calendário do iPhone (com alarme)
+- [x] **Entrega 2.3:** adicionar as contas ao Calendário do iPhone (com alarme)
 - [ ] **Entrega 2.4:** previsão de saldo até o fim do mês
 
 **Backlog:**
@@ -114,3 +116,10 @@ Não precisa instalar nada.
 - **Migração sem dor:** o `storage.js` passou a guardar "tabelas", mas a chave dos lançamentos não mudou, então os dados antigos continuaram funcionando. O backup ganhou a versão 2, e os arquivos da versão 1 ainda são aceitos (compatibilidade retroativa).
 - **Recorrência e competência** (fintech): a conta tem *competência* (o mês a que ela se refere) e o pagamento tem *data* (quando o dinheiro saiu). Pagar em novembro a conta de outubro conta em novembro no caixa, mas quita outubro. É assim que funcionam boletos, faturas e o débito automático.
 - **Limites da plataforma:** um site sem servidor não consegue "acordar" o celular num horário marcado. Por isso o lembrete com o app fechado vai pelo Calendário (Entrega 2.3), e não por push (D16).
+
+### Fase 2, Entrega 2.3: Calendário
+- **Padrões abertos:** o `.ics` (iCalendar, RFC 5545) é um formato público que iPhone, Google e Outlook entendem. Usar um padrão evita integrar com cada calendário separadamente.
+- **Regras de recorrência (RRULE):** "todo mês no dia 7" vira `FREQ=MONTHLY;BYMONTHDAY=7`. Pelo padrão, "todo dia 31" *pula* os meses curtos. Por isso o dia 31 vira "último dia do mês" (`BYMONTHDAY=-1`), seguindo a mesma regra do app.
+- **Testar com uma ferramenta independente:** o arquivo foi validado por uma biblioteca de calendário externa ao app, que calculou as próximas datas. Testar só com o próprio código pode esconder o mesmo erro dos dois lados.
+- **Exportação × sincronização:** o Calendário recebe uma *cópia*. Mudou a conta no app, é preciso exportar de novo. Sincronizar sozinho exigiria um servidor publicando um calendário "assinável" (*webcal*).
+- **Lembrete de cobrança** (fintech): bancos e fintechs mandam aviso de vencimento porque isso reduz a inadimplência, que é uma métrica central de crédito. É o mesmo princípio aplicado às suas contas.
