@@ -93,6 +93,7 @@ function renderizar() {
   renderizarContas(); // tela-contas.js
   renderizarAlerta(); // tela-contas.js
   renderizarPrevisao(saldo); // tela-contas.js
+  renderizarDashboard(doMes); // tela-dashboard.js
 }
 
 // ---------- Filtros ----------

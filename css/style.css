@@ -230,6 +230,59 @@ main {
 
 .vazio { text-align: center; color: var(--texto-suave); padding: 24px 0; }
 
+/* ---------- Dashboard: para onde foi o dinheiro (Entrega 6) ---------- */
+
+:root { --barra-apagada: #c4cdd5; }
+@media (prefers-color-scheme: dark) { :root { --barra-apagada: #4b5563; } }
+
+.dashboard-sub { font-size: 0.8rem; color: var(--texto-suave); margin: -4px 0 10px; }
+
+.grafico {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+}
+
+.barra-linha {
+  display: block;
+  width: 100%;
+  padding: 8px 14px; /* área de toque maior que a barra */
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.barra-linha:active { background: var(--fundo); }
+.barra-linha:focus-visible { outline: 2px solid var(--marca); outline-offset: -2px; }
+
+.barra-topo { display: flex; justify-content: space-between; gap: 8px; font-size: 0.9rem; margin-bottom: 4px; }
+.barra-nome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barra-valor { font-weight: 600; white-space: nowrap; }
+.barra-pct { font-weight: 400; color: var(--texto-suave); margin-left: 4px; }
+
+.barra-trilho { display: block; height: 10px; }
+/* Barra fina, ponta arredondada de 4px e reta na linha de base (esquerda) */
+.barra {
+  display: block;
+  height: 100%;
+  background: var(--marca);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Destaque: a categoria escolhida na cor, as outras em cinza */
+.barra-linha.apagada .barra { background: var(--barra-apagada); }
+.barra-linha.apagada .barra-nome,
+.barra-linha.apagada .barra-valor { color: var(--texto-suave); }
+.barra-linha.destacada .barra-nome { font-weight: 600; }
+
+.dashboard .link { display: block; margin: 8px auto 0; padding: 6px; text-decoration: none; }
+.dashboard .link[hidden] { display: none; }
+
 /* ---------- Alerta de contas (Fase 2) ---------- */
 
 :root { --aviso: #b45309; }
