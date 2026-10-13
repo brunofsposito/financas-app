@@ -35,6 +35,13 @@ const el = {
   botaoExcluir: document.getElementById('botao-excluir'),
   botaoCancelar: document.getElementById('botao-cancelar'),
   erro: document.getElementById('erro'),
+  chipsCategoria: document.getElementById('chips-categoria'),
+  chipsData: document.querySelectorAll('.chip-opcao[data-quando]'),
+  chipCalendario: document.querySelector('.chip-calendario'),
+  fraseEntendida: document.getElementById('frase-entendida'),
+  toast: document.getElementById('toast'),
+  toastTexto: document.getElementById('toast-texto'),
+  toastDesfazer: document.getElementById('toast-desfazer'),
 };
 
 // ---------- Abas (V2) ----------
@@ -221,9 +228,28 @@ function criarItemDaLista(l) {
 
 // ---------- Formulário ----------
 
+// Categorias como chips com ícone. Por baixo são botões de opção (radio) com
+// name="categoria": assim f.categoria.value continua funcionando para ler e escrever.
 function preencherCategorias(movimento) {
-  const select = el.formulario.elements.categoria;
-  select.replaceChildren(...CATEGORIAS[movimento].map((c) => new Option(c.nome, c.id)));
+  const chips = CATEGORIAS[movimento].map((c) => {
+    const label = document.createElement('label');
+    label.className = 'chip-categoria';
+    label.innerHTML = `<input type="radio" name="categoria" value="${c.id}"><span>${icone(c.icone, 16)}${c.nome}</span>`;
+    return label;
+  });
+  el.chipsCategoria.replaceChildren(...chips);
+}
+
+// Destaca "Hoje" ou "Ontem" quando a data escolhida é uma delas
+function atualizarChipsData() {
+  const data = el.formulario.elements.data.value;
+  const ontem = new Date();
+  ontem.setDate(ontem.getDate() - 1);
+  const ontemISO = dataISO(ontem.getFullYear(), ontem.getMonth() + 1, ontem.getDate());
+  const quando = data === hojeISO() ? 'hoje' : data === ontemISO ? 'ontem' : '';
+  el.chipsData.forEach((chip) => chip.setAttribute('aria-pressed', String(chip.dataset.quando === quando)));
+  el.chipCalendario.classList.toggle('ativo', Boolean(data) && !quando);
+  return { ontemISO };
 }
 
 // Data sugerida para um lançamento novo: hoje, se a tela está no mês atual.
@@ -235,11 +261,23 @@ function dataSugeridaISO() {
   return `${estado.ano}-${String(estado.mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 }
 
-// Três modos:
+function preencherCampos(d) {
+  const f = el.formulario.elements;
+  f.movimento.value = d.movimento;
+  preencherCategorias(d.movimento);
+  if (d.valor) f.valor.value = Dinheiro.paraCampo(d.valor);
+  f.descricao.value = d.descricao || '';
+  if (d.categoria) f.categoria.value = d.categoria;
+  f.data.value = d.data;
+  f.tipo.value = d.tipo || 'pessoal';
+}
+
+// Quatro modos:
 // - novo: abrirFormulario()
 // - editar: abrirFormulario(lancamento)
 // - pagar conta: abrirFormulario(null, { conta, competencia, data }), já preenchido com a conta
-function abrirFormulario(lancamento = null, pagamento = null) {
+// - sugestão da frase rápida (V4): abrirFormulario(null, null, { dados, frase })
+function abrirFormulario(lancamento = null, pagamento = null, sugestao = null) {
   const f = el.formulario.elements;
   el.formulario.reset();
   el.erro.textContent = '';
@@ -247,40 +285,37 @@ function abrirFormulario(lancamento = null, pagamento = null) {
   estado.pagando = pagamento ? { contaId: pagamento.conta.id, competencia: pagamento.competencia } : null;
 
   el.tituloFormulario.textContent = lancamento ? 'Editar lançamento'
-    : pagamento ? `Pagar: ${pagamento.conta.descricao}` : 'Novo lançamento';
+    : pagamento ? `Pagar: ${pagamento.conta.descricao}`
+      : sugestao ? 'Confira e salve' : 'Novo lançamento';
   el.botaoExcluir.hidden = !lancamento;
+  el.fraseEntendida.hidden = !sugestao;
+  if (sugestao) el.fraseEntendida.textContent = `“${sugestao.frase}”`;
 
   if (pagamento) {
     const { conta } = pagamento;
-    f.movimento.value = 'saida';
-    preencherCategorias('saida');
-    f.valor.value = Dinheiro.paraCampo(conta.valor); // valor previsto: dá para ajustar
-    f.descricao.value = conta.descricao;
-    f.categoria.value = conta.categoria;
-    f.data.value = pagamento.data;
-    f.tipo.value = conta.tipo;
+    // O valor da conta é previsto: dá para ajustar antes de salvar
+    preencherCampos({ ...conta, movimento: 'saida', data: pagamento.data });
   } else if (lancamento) {
-    f.movimento.value = lancamento.movimento;
-    preencherCategorias(lancamento.movimento);
-    f.valor.value = Dinheiro.paraCampo(lancamento.valor);
-    f.descricao.value = lancamento.descricao;
-    f.categoria.value = lancamento.categoria;
-    f.data.value = lancamento.data;
-    f.tipo.value = lancamento.tipo;
+    preencherCampos(lancamento);
+  } else if (sugestao) {
+    preencherCampos(sugestao.dados);
   } else {
-    preencherCategorias('saida');
-    f.data.value = dataSugeridaISO();
+    preencherCampos({ movimento: 'saida', data: dataSugeridaISO() });
   }
+  atualizarChipsData();
+  ajustarLarguraValor();
 
   el.dialogo.showModal();
   // No modo novo, já abre o teclado no valor. Nos outros, não: evita cobrir a tela.
-  if (!lancamento && !pagamento) f.valor.focus();
+  if (!lancamento && !pagamento && !sugestao) f.valor.focus();
 }
 
 function lerFormulario() {
   const f = el.formulario.elements;
   const valor = Dinheiro.paraCentavos(f.valor.value);
   if (valor === null) return { erro: 'Informe um valor maior que zero. Ex.: 150,00' };
+  // Categoria antes da descrição: escolher a categoria já preenche a descrição
+  if (!f.categoria.value) return { erro: 'Escolha uma categoria.' };
   if (!f.descricao.value.trim()) return { erro: 'Informe uma descrição.' };
   if (!f.data.value) return { erro: 'Informe a data.' };
 
@@ -299,9 +334,35 @@ function lerFormulario() {
 el.botaoNovo.addEventListener('click', () => abrirFormulario());
 el.botaoCancelar.addEventListener('click', () => el.dialogo.close());
 
-// Ao trocar entre Entrada e Saída, a lista de categorias muda junto
+// O campo do valor cresce com o que foi digitado, para o "R$" ficar colado no número
+function ajustarLarguraValor() {
+  const campo = el.formulario.elements.valor;
+  const texto = campo.value || campo.placeholder;
+  campo.style.width = `${texto.length * 0.62 + 0.3}em`; // ~0,62em por dígito na fonte Sora
+}
+
+el.formulario.addEventListener('input', (evento) => {
+  el.erro.textContent = ''; // corrigiu algo: some a mensagem de erro
+  if (evento.target.name === 'valor') ajustarLarguraValor();
+});
+
 el.formulario.addEventListener('change', (evento) => {
+  // Ao trocar entre Entrada e Saída, a lista de categorias muda junto
   if (evento.target.name === 'movimento') preencherCategorias(evento.target.value);
+  // A descrição vazia ganha o nome da categoria escolhida (menos digitação)
+  if (evento.target.name === 'categoria' && !el.formulario.elements.descricao.value.trim()) {
+    el.formulario.elements.descricao.value = buscarCategoria(evento.target.value).nome;
+  }
+  if (evento.target.name === 'data') atualizarChipsData();
+  el.erro.textContent = '';
+});
+
+el.chipsData.forEach((chip) => {
+  chip.addEventListener('click', () => {
+    const { ontemISO } = atualizarChipsData();
+    el.formulario.elements.data.value = chip.dataset.quando === 'hoje' ? hojeISO() : ontemISO;
+    atualizarChipsData();
+  });
 });
 
 el.formulario.addEventListener('submit', (evento) => {
@@ -311,8 +372,15 @@ el.formulario.addEventListener('submit', (evento) => {
     el.erro.textContent = erro;
     return;
   }
-  if (estado.editandoId) Lancamentos.atualizar(estado.editandoId, dados);
-  else Lancamentos.criar({ ...dados, ...estado.pagando });
+  if (estado.editandoId) {
+    Lancamentos.atualizar(estado.editandoId, dados);
+  } else {
+    const novo = Lancamentos.criar({ ...dados, ...estado.pagando });
+    mostrarToast(`${dados.descricao.trim()} · ${Dinheiro.formatar(dados.valor)} salvo`, () => {
+      Lancamentos.excluir(novo.id);
+      renderizar();
+    });
+  }
   el.dialogo.close();
   // Vai para o mês do lançamento salvo, para ele não "sumir" da tela
   const [ano, mes] = dados.data.split('-').map(Number);
@@ -326,6 +394,26 @@ el.botaoExcluir.addEventListener('click', () => {
   el.dialogo.close();
   renderizar();
 });
+
+// ---------- Aviso rápido "Salvo · Desfazer" ----------
+
+let temporizadorToast = null;
+
+function mostrarToast(texto, aoDesfazer) {
+  el.toastTexto.textContent = texto;
+  el.toastDesfazer.hidden = !aoDesfazer;
+  el.toastDesfazer.onclick = () => {
+    esconderToast();
+    aoDesfazer();
+  };
+  el.toast.hidden = false;
+  clearTimeout(temporizadorToast);
+  temporizadorToast = setTimeout(esconderToast, 6000); // some sozinho depois de 6 segundos
+}
+
+function esconderToast() {
+  el.toast.hidden = true;
+}
 
 // ---------- Backup ----------
 

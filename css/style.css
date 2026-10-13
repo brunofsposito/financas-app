@@ -622,6 +622,159 @@ button { -webkit-tap-highlight-color: transparent; }
 /* Entrada escolhida: limão (dinheiro entrando é a cor positiva) */
 .alternador-movimento input[value="entrada"]:checked + span { background: var(--lima); }
 
+/* ---------- Formulário de lançamento (V3) ---------- */
+
+.dialogo-topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.dialogo-topo h2 { margin: 0; }
+.botao-fechar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--superficie-2);
+  color: var(--texto);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* A frase que o usuário disse/digitou, para conferir o que o app entendeu */
+.frase-entendida { margin: -8px 0 14px; font-size: 0.85rem; color: var(--texto-suave); }
+.frase-entendida[hidden] { display: none; }
+
+/* Valor grande no centro */
+.campo-valor {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  margin: 4px 0 14px;
+}
+.campo-valor-moeda { font-size: 1rem; font-weight: 600; color: var(--lima); margin-top: 12px; }
+.campo-valor input {
+  width: 3em; /* ajustada pelo JS conforme o valor digitado */
+  max-width: 80%;
+  border: none;
+  background: none;
+  color: var(--texto);
+  font: inherit;
+  font-size: 3.2rem;
+  font-weight: 300;
+  letter-spacing: -2px;
+  text-align: left;
+  padding: 0;
+  outline: none;
+}
+.campo-valor input::placeholder { color: var(--borda-forte); }
+
+.grupo-chips { margin: 0 0 14px; padding: 0; border: none; min-width: 0; }
+.grupo-chips legend { font-size: 0.78rem; color: var(--texto-suave); padding: 0; margin-bottom: 8px; }
+
+/* Chips de categoria: uma linha que rola para o lado */
+.chips-rolagem {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.chips-rolagem::-webkit-scrollbar { display: none; }
+.chip-categoria { flex-shrink: 0; cursor: pointer; }
+.chip-categoria input { position: absolute; opacity: 0; pointer-events: none; }
+.chip-categoria span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--pilula);
+  border: 1px solid var(--borda);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.chip-categoria input:checked + span { background: var(--lima); border-color: var(--lima); color: var(--sobre-neon); font-weight: 600; }
+.chip-categoria input:focus-visible + span { outline: 2px solid var(--lima); outline-offset: 2px; }
+
+/* Data: Hoje / Ontem / calendário */
+.chips-data { display: flex; gap: 8px; }
+.chip-opcao {
+  flex: 1;
+  height: 40px;
+  border-radius: var(--pilula);
+  border: 1px solid var(--borda);
+  background: none;
+  color: var(--texto);
+  font: inherit;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.chip-opcao[aria-pressed="true"],
+.chip-calendario.ativo { background: var(--texto); border-color: var(--texto); color: var(--sobre-neon); font-weight: 600; }
+.chip-calendario { flex: 1.4; padding: 0 10px; }
+.chip-calendario input {
+  width: 100%;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+  text-align: center;
+}
+
+.botao-largo { display: flex; width: 100%; margin-top: 6px; padding: 16px; font-size: 1rem; }
+
+/* ---------- Aviso rápido "Salvo · Desfazer" ---------- */
+
+.toast {
+  position: fixed;
+  left: 20px;
+  right: 20px;
+  bottom: calc(104px + env(safe-area-inset-bottom));
+  max-width: 520px;
+  margin: 0 auto;
+  height: 56px;
+  border-radius: 28px;
+  background: var(--texto);
+  color: var(--sobre-neon);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 0 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  z-index: 20;
+}
+.toast[hidden] { display: none; }
+.toast-icone {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--sobre-neon);
+  color: var(--lima);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.toast-texto { flex: 1; min-width: 0; font-size: 0.85rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.toast-desfazer {
+  flex-shrink: 0;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 20px;
+  border: none;
+  background: var(--sobre-neon);
+  color: var(--texto);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.toast-desfazer[hidden] { display: none; }
+
 .erro { color: var(--perigo); font-size: 0.85rem; min-height: 1.2em; margin: 0 0 8px; }
 
 .acoes { display: flex; gap: 10px; }
