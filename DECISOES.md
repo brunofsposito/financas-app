@@ -170,3 +170,13 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 **Regras:** uma tela sem problemas mostra só o limão; no máximo uma cor neon além do limão por card; saídas comuns em branco, nunca em rosa; status sempre com texto; texto sobre neon sempre preto.
 **Por quê:** cores neon chamam atenção, então só funcionam se forem raras. Dar a cada cor um significado evita a tela "arco-íris". As três cores foram validadas para daltonismo (separação mínima ΔE 16,8) e para contraste sobre o fundo preto.
 **Protótipos:** canvas de direções visuais (artefato privado do Bruno).
+
+### D27 · 🛠️ Redesign em entregas; V1 só troca a aparência
+**Data:** 13/10/2026
+**Decisão:**
+- O redesign é aplicado em 5 entregas (V1 a V5). A V1 troca só o visual, sem mudar o comportamento: as classes do CSS ficaram com os mesmos nomes.
+- O app passa a ser **só escuro**. O modo claro foi removido, porque a direção escolhida nasceu escura e manter dois modos dobraria o trabalho de cada tela.
+- As cores viraram **tokens com nome de papel** (`--lima`, `--aviso`, `--perigo`...).
+- **Branco = selecionado. Limão = ação ou positivo.** Isso vale para filtros, opções e botões.
+- A fonte **Sora** vem do Google Fonts: é a primeira dependência externa. Sem internet, cai para a fonte do sistema.
+**Por quê:** separar a aparência do comportamento permite reaproveitar os testes antigos e reduz o risco do redesign.

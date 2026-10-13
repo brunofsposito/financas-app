@@ -1,6 +1,6 @@
 # financas-app
 
-App simples de finanças pessoais, feito para o celular, que mostra **quanto entrou, quanto saiu e quanto sobrou** no mês, separando o que é **pessoal** do que é **profissional**.
+App simples de finanças pessoais, feito para o celular (visual escuro com cores neon), que mostra **quanto entrou, quanto saiu e quanto sobrou** no mês, separando o que é **pessoal** do que é **profissional**.
 
 É também um projeto de aprendizado: cada fase ensina um conceito de desenvolvimento e um conceito do mercado de fintechs. O contexto completo está em [`CLAUDE.md`](CLAUDE.md), e as decisões tomadas, em [`DECISOES.md`](DECISOES.md).
 
@@ -80,6 +80,14 @@ Não precisa instalar nada.
 
 - [x] **Orçamento por categoria**, com gasto, previsto e alertas
 
+### Redesign "Lima neon" (D26)
+
+- [x] **V1 · Base visual:** cores neon por significado, fonte Sora, número herói, botões em pílula, formulário abrindo de baixo
+- [ ] **V2 · Abas:** navegação inferior (Início · Contas · Orçamentos)
+- [ ] **V3 · Novo formulário:** chips de categoria, Hoje/Ontem, valor grande
+- [ ] **V4 · Frase rápida:** "gastei 45 no mercado ontem" → confirmar → salvo, com Desfazer
+- [ ] **V5 · Voz**
+
 **Backlog:**
 - Dashboard parte B, gráfico de linhas com a evolução mês a mês (quando houver 2 ou 3 meses de dados). Ver D11.
 - Notificação push de verdade, se o app virar produto (D16).
@@ -153,3 +161,10 @@ Não precisa instalar nada.
 - **UPSERT:** definir um limite cria um registro se a categoria ainda não tem limite, ou atualiza o que já existe. O orçamento usa a própria categoria como chave, e não um id.
 - **Status nunca só pela cor:** cada estado tem ícone e texto (🔴 Estourou, ⚠️ Vai estourar, ✅ Restam) e a parte prevista é listrada. É acessibilidade para daltônicos e também para quem lê rápido.
 - **Gestão de orçamento** (fintech): limites por categoria e avisos de "perto do limite" são recursos clássicos de apps como Mobills, Organizze e dos próprios bancos. A ideia de "comprometido" é a mesma do limite de cartão: o que já está reservado conta, mesmo antes de sair.
+
+### Redesign V1: base visual
+- **Design tokens:** as cores viraram variáveis com nome de **papel** (`--lima`, `--aviso`, `--perigo`, `--superficie`), não de cor. Para mudar a marca, mexe-se num lugar só, e a regra "rosa = problema" fica escrita no próprio código.
+- **Do protótipo ao código:** primeiro se decidiu o visual com telas de mentira, baratas de mudar. Só depois veio o código. Isso evita reescrever tela por gosto.
+- **Mudar só a pele:** os nomes das classes CSS continuaram os mesmos, então o JavaScript quase não mudou e os testes antigos passaram iguais. Separar *aparência* de *comportamento* é o que permite um redesign sem medo.
+- **Dependência externa consciente:** a fonte vem do Google Fonts. Se ele não carregar, o app usa a fonte do sistema e continua funcionando (*degradação graciosa*).
+- **Branding** (fintech): Nubank (roxo), Inter (laranja), C6 (preto) mostram que no mercado a cor É a marca. Por isso cada cor da paleta tem uma única função.
