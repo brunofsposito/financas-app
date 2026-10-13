@@ -141,3 +141,9 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Decisão:** a seção "Para onde foi o dinheiro" mostra as saídas do mês por categoria em barras horizontais, da maior para a menor, numa cor só. Ela mostra as 5 maiores, com "Ver todas" para o resto. Respeita o filtro de tipo (pessoal/profissional). Tocar numa barra liga o filtro de categoria: a barra fica destacada e as outras em cinza.
 **Por quê:** a tarefa é comparar tamanhos, e barras ordenadas são a forma mais fácil de ler. Pizza com até 12 fatias seria ilegível e exigiria 12 cores. As cores foram validadas para daltonismo e contraste nos modos claro e escuro. O cinza tem pouco contraste, então cada barra traz nome e valor escritos.
 **Contexto:** feito antes da semana de uso, por decisão do Bruno (seguindo o D17).
+
+### D24 · 🧭 Semana de uso adiada: priorizar novas funcionalidades
+**Data:** 13/10/2026
+**Decisão:** a semana de uso real fica para mais adiante. Antes disso, o app ganha novas funcionalidades.
+**Por quê:** o foco agora é aprender construindo e ampliar o app.
+**Risco assumido:** construir mais coisas sem o retorno do uso real aumenta a chance de fazer algo que não será usado. Para reduzir esse risco, cada funcionalidade nova passa pela pergunta "que dor isso resolve?" antes de ser construída.
