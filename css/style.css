@@ -1,44 +1,54 @@
-/* Mobile first: o estilo base é para o celular; telas maiores só ganham ajustes. */
+/* Visual "Lima neon" (D26): fundo preto, fonte Sora, cores neon por significado.
+   Mobile first: o estilo base é para o celular; telas maiores só ganham ajustes. */
 
+/* ---------- Tokens ----------
+   As cores têm nome de PAPEL, não de cor: assim a regra da paleta vira código.
+   - limão: marca, ação principal, entradas, "tudo certo"
+   - aviso (laranja): atenção. perigo (rosa): problema.
+   - branco = selecionado; saídas comuns em branco (gastar não é erro). */
 :root {
-  --fundo: #f4f6f8;
-  --superficie: #ffffff;
-  --texto: #1f2933;
-  --texto-suave: #616e7c;
-  --borda: #e1e5ea;
-  --marca: #0f766e;
-  --entrada: #15803d;
-  --saida: #b91c1c;
-  --raio: 14px;
-}
+  color-scheme: dark; /* campos nativos (data, seletor) também no escuro */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fundo: #111418;
-    --superficie: #1b2027;
-    --texto: #e6e9ed;
-    --texto-suave: #9aa5b1;
-    --borda: #2c333c;
-    --marca: #2dd4bf;
-    --entrada: #4ade80;
-    --saida: #f87171;
-  }
+  --fundo: #0a0a0a;
+  --superficie: #181816;
+  --superficie-2: #242422;
+  --borda: #262624;
+  --borda-forte: #3a3a37;
+  --texto: #f4f4ef;
+  --texto-suave: #8c8c86;
+  --sobre-neon: #0a0a0a; /* texto em cima de cor neon: sempre preto */
+
+  --lima: #d4ff3a;
+  --lima-fundo: #20260c;
+  --aviso: #ff8a00;
+  --aviso-fundo: #2a1a05;
+  --perigo: #ff3d9a;
+  --perigo-fundo: #1f0c16;
+
+  --entrada: var(--lima);
+  --saida: var(--texto);
+
+  --raio: 22px;
+  --raio-grande: 28px;
+  --pilula: 999px;
+  --fonte: 'Sora', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--fonte);
   background: var(--fundo);
   color: var(--texto);
   line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
 }
 
 main {
   max-width: 560px;
   margin: 0 auto;
-  padding: 16px 16px 96px; /* espaço embaixo para o botão + não cobrir a lista */
+  padding: 8px 20px calc(110px + env(safe-area-inset-bottom)); /* espaço para o botão + */
 }
 
 .sr-only {
@@ -46,96 +56,114 @@ main {
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
 }
 
-/* ---------- Topo ---------- */
+button { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--lima); outline-offset: 2px; }
+
+/* ---------- Topo: mês ---------- */
 
 .topo {
-  background: var(--marca);
-  color: #fff;
-  padding: 10px 8px;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: calc(14px + env(safe-area-inset-top)) 20px 6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.topo h1 { margin: 0; font-size: 1.2rem; font-weight: 600; }
-.topo-centro { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.topo-centro { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.topo h1 { margin: 0; font-size: 1.15rem; font-weight: 600; line-height: 1.1; }
+.topo-ano { font-size: 0.75rem; color: var(--texto-suave); letter-spacing: 1px; }
 
-/* Setas grandes: área de toque de 48px, o mínimo recomendado para dedos */
+/* Setas: círculo com borda, área de toque de 46px */
 .seta {
-  width: 48px;
-  height: 48px;
-  border: none;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--borda);
   border-radius: 50%;
   background: none;
-  color: inherit;
-  font-size: 2rem;
-  line-height: 1;
+  color: var(--texto);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
-.seta:active { background: rgba(255, 255, 255, 0.15); }
+.seta:active { background: var(--superficie); }
 
 .botao-hoje {
-  border: 1px solid currentColor;
-  border-radius: 999px;
+  border: 1px solid var(--lima);
+  border-radius: var(--pilula);
   background: none;
-  color: inherit;
+  color: var(--lima);
   font: inherit;
-  font-size: 0.75rem;
-  padding: 2px 10px;
-  opacity: 0.9;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 10px;
   cursor: pointer;
 }
 .botao-hoje[hidden] { display: none; }
 
-@media (prefers-color-scheme: dark) {
-  .topo { color: #0b1215; }
+/* ---------- Alerta (contas e orçamentos) ---------- */
+
+.alerta {
+  display: block;
+  width: 100%;
+  margin: 8px 0 14px;
+  padding: 13px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--aviso);
+  background: var(--aviso-fundo);
+  color: var(--texto);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
 }
+.alerta.alerta-atrasada { border-color: var(--perigo); background: var(--perigo-fundo); }
+.alerta[hidden] { display: none; }
 
 /* ---------- Filtros ---------- */
 
-.filtros { margin-bottom: 14px; }
+.filtros { margin-bottom: 18px; }
 
 .chips { display: flex; gap: 8px; margin-bottom: 10px; }
 .chip {
   flex: 1;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   padding: 8px 10px;
   min-height: 40px;
-  border-radius: 999px;
+  border-radius: var(--pilula);
   border: 1px solid var(--borda);
-  background: var(--superficie);
+  background: none;
   color: var(--texto-suave);
   cursor: pointer;
 }
 .chip[aria-pressed="true"] {
-  background: var(--marca);
-  border-color: var(--marca);
-  color: #fff;
+  background: var(--texto);
+  border-color: var(--texto);
+  color: var(--sobre-neon);
   font-weight: 600;
-}
-@media (prefers-color-scheme: dark) {
-  .chip[aria-pressed="true"] { color: #0b1215; }
 }
 
 .filtro-categoria {
   width: 100%;
   font: inherit;
-  font-size: 16px;
-  padding: 9px 12px;
-  border-radius: 10px;
+  font-size: 16px; /* 16px evita o zoom automático do iPhone */
+  padding: 10px 16px;
+  border-radius: var(--pilula);
   border: 1px solid var(--borda);
-  background: var(--superficie);
+  background: var(--fundo);
   color: var(--texto);
 }
-.filtro-categoria.ativo { border-color: var(--marca); box-shadow: 0 0 0 1px var(--marca); }
+.filtro-categoria.ativo { border-color: var(--texto); }
 
 .aviso-filtro {
   margin: 10px 0 0;
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 0.85rem;
-  background: color-mix(in srgb, var(--marca) 12%, transparent);
-  color: var(--texto);
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.8rem;
+  background: var(--superficie);
+  color: var(--texto-suave);
 }
 .aviso-filtro[hidden] { display: none; }
 
@@ -145,12 +173,12 @@ main {
   background: none;
   border: none;
   padding: 0 0 0 4px;
-  color: var(--marca);
-  text-decoration: underline;
+  color: var(--lima);
+  text-decoration: none;
   cursor: pointer;
 }
 
-/* ---------- Resumo ---------- */
+/* ---------- Resumo: número herói, entrou/saiu, previsão ---------- */
 
 .resumo {
   display: grid;
@@ -160,33 +188,53 @@ main {
 
 .card {
   background: var(--superficie);
-  border: 1px solid var(--borda);
   border-radius: var(--raio);
-  padding: 12px 14px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-.card strong { font-size: 1.15rem; }
-.rotulo { font-size: 0.8rem; color: var(--texto-suave); }
+.card strong { font-size: 1.05rem; font-weight: 600; }
+.rotulo { font-size: 0.78rem; color: var(--texto-suave); }
 
-.card-saldo { grid-column: 1 / -1; }
-.card-saldo strong { font-size: 1.8rem; }
-.card-saldo strong.negativo { color: var(--saida); }
+/* O saldo é o "número herói": sem card, grande e fino */
+.card-saldo { grid-column: 1 / -1; background: none; padding: 4px 4px 8px; }
+.card-saldo strong { font-weight: 300; }
+.valor-heroi { display: flex; align-items: flex-start; gap: 4px; }
+.valor-heroi .inteiro { font-size: 3.6rem; letter-spacing: -3px; line-height: 1; }
+.valor-heroi .centavos { font-size: 1.25rem; color: var(--texto-suave); margin-top: 6px; }
+.valor-heroi .moeda { font-size: 0.8rem; font-weight: 600; color: var(--lima); margin-top: 8px; margin-left: 4px; }
+.card-saldo strong.negativo .inteiro,
+.card-saldo strong.negativo .centavos { color: var(--perigo); }
+
 .card-entrou strong { color: var(--entrada); }
 .card-saiu strong { color: var(--saida); }
 
-.card-previsao { grid-column: 1 / -1; border-style: dashed; } /* tracejado = valor previsto, não realizado */
-.card-previsao strong.negativo { color: var(--saida); }
-.previsao-detalhe { font-size: 0.8rem; color: var(--texto-suave); }
+/* Previsão: card limão sólido (texto preto). Negativa: vira alerta rosa */
+.card-previsao {
+  grid-column: 1 / -1;
+  background: var(--lima);
+  color: var(--sobre-neon);
+  border-radius: var(--raio-grande);
+  padding: 18px 20px;
+  gap: 6px;
+}
+.card-previsao .rotulo,
+.card-previsao .previsao-detalhe { color: var(--sobre-neon); }
+.card-previsao strong { font-size: 2rem; font-weight: 500; letter-spacing: -1px; }
+.card-previsao:has(strong.negativo) { background: var(--perigo-fundo); color: var(--texto); border: 1px solid var(--perigo); }
+.card-previsao:has(strong.negativo) .rotulo,
+.card-previsao:has(strong.negativo) .previsao-detalhe { color: var(--texto-suave); }
+.card-previsao strong.negativo { color: var(--perigo); }
+.previsao-detalhe { font-size: 0.78rem; }
 .card-previsao[hidden] { display: none; }
 
-/* ---------- Lista ---------- */
+/* ---------- Títulos de seção e listas ---------- */
 
 .subtitulo {
-  font-size: 0.95rem;
-  color: var(--texto-suave);
-  margin: 24px 0 8px;
+  font-size: 1rem;
+  color: var(--texto);
+  margin: 28px 0 10px;
   font-weight: 600;
 }
 
@@ -195,13 +243,12 @@ main {
   margin: 0;
   padding: 0;
   background: var(--superficie);
-  border: 1px solid var(--borda);
   border-radius: var(--raio);
   overflow: hidden;
 }
 .lista:empty { display: none; }
 
-.lista li + li { border-top: 1px solid var(--borda); }
+.lista li + li { border-top: 1px solid var(--superficie-2); }
 
 /* O item é um <button>: zeramos o visual padrão de botão */
 .item {
@@ -217,39 +264,45 @@ main {
   text-align: left;
   cursor: pointer;
 }
-.item:active { background: var(--fundo); }
-.item:focus-visible { outline: 2px solid var(--marca); outline-offset: -2px; }
+.item:active { background: var(--superficie-2); }
+.item:focus-visible { outline: 2px solid var(--lima); outline-offset: -2px; }
 
-.item-icone { font-size: 1.4rem; }
+.item-icone {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  background: var(--superficie-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+}
 .item-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.item-descricao { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.item-detalhe { font-size: 0.8rem; color: var(--texto-suave); }
-.item-valor { font-weight: 600; white-space: nowrap; }
+.item-descricao { font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item-detalhe { font-size: 0.75rem; color: var(--texto-suave); }
+.item-valor { font-size: 0.92rem; font-weight: 600; white-space: nowrap; }
 .item-entrada .item-valor { color: var(--entrada); }
 .item-saida .item-valor { color: var(--saida); }
 
-.vazio { text-align: center; color: var(--texto-suave); padding: 24px 0; }
+.vazio { text-align: center; color: var(--texto-suave); padding: 24px 0; font-size: 0.9rem; }
 
-/* ---------- Dashboard: para onde foi o dinheiro (Entrega 6) ---------- */
+/* ---------- Dashboard: para onde foi o dinheiro ---------- */
 
-:root { --barra-apagada: #c4cdd5; }
-@media (prefers-color-scheme: dark) { :root { --barra-apagada: #4b5563; } }
-
-.dashboard-sub { font-size: 0.8rem; color: var(--texto-suave); margin: -4px 0 10px; }
+.dashboard-sub { font-size: 0.78rem; color: var(--texto-suave); margin: -4px 0 12px; }
 
 .grafico {
   list-style: none;
   margin: 0;
-  padding: 6px 0;
+  padding: 8px 0;
   background: var(--superficie);
-  border: 1px solid var(--borda);
   border-radius: var(--raio);
 }
 
 .barra-linha {
   display: block;
   width: 100%;
-  padding: 8px 14px; /* área de toque maior que a barra */
+  padding: 9px 16px; /* área de toque maior que a barra */
   border: none;
   background: none;
   color: inherit;
@@ -257,40 +310,56 @@ main {
   text-align: left;
   cursor: pointer;
 }
-.barra-linha:active { background: var(--fundo); }
-.barra-linha:focus-visible { outline: 2px solid var(--marca); outline-offset: -2px; }
+.barra-linha:active { background: var(--superficie-2); }
+.barra-linha:focus-visible { outline: 2px solid var(--lima); outline-offset: -2px; }
 
-.barra-topo { display: flex; justify-content: space-between; gap: 8px; font-size: 0.9rem; margin-bottom: 4px; }
+.barra-topo { display: flex; justify-content: space-between; gap: 8px; font-size: 0.85rem; margin-bottom: 6px; }
 .barra-nome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .barra-valor { font-weight: 600; white-space: nowrap; }
 .barra-pct { font-weight: 400; color: var(--texto-suave); margin-left: 4px; }
 
 .barra-trilho { display: block; height: 10px; }
-/* Barra fina, ponta arredondada de 4px e reta na linha de base (esquerda) */
+/* Barra fina, ponta arredondada e reta na linha de base (esquerda) */
 .barra {
   display: block;
   height: 100%;
-  background: var(--marca);
-  border-radius: 0 4px 4px 0;
+  background: var(--lima);
+  border-radius: 0 5px 5px 0;
 }
 
-/* Destaque: a categoria escolhida na cor, as outras em cinza */
-.barra-linha.apagada .barra { background: var(--barra-apagada); }
+/* Destaque: a categoria escolhida em limão, as outras em cinza */
+.barra-linha.apagada .barra { background: var(--borda-forte); }
 .barra-linha.apagada .barra-nome,
 .barra-linha.apagada .barra-valor { color: var(--texto-suave); }
 .barra-linha.destacada .barra-nome { font-weight: 600; }
 
-.dashboard .link { display: block; margin: 8px auto 0; padding: 6px; text-decoration: none; }
+.dashboard .link { display: block; margin: 10px auto 0; padding: 6px; }
 .dashboard .link[hidden] { display: none; }
 
-/* ---------- Orçamentos por categoria ---------- */
+/* ---------- Selos de status ---------- */
+
+.selo {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: var(--pilula);
+  white-space: nowrap;
+  background: var(--superficie-2);
+  color: var(--texto-suave);
+}
+.selo-paga { color: var(--lima); background: var(--lima-fundo); }
+.selo-atrasada { color: var(--perigo); background: var(--perigo-fundo); }
+.selo-hoje,
+.selo-proxima { color: var(--aviso); background: var(--aviso-fundo); }
+
+/* ---------- Orçamentos ---------- */
 
 .orcamento {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border: none;
   background: none;
   color: inherit;
@@ -298,219 +367,181 @@ main {
   text-align: left;
   cursor: pointer;
 }
-.orcamento:active { background: var(--fundo); }
-.orcamento:focus-visible { outline: 2px solid var(--marca); outline-offset: -2px; }
+.orcamento:active { background: var(--superficie-2); }
+.orcamento:focus-visible { outline: 2px solid var(--lima); outline-offset: -2px; }
 
-/* Medidor: trilho claro; parte gasta cheia; parte prevista listrada (textura a 45°) */
+/* Medidor: trilho escuro; parte gasta cheia; parte prevista listrada (textura a 45°) */
 .medidor {
   display: flex;
   height: 10px;
-  border-radius: 999px;
+  border-radius: var(--pilula);
   overflow: hidden;
-  background: var(--fundo);
-  border: 1px solid var(--borda);
+  background: var(--borda);
 }
-.medidor-gasto { --cor: var(--marca); background: var(--cor); }
+.medidor-gasto { --cor: var(--lima); background: var(--cor); border-radius: var(--pilula); }
 .medidor-previsto {
-  --cor: var(--marca);
+  --cor: var(--lima);
   background: repeating-linear-gradient(45deg, var(--cor) 0 3px, transparent 3px 6px);
-  opacity: 0.7;
 }
 /* 2px de respiro entre as duas partes */
 .medidor-gasto + .medidor-previsto { margin-left: 2px; }
 .medidor-gasto[style*="width: 0%"] + .medidor-previsto { margin-left: 0; }
 
-/* Cor de status: aviso (laranja) e crítico (vermelho), sempre com ícone e texto no selo */
+/* Status: laranja = atenção, rosa = problema. Sempre com texto no selo. */
 .orcamento-perto .medidor-gasto,
 .orcamento-perto .medidor-previsto,
 .orcamento-vai-estourar .medidor-gasto,
 .orcamento-vai-estourar .medidor-previsto { --cor: var(--aviso); }
 .orcamento-estourado .medidor-gasto,
-.orcamento-estourado .medidor-previsto { --cor: var(--saida); }
+.orcamento-estourado .medidor-previsto { --cor: var(--perigo); }
 
 .selo-orcamento { white-space: normal; text-align: right; }
-.orcamento-ok .selo-orcamento { color: var(--entrada); background: color-mix(in srgb, var(--entrada) 12%, transparent); }
+.orcamento-ok .selo-orcamento { color: var(--lima); background: var(--lima-fundo); }
 .orcamento-perto .selo-orcamento,
-.orcamento-vai-estourar .selo-orcamento { color: var(--aviso); background: color-mix(in srgb, var(--aviso) 14%, transparent); }
-.orcamento-estourado .selo-orcamento { color: var(--saida); background: color-mix(in srgb, var(--saida) 12%, transparent); }
+.orcamento-vai-estourar .selo-orcamento { color: var(--aviso); background: var(--aviso-fundo); }
+.orcamento-estourado .selo-orcamento { color: var(--perigo); background: var(--perigo-fundo); }
 
-/* ---------- Alerta de contas (Fase 2) ---------- */
-
-:root { --aviso: #b45309; }
-@media (prefers-color-scheme: dark) { :root { --aviso: #fbbf24; } }
-
-.alerta {
-  display: block;
-  width: 100%;
-  margin-bottom: 14px;
-  padding: 12px 14px;
-  border-radius: var(--raio);
-  border: 1px solid var(--aviso);
-  background: color-mix(in srgb, var(--aviso) 12%, var(--superficie));
-  color: var(--texto);
-  font: inherit;
-  font-weight: 600;
-  text-align: left;
-  cursor: pointer;
-}
-.alerta.alerta-atrasada {
-  border-color: var(--saida);
-  background: color-mix(in srgb, var(--saida) 10%, var(--superficie));
-}
-.alerta[hidden] { display: none; }
-
-/* ---------- Contas fixas (Fase 2) ---------- */
+/* ---------- Contas fixas ---------- */
 
 .subtitulo-linha {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin: 24px 0 8px;
+  margin: 28px 0 10px;
 }
 .subtitulo-linha .subtitulo { margin: 0; }
-.subtitulo-linha .link { padding: 6px 0; text-decoration: none; }
+.subtitulo-linha .link { padding: 6px 0; font-size: 0.85rem; }
 
-.vazio-contas { font-size: 0.9rem; padding: 8px 0; text-align: left; }
+.vazio-contas { font-size: 0.85rem; padding: 8px 0; text-align: left; }
 
 .conta { position: relative; }
 .conta .item { padding-bottom: 12px; }
 /* Com botão "Paguei", o item ganha espaço embaixo para ele */
-.conta:has(.botao-paguei) .item { padding-bottom: 48px; }
-
-.selo {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 999px;
-  white-space: nowrap;
-  background: var(--fundo);
-  color: var(--texto-suave);
-}
-.selo-paga { color: var(--entrada); background: color-mix(in srgb, var(--entrada) 12%, transparent); }
-.selo-atrasada { color: var(--saida); background: color-mix(in srgb, var(--saida) 12%, transparent); }
-.selo-hoje,
-.selo-proxima { color: var(--aviso); background: color-mix(in srgb, var(--aviso) 14%, transparent); }
+.conta:has(.botao-paguei) .item { padding-bottom: 54px; }
+.conta-atrasada { box-shadow: inset 0 0 0 1px var(--perigo); border-radius: var(--raio); }
 
 .conta-paga .item-descricao { color: var(--texto-suave); }
 
 .botao-paguei {
   position: absolute;
   right: 14px;
-  bottom: 10px;
+  bottom: 12px;
   font: inherit;
   font-size: 0.85rem;
   font-weight: 600;
-  padding: 6px 16px;
-  min-height: 32px;
-  border-radius: 999px;
-  border: 1px solid var(--marca);
-  background: var(--superficie);
-  color: var(--marca);
+  padding: 7px 20px;
+  min-height: 36px;
+  border-radius: var(--pilula);
+  border: 1px solid var(--borda-forte);
+  background: none;
+  color: var(--texto);
   cursor: pointer;
 }
+/* A conta atrasada ganha o botão em limão: é a ação mais importante da tela */
+.conta-atrasada .botao-paguei { background: var(--lima); border-color: var(--lima); color: var(--sobre-neon); }
 
-.botao-calendario { display: block; width: 100%; margin-top: 10px; background: var(--superficie); }
+.botao-calendario { display: block; width: 100%; margin-top: 10px; }
 .botao-calendario[hidden] { display: none; }
 .dialogo .botao-calendario { margin-top: 14px; font-size: 0.9rem; }
 
 /* ---------- Seus dados (backup) ---------- */
 
 .dados { margin-top: 8px; }
-.dados-texto { font-size: 0.85rem; color: var(--texto-suave); margin: 0 0 10px; }
-.dados .botao { font-size: 0.9rem; background: var(--superficie); }
-.mensagem-backup { font-size: 0.85rem; margin: 8px 0 0; min-height: 1.2em; }
+.dados-texto { font-size: 0.8rem; color: var(--texto-suave); margin: 0 0 12px; }
+.dados .botao { font-size: 0.85rem; }
+.mensagem-backup { font-size: 0.8rem; color: var(--texto-suave); margin: 8px 0 0; min-height: 1.2em; }
 
 /* ---------- Botão + ---------- */
 
 .botao-novo {
   position: fixed;
   right: 20px;
-  bottom: 24px;
-  width: 60px;
-  height: 60px;
+  bottom: calc(22px + env(safe-area-inset-bottom));
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   border: none;
-  background: var(--marca);
-  color: #fff;
-  font-size: 2rem;
-  line-height: 1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  background: var(--lima);
+  color: var(--sobre-neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
   cursor: pointer;
 }
-@media (prefers-color-scheme: dark) {
-  .botao-novo { color: #0b1215; }
-}
 
-/* ---------- Formulário ---------- */
+/* ---------- Formulários: abrem de baixo para cima ---------- */
 
 .dialogo {
-  width: min(100% - 24px, 480px);
+  width: 100%;
+  max-width: 560px;
+  max-height: 92vh;
+  margin: auto auto 0; /* encostado embaixo */
   border: none;
-  border-radius: var(--raio);
-  padding: 20px;
-  background: var(--superficie);
+  border-top: 1px solid var(--borda);
+  border-radius: var(--raio-grande) var(--raio-grande) 0 0;
+  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  background: #141413;
   color: var(--texto);
 }
-.dialogo::backdrop { background: rgba(0, 0, 0, 0.45); }
-.dialogo h2 { margin: 0 0 16px; font-size: 1.15rem; }
+.dialogo::backdrop { background: rgba(0, 0, 0, 0.7); }
+.dialogo h2 { margin: 0 0 18px; font-size: 1.1rem; font-weight: 600; }
 
-.campo { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
-.campo span { font-size: 0.85rem; color: var(--texto-suave); }
+.campo { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.campo span { font-size: 0.78rem; color: var(--texto-suave); }
 .campo input,
 .campo select {
   font: inherit;
   font-size: 16px; /* 16px evita o zoom automático do iPhone ao tocar no campo */
-  padding: 10px 12px;
+  padding: 13px 16px;
   border: 1px solid var(--borda);
-  border-radius: 10px;
+  border-radius: 16px;
   background: var(--fundo);
   color: var(--texto);
   width: 100%;
 }
+.campo input:focus,
+.campo select:focus { outline: none; border-color: var(--texto); }
 
-/* Botões de duas opções (Saída/Entrada, Pessoal/Profissional) */
+/* Botões de duas opções (Saída/Entrada, Pessoal/Profissional): pílula segmentada */
 .alternador {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0;
-  border: 1px solid var(--borda);
-  border-radius: 10px;
-  padding: 3px;
-  margin: 0 0 12px;
+  gap: 4px;
+  border: none;
+  border-radius: var(--pilula);
+  padding: 4px;
+  margin: 0 0 14px;
   background: var(--fundo);
 }
 .alternador input { position: absolute; opacity: 0; pointer-events: none; }
 .alternador span {
   display: block;
   text-align: center;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 9px;
+  border-radius: var(--pilula);
   cursor: pointer;
   color: var(--texto-suave);
 }
-.alternador input:checked + span {
-  background: var(--superficie);
-  color: var(--texto);
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-}
-.alternador input:focus-visible + span { outline: 2px solid var(--marca); }
-.alternador-movimento input[value="saida"]:checked + span { color: var(--saida); }
-.alternador-movimento input[value="entrada"]:checked + span { color: var(--entrada); }
+.alternador input:checked + span { background: var(--texto); color: var(--sobre-neon); font-weight: 600; }
+.alternador input:focus-visible + span { outline: 2px solid var(--lima); }
+/* Entrada escolhida: limão (dinheiro entrando é a cor positiva) */
+.alternador-movimento input[value="entrada"]:checked + span { background: var(--lima); }
 
-.erro { color: var(--saida); font-size: 0.9rem; min-height: 1.2em; margin: 0 0 8px; }
+.erro { color: var(--perigo); font-size: 0.85rem; min-height: 1.2em; margin: 0 0 8px; }
 
 .acoes { display: flex; gap: 10px; }
 .botao {
   flex: 1;
   font: inherit;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid var(--borda);
+  font-size: 0.95rem;
+  padding: 14px;
+  border-radius: var(--pilula);
+  border: 1px solid var(--borda-forte);
   cursor: pointer;
 }
-.botao-primario { background: var(--marca); border-color: var(--marca); color: #fff; font-weight: 600; }
-.botao-secundario { background: transparent; color: var(--texto); }
+.botao-primario { background: var(--lima); border-color: var(--lima); color: var(--sobre-neon); font-weight: 600; }
+.botao-secundario { background: none; color: var(--texto); }
 
 .botao-excluir {
   display: block;
@@ -518,12 +549,10 @@ main {
   margin-top: 14px;
   padding: 10px;
   font: inherit;
+  font-size: 0.9rem;
   background: none;
   border: none;
-  color: var(--saida);
+  color: var(--perigo);
   cursor: pointer;
 }
 .botao-excluir[hidden] { display: none; }
-@media (prefers-color-scheme: dark) {
-  .botao-primario { color: #0b1215; }
-}
