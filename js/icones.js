@@ -36,6 +36,9 @@ const ICONES = {
   baixar: '<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>',
   enviar: '<path d="M12 21V9M7 14l5-5 5 5M4 3h16"/>',
   mais: '<path d="M12 5v14M5 12h14"/>',
+  grafico: '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>',
+  'seta-cima': '<path d="M12 19V5M5 12l7-7 7 7"/>',
+  'seta-baixo': '<path d="M12 5v14M5 12l7 7 7-7"/>',
   'seta-direita': '<path d="m9 18 6-6-6-6"/>',
   sino: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
 };

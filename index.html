@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=2026.10.13-5">
+  <link rel="stylesheet" href="css/style.css?v=2026.10.14-1">
 </head>
 <body>
   <header class="topo">
@@ -90,14 +90,6 @@
       </div>
     </section>
 
-    <!-- Dashboard (Entrega 6): saídas do mês por categoria -->
-    <section id="secao-dashboard" class="dashboard" aria-labelledby="titulo-dashboard" hidden>
-      <h2 class="subtitulo" id="titulo-dashboard">Para onde foi o dinheiro</h2>
-      <p id="subtitulo-dashboard" class="dashboard-sub"></p>
-      <ul id="grafico-categorias" class="grafico"></ul>
-      <button type="button" id="ver-todas-categorias" class="link" hidden></button>
-    </section>
-
     <!-- Lista de lançamentos do mês -->
     <section id="secao-lancamentos" aria-label="Lançamentos do mês">
       <h2 class="subtitulo">Lançamentos</h2>
@@ -141,6 +133,60 @@
 
     </div>
 
+    <!-- ===== Aba Análises ===== -->
+    <div class="aba" data-aba="analises" hidden>
+      <div class="analise-cabecalho analise-topo">
+        <h2 class="analise-titulo-aba">Análises</h2>
+        <p id="analises-sub" class="analise-sub"></p>
+      </div>
+
+      <!-- Quanto saiu por mês (linha) -->
+      <section id="card-evolucao" class="analise-card" aria-labelledby="titulo-evolucao">
+        <div class="analise-cabecalho">
+          <h2 id="titulo-evolucao" class="analise-titulo">Quanto saiu por mês</h2>
+          <p class="analise-sub">Toque num mês para ver o valor</p>
+        </div>
+        <div id="chips-evolucao" class="chips-rolagem" role="group" aria-label="Categoria do gráfico"></div>
+        <div id="grafico-evolucao" class="grafico-evolucao"></div>
+      </section>
+
+      <!-- Sobrou ou faltou (colunas do saldo) -->
+      <section id="card-saldos" class="analise-card" aria-labelledby="titulo-saldos">
+        <div class="analise-cabecalho">
+          <h2 id="titulo-saldos" class="analise-titulo">Sobrou ou faltou</h2>
+          <p class="analise-sub">Saldo de cada mês fechado</p>
+        </div>
+        <div id="grafico-saldos" class="grafico-saldos"></div>
+        <p id="saldos-resumo" class="analise-sub"></p>
+      </section>
+
+      <!-- Começo: menos de 2 meses de dados -->
+      <section id="card-inicio-analises" class="analise-card" hidden>
+        <h2 class="analise-titulo">Quanto saiu por mês</h2>
+        <div class="inicio-analises-esboco" aria-hidden="true">
+          <svg viewBox="0 0 320 120"><path d="M10 80 L70 66 L130 74 L190 50 L250 58 L308 40" fill="none" stroke="#2a2a27" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/><circle cx="308" cy="40" r="5" fill="#d4ff3a" stroke="#181816" stroke-width="2"/></svg>
+        </div>
+        <p class="aviso-titulo">A evolução aparece a partir do 2º mês</p>
+        <p class="analise-sub">Continue lançando: no mês que vem já dá para comparar.</p>
+        <div class="inicio-analises-total">
+          <span class="rotulo">Saiu neste mês, até agora</span>
+          <strong id="inicio-gasto-mes">R$ 0,00</strong>
+        </div>
+      </section>
+
+      <!-- Comparação com o mês anterior -->
+      <section id="card-comparacao" class="analise-card" aria-label="Comparação com o mês anterior"></section>
+
+    <!-- Dashboard (Entrega 6): saídas do mês por categoria -->
+    <section id="secao-dashboard" class="dashboard" aria-labelledby="titulo-dashboard" hidden>
+      <h2 class="subtitulo" id="titulo-dashboard">Para onde foi o dinheiro</h2>
+      <p id="subtitulo-dashboard" class="dashboard-sub"></p>
+      <ul id="grafico-categorias" class="grafico"></ul>
+      <button type="button" id="ver-todas-categorias" class="link" hidden></button>
+    </section>
+
+    </div>
+
     <!-- ===== Aba Ajustes ===== -->
     <div class="aba" data-aba="ajustes" hidden>
 
@@ -159,7 +205,7 @@
       <p id="mensagem-backup" class="mensagem-backup" role="status"></p>
     </section>
 
-    <p class="versao">Versão 2026.10.13-5</p>
+    <p class="versao">Versão 2026.10.14-1</p>
     </div>
   </main>
 
@@ -169,6 +215,7 @@
       <button type="button" class="nav-aba" data-ir="inicio" aria-label="Início"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg></button>
       <button type="button" class="nav-aba" data-ir="contas" aria-label="Contas fixas"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
       <button type="button" class="nav-aba" data-ir="orcamentos" aria-label="Orçamentos"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12A9 9 0 1 1 12 3v9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg></button>
+      <button type="button" class="nav-aba" data-ir="analises" aria-label="Análises"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></button>
       <button type="button" class="nav-aba" data-ir="ajustes" aria-label="Ajustes e backup"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></button>
     </div>
     <button type="button" id="botao-novo" class="botao-novo" aria-label="Novo lançamento">
@@ -323,20 +370,22 @@
   <!-- "?v=..." em cada arquivo: quebra o cache. Ao publicar uma versão nova, troque o número
        (aqui e em Ajustes) e o celular é obrigado a baixar os arquivos novos. -->
   <!-- A ordem importa: cada arquivo usa o que foi carregado antes dele -->
-  <script src="js/icones.js?v=2026.10.13-5"></script>
-  <script src="js/categorias.js?v=2026.10.13-5"></script>
-  <script src="js/storage.js?v=2026.10.13-5"></script>
-  <script src="js/lancamentos.js?v=2026.10.13-5"></script>
-  <script src="js/contas.js?v=2026.10.13-5"></script>
-  <script src="js/frase.js?v=2026.10.13-5"></script>
-  <script src="js/calendario.js?v=2026.10.13-5"></script>
-  <script src="js/orcamentos.js?v=2026.10.13-5"></script>
-  <script src="js/backup.js?v=2026.10.13-5"></script>
-  <script src="js/app.js?v=2026.10.13-5"></script>
-  <script src="js/tela-contas.js?v=2026.10.13-5"></script>
-  <script src="js/tela-dashboard.js?v=2026.10.13-5"></script>
-  <script src="js/tela-orcamentos.js?v=2026.10.13-5"></script>
-  <script src="js/tela-avisos.js?v=2026.10.13-5"></script>
-  <script src="js/tela-frase.js?v=2026.10.13-5"></script>
+  <script src="js/icones.js?v=2026.10.14-1"></script>
+  <script src="js/categorias.js?v=2026.10.14-1"></script>
+  <script src="js/storage.js?v=2026.10.14-1"></script>
+  <script src="js/lancamentos.js?v=2026.10.14-1"></script>
+  <script src="js/contas.js?v=2026.10.14-1"></script>
+  <script src="js/frase.js?v=2026.10.14-1"></script>
+  <script src="js/calendario.js?v=2026.10.14-1"></script>
+  <script src="js/orcamentos.js?v=2026.10.14-1"></script>
+  <script src="js/analises.js?v=2026.10.14-1"></script>
+  <script src="js/backup.js?v=2026.10.14-1"></script>
+  <script src="js/app.js?v=2026.10.14-1"></script>
+  <script src="js/tela-contas.js?v=2026.10.14-1"></script>
+  <script src="js/tela-dashboard.js?v=2026.10.14-1"></script>
+  <script src="js/tela-orcamentos.js?v=2026.10.14-1"></script>
+  <script src="js/tela-analises.js?v=2026.10.14-1"></script>
+  <script src="js/tela-avisos.js?v=2026.10.14-1"></script>
+  <script src="js/tela-frase.js?v=2026.10.14-1"></script>
 </body>
 </html>

@@ -450,6 +450,78 @@ button { -webkit-tap-highlight-color: transparent; }
 .dashboard .link { display: block; margin: 10px auto 0; padding: 6px; }
 .dashboard .link[hidden] { display: none; }
 
+/* ---------- Aba Análises ---------- */
+
+.analise-topo { margin: 6px 0 16px; }
+.analise-titulo-aba { margin: 0; font-size: 1.5rem; font-weight: 600; }
+.analise-card {
+  background: var(--superficie);
+  border-radius: var(--raio);
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.analise-card[hidden] { display: none; }
+.analise-cabecalho { display: flex; flex-direction: column; gap: 2px; }
+.analise-titulo { margin: 0; font-size: 0.95rem; font-weight: 600; }
+.analise-sub { margin: 0; font-size: 0.75rem; color: var(--texto-suave); }
+
+/* Chips menores, para trocar a categoria do gráfico */
+.chip-pequeno {
+  flex-shrink: 0;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--pilula);
+  border: 1px solid var(--borda);
+  background: none;
+  color: var(--texto);
+  font: inherit;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.chip-pequeno[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--sobre-neon); font-weight: 600; }
+
+/* Gráficos SVG ocupam a largura do card */
+.grafico-evolucao,
+.grafico-saldos { position: relative; }
+.grafico-evolucao svg,
+.grafico-saldos svg,
+.inicio-analises-esboco svg { display: block; width: 100%; height: auto; }
+
+/* "Botões invisíveis" sobre cada mês do gráfico de linha (área de toque grande) */
+.alvos-meses { position: absolute; inset: 0 0 18px 0; }
+.alvo-mes {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+.alvo-mes:focus-visible { outline: 2px solid var(--lima); outline-offset: -2px; border-radius: 8px; }
+
+.inicio-analises-total {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--fundo);
+}
+.inicio-analises-total strong { font-size: 1.25rem; font-weight: 300; }
+
+.comparacao-total { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.comparacao-valor { font-size: 1.6rem; font-weight: 300; letter-spacing: -0.5px; }
+.comparacao-categorias { display: flex; flex-direction: column; gap: 12px; padding-top: 14px; border-top: 1px solid var(--borda); }
+.comparacao-linha { display: flex; align-items: center; gap: 12px; }
+.comparacao-vazia { display: flex; align-items: center; gap: 12px; }
+
+.dashboard .subtitulo { margin-top: 8px; }
+
 /* ---------- Selos de status ---------- */
 
 .selo {
@@ -603,8 +675,8 @@ button { -webkit-tap-highlight-color: transparent; }
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
 }
 .nav-aba {
-  width: 50px;
-  height: 50px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   border: none;
   background: none;

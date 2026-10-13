@@ -48,7 +48,7 @@ const el = {
 // A aba aberta fica no endereço da página (#contas, #orcamentos...).
 // Assim o botão "voltar" do navegador funciona e dá para abrir uma aba por link.
 
-const ABAS = ['inicio', 'contas', 'orcamentos', 'ajustes'];
+const ABAS = ['inicio', 'contas', 'orcamentos', 'analises', 'ajustes'];
 
 function abaDoEndereco() {
   const aba = location.hash.slice(1);
@@ -96,6 +96,7 @@ function mudarMes(delta) {
 function irParaMes(ano, mes) {
   estado.ano = ano;
   estado.mes = mes;
+  if (estado.analise) estado.analise.selecionado = null; // o mês tocado no gráfico era de outra janela
   renderizar();
 }
 
@@ -139,6 +140,7 @@ function renderizar() {
   renderizarPrevisao(saldo); // tela-contas.js
   renderizarDashboard(doMes); // tela-dashboard.js
   renderizarOrcamentos(); // tela-orcamentos.js
+  renderizarAnalises(); // tela-analises.js
 }
 
 // O saldo em destaque: inteiro grande e fino, centavos e "R$" pequenos ao lado

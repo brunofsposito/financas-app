@@ -68,9 +68,14 @@ function criarBarra({ categoria, valor, fracao }, maior, selecionada, temDestaqu
     </button>
   `;
   // Tocar liga o filtro da categoria; tocar de novo desliga
+  // Tocar liga o filtro da categoria e leva aos lançamentos dela, no Início
   li.querySelector('button').addEventListener('click', () => {
     estado.filtros.categoria = ativa ? '' : categoria;
     renderizar();
+    if (!ativa) {
+      irParaAba('inicio');
+      document.getElementById('secao-lancamentos').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   });
   return li;
 }
