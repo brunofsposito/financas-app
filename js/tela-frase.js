@@ -59,6 +59,12 @@ let reconhecedor = null;
 let ouvindo = false;
 let vozFalhou = false; // falhou por falta de suporte: esconde o botão até recarregar
 let erroDaVoz = null; // código do erro da última tentativa (ex.: 'not-allowed')
+let chegouPalavra = false; // o reconhecimento entregou algum texto nesta tentativa?
+let vigia = null; // temporizador que desiste se nenhuma palavra chegar
+
+// Navegadores dentro de outros apps (Claude, WhatsApp, Instagram) no iPhone ligam o
+// microfone mas não entregam o texto. Sem nenhuma palavra em 6 s, desistimos e explicamos.
+const ESPERA_PRIMEIRA_PALAVRA = 6000;
 
 function vozDisponivel() {
   return Boolean(Reconhecimento) && !vozFalhou;
@@ -83,6 +89,7 @@ const ERROS_VOZ = {
   'service-not-allowed': 'O reconhecimento de voz não está disponível aqui. Use o microfone do teclado.',
   'no-speech': 'Não ouvi nada. Toque no microfone e fale de novo.',
   'sem-resultado': 'O reconhecimento terminou sem ouvir nada. Tente de novo ou use o microfone do teclado.',
+  'sem-transcricao': 'Nenhuma palavra chegou. Se o app está aberto dentro de outro app (como o Claude ou o WhatsApp), abra no Safari ou pelo ícone na Tela de Início. Ou use o microfone do teclado.',
   'falha-ao-iniciar': 'Não foi possível ligar o reconhecimento de voz. Use o microfone do teclado.',
   'language-not-supported': 'O reconhecimento de voz não aceita português neste aparelho. Use o microfone do teclado.',
   'audio-capture': 'Não encontrei um microfone.',
@@ -97,6 +104,7 @@ function iniciarVoz() {
   reconhecedor.maxAlternatives = 1;
 
   reconhecedor.onresult = (evento) => {
+    chegouPalavra = true;
     el.fraseTexto.value = Array.from(evento.results).map((r) => r[0].transcript).join(' ').trim();
   };
   reconhecedor.onerror = (evento) => {
@@ -104,6 +112,7 @@ function iniciarVoz() {
     if (evento.error !== 'aborted') mostrarErroVoz(evento.error);
   };
   reconhecedor.onend = () => {
+    clearTimeout(vigia);
     pararVisualVoz();
     // Terminou de falar e há texto: segue direto para a confirmação
     if (el.fraseTexto.value.trim()) enviarFrase();
@@ -114,6 +123,7 @@ function iniciarVoz() {
   el.fraseTexto.value = '';
   el.fraseErro.textContent = '';
   erroDaVoz = null;
+  chegouPalavra = false;
   ouvindo = true;
   el.fraseForm.classList.add('ouvindo');
   el.fraseTexto.placeholder = 'Ouvindo… fale o gasto';
@@ -121,6 +131,13 @@ function iniciarVoz() {
   atualizarBotoesFrase();
   try {
     reconhecedor.start();
+    vigia = setTimeout(() => {
+      if (chegouPalavra || !ouvindo) return;
+      erroDaVoz = 'sem-transcricao';
+      try { reconhecedor.abort(); } catch { /* alguns navegadores não têm abort */ }
+      pararVisualVoz();
+      mostrarErroVoz('sem-transcricao');
+    }, ESPERA_PRIMEIRA_PALAVRA);
   } catch {
     pararVisualVoz();
     mostrarErroVoz('falha-ao-iniciar');

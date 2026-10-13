@@ -212,3 +212,12 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 **Data:** 13/10/2026
 **Decisão:** o microfone usa o reconhecimento de voz do próprio navegador (Web Speech API, `webkitSpeechRecognition` no Safari), em português. O texto aparece enquanto você fala. Quando a fala termina, segue para a confirmação. O botão só aparece se o navegador tiver o recurso. Microfone negado ou serviço indisponível mostram uma mensagem e sugerem o microfone do teclado.
 **Limite conhecido:** o suporte no iPhone varia com a versão do iOS e com o app aberto pelo navegador ou pela Tela de Início. Isso precisa ser validado no aparelho do Bruno.
+
+### D33 · 🛠️ Voz: nunca falhar em silêncio
+**Data:** 13/10/2026
+**Contexto:** no primeiro teste no iPhone, o app aberto pelo link dentro do app do Claude ficava "ouvindo", mas não escrevia nada. Navegadores dentro de outros apps (Claude, WhatsApp, Instagram) ligam o microfone e não entregam o texto.
+**Decisão:**
+- Toda falha da voz mostra uma mensagem com o **código técnico entre parênteses**, para diagnóstico por print.
+- Se nenhuma palavra chegar em **6 segundos**, o app para de ouvir e orienta: abrir no Safari ou pelo ícone da Tela de Início, ou usar o microfone do teclado.
+- Se o aparelho não suportar a voz, o botão some e o teclado abre.
+**Por quê:** uma falha silenciosa parece defeito e faz a pessoa desistir. Uma falha explicada, com caminho alternativo, mantém a confiança.
