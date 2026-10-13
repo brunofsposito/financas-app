@@ -223,3 +223,12 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 **Por quê:** uma falha silenciosa parece defeito e faz a pessoa desistir. Uma falha explicada, com caminho alternativo, mantém a confiança.
 - **Atualização (13/10/2026):** no iPhone, pelo ícone da Tela de Início, a voz funcionava só na primeira vez. A causa provável é que a sessão anterior "segurava" o microfone. Agora cada sessão é encerrada explicitamente (`abort`) ao terminar, e uma nova é criada a cada toque. Além disso, se a voz já funcionou uma vez, o botão do microfone nunca some por causa de um erro.
 - **Atualização 2 (13/10/2026):** encerrar cada sessão não resolveu no iPhone. A voz continuou funcionando só na primeira vez (print do Bruno: `sem-transcricao`). Nova abordagem: **um único "ouvinte" de voz, reaproveitado** a cada toque (o iOS parece aceitar só o primeiro). Plano B: se a voz travar depois do primeiro uso, aparece o botão **"Reativar voz"**, que recarrega o app (os dados ficam salvos) e destrava o microfone.
+
+### D34 · 🛠️ Versão visível e "quebra de cache" nos arquivos
+**Data:** 13/10/2026
+**Contexto:** no teste da voz, o "Reativar voz" não aparecia no iPhone. Suspeita: o app da Tela de Início estava com arquivos antigos em cache, e as correções não tinham chegado.
+**Decisão:**
+- Cada arquivo CSS e JS é carregado com a versão no endereço (`app.js?v=2026.10.13-4`). Ao publicar, troca-se o número, e o celular é obrigado a baixar os arquivos novos.
+- O número da versão aparece no fim da aba **Ajustes**, para sabermos qual versão está rodando em cada aparelho.
+- Na voz, **qualquer** falha depois do primeiro uso (inclusive um "cancelado" silencioso) mostra "Reativar voz". A exceção é o microfone negado, que mantém a sua própria mensagem.
+**Por quê:** sem saber qual versão está no aparelho, não dá para diagnosticar. Cache é uma das causas mais comuns de "corrigi, mas no celular continua igual".

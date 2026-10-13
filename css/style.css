@@ -564,6 +564,8 @@ button { -webkit-tap-highlight-color: transparent; }
 
 /* ---------- Seus dados (backup) ---------- */
 
+.versao { margin: 32px 0 0; text-align: center; font-size: 0.75rem; color: var(--texto-suave); }
+
 .dados { margin-top: 8px; }
 .dados-texto { font-size: 0.8rem; color: var(--texto-suave); margin: 0 0 12px; }
 .dados .botao { font-size: 0.85rem; }

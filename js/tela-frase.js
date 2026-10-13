@@ -122,8 +122,12 @@ function obterReconhecedor() {
     el.fraseTexto.value = Array.from(evento.results).map((r) => r[0].transcript).join(' ').trim();
   };
   reconhecedor.onerror = (evento) => {
+    if (!ouvindo) return; // erro de uma sessão que já demos por encerrada
     erroDaVoz = evento.error;
-    if (evento.error !== 'aborted') mostrarErroVoz(evento.error);
+    // Já funcionou nesta abertura do app e agora falhou (qualquer erro, até um
+    // "cancelado" silencioso): é a trava do iPhone. Oferece "Reativar voz".
+    if (vozJaFuncionou && evento.error !== 'not-allowed') mostrarErroVoz('voz-travada');
+    else if (evento.error !== 'aborted') mostrarErroVoz(evento.error);
   };
   reconhecedor.onend = () => {
     if (!ouvindo) return; // fim de uma sessão que já demos por encerrada
@@ -132,7 +136,10 @@ function obterReconhecedor() {
     // Terminou de falar e há texto: segue direto para a confirmação
     if (el.fraseTexto.value.trim()) enviarFrase();
     // Terminou sem texto e sem erro: nunca fica em silêncio, sempre explica
-    else if (!erroDaVoz) mostrarErroVoz(vozJaFuncionou ? 'voz-travada' : 'sem-resultado');
+    // Microfone negado já mostrou a mensagem certa: recarregar não resolveria
+    else if (erroDaVoz === 'not-allowed') return;
+    else if (vozJaFuncionou) mostrarErroVoz('voz-travada');
+    else if (!erroDaVoz) mostrarErroVoz('sem-resultado');
   };
   return reconhecedor;
 }
