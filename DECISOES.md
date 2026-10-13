@@ -195,3 +195,20 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - A aba aberta fica no endereço (`#contas`), usando o histórico do navegador.
 - Todos os emojis viraram **ícones de linha** (SVG próprio, mesmo traço). As categorias guardam o *nome* do ícone. Os selos de status ganharam ícone junto do texto.
 **Por quê:** a tela única tinha ficado longa demais. Abas organizam o app para crescer. Os emojis variam de aparelho para aparelho e não combinavam com o visual (feedback do Bruno).
+
+### D30 · 🛠️ Formulário com chips e "Desfazer" (V3)
+**Data:** 13/10/2026
+**Decisão:** valor grande no centro; categorias como chips com ícone (botões de opção por baixo, numa linha que rola para o lado); data com Hoje / Ontem / calendário; escolher a categoria preenche a descrição se ela estiver vazia; depois de salvar um lançamento novo aparece "Salvo · Desfazer" por 6 segundos.
+**Por quê:** menos toques e menos digitação no celular. Desfazer protege contra erro sem pedir confirmação no caminho certo.
+**Junto:** a categoria passou a ser obrigatória, sem categoria escolhida por padrão (antes vinha a primeira da lista, o que levava a categorizar errado).
+
+### D31 · 🛠️ Frase rápida com regras locais e confirmação (V4)
+**Data:** 13/10/2026
+**Decisão:** um intérprete só com regras (`frase.js`), sem servidor e sem IA. O primeiro número é o valor ("2 mil" e "1.200" incluídos). "Recebi", "ganhei", "salário" e similares indicam entrada. Um dicionário de palavras define a categoria; sem acerto, cai em "Outras". A data sai de "hoje", "ontem", "anteontem", "dia 10" ou "10/10" (um "dia 20" falado num dia 13 é do mês passado). "Cliente", "empresa" ou "trabalho", e o salário, marcam o tipo profissional. "Todo dia N" abre uma **conta fixa**. A frase **nunca é salva direto**: o formulário abre preenchido para conferir.
+**Por quê:** resolve o caso comum sem custo, sem enviar dados para fora do celular e de forma previsível. A confirmação evita salvar algo mal entendido.
+**Quando rever:** se o dicionário errar muito no uso real, dá para ampliar as palavras. Usar IA exigiria servidor e enviar o texto para fora (D02).
+
+### D32 · 🛠️ Voz pelo navegador, com alternativa (V5)
+**Data:** 13/10/2026
+**Decisão:** o microfone usa o reconhecimento de voz do próprio navegador (Web Speech API, `webkitSpeechRecognition` no Safari), em português. O texto aparece enquanto você fala. Quando a fala termina, segue para a confirmação. O botão só aparece se o navegador tiver o recurso. Microfone negado ou serviço indisponível mostram uma mensagem e sugerem o microfone do teclado.
+**Limite conhecido:** o suporte no iPhone varia com a versão do iOS e com o app aberto pelo navegador ou pela Tela de Início. Isso precisa ser validado no aparelho do Bruno.

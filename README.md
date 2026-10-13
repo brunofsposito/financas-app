@@ -8,7 +8,8 @@ App simples de finanças pessoais, feito para o celular (visual escuro com cores
 
 - Resumo do mês: entrou, saiu e saldo.
 - Navegar entre meses pelas setas ‹ › no topo, com atalho para voltar ao mês atual.
-- Cadastro de entradas e saídas com valor, descrição, categoria, data e tipo (pessoal ou profissional).
+- **Frase rápida:** escreva ou fale "gastei 45 no mercado ontem" e o lançamento abre preenchido para conferir. "Aluguel 1200 todo dia 7" vira uma conta fixa.
+- Cadastro de entradas e saídas com valor, descrição, categoria (chips com ícone), data (Hoje/Ontem) e tipo (pessoal ou profissional), com "Desfazer" logo depois de salvar.
 - Lista dos lançamentos do mês.
 - Filtros por tipo (pessoal ou profissional) e por categoria. O resumo também é filtrado.
 - **Para onde foi o dinheiro:** gráfico de barras com as saídas do mês por categoria. Tocar numa barra filtra os lançamentos daquela categoria.
@@ -45,6 +46,8 @@ Não precisa instalar nada.
 | `js/backup.js` | Exportar e importar os dados (montar, validar e juntar o arquivo) |
 | `js/icones.js` | Catálogo de ícones de linha (SVG); categorias e telas usam o nome do ícone |
 | `js/tela-avisos.js` | Avisos: o mais urgente no topo, com a ação que resolve; os demais em "+N avisos" |
+| `js/frase.js` | Intérprete da frase rápida: valor, entrada/saída, categoria, data e recorrência (só regras, sem servidor) |
+| `js/tela-frase.js` | A barra da frase rápida e o microfone (voz) |
 | `js/app.js` | Liga a tela às regras: abas, mês, filtros, formulário e lista de lançamentos |
 | `js/tela-dashboard.js` | O gráfico "Para onde foi o dinheiro" (saídas por categoria) |
 | `js/tela-orcamentos.js` | A parte da tela dos orçamentos: barras de progresso e formulário |
@@ -86,9 +89,9 @@ Não precisa instalar nada.
 
 - [x] **V1 · Base visual:** cores neon por significado, fonte Sora, número herói, botões em pílula, formulário abrindo de baixo
 - [x] **V2 · Abas:** navegação inferior (Início · Contas · Orçamentos · Ajustes), ícones de linha no lugar dos emojis e avisos acionáveis
-- [ ] **V3 · Novo formulário:** chips de categoria, Hoje/Ontem, valor grande
-- [ ] **V4 · Frase rápida:** "gastei 45 no mercado ontem" → confirmar → salvo, com Desfazer
-- [ ] **V5 · Voz**
+- [x] **V3 · Novo formulário:** chips de categoria, Hoje/Ontem, valor grande, "Salvo · Desfazer"
+- [x] **V4 · Frase rápida:** "gastei 45 no mercado ontem" → confirmar → salvo, com Desfazer; "todo dia 7" vira conta fixa
+- [x] **V5 · Voz:** microfone na barra da frase rápida (reconhecimento de voz do próprio navegador)
 
 **Backlog:**
 - Dashboard parte B, gráfico de linhas com a evolução mês a mês (quando houver 2 ou 3 meses de dados). Ver D11.
@@ -177,3 +180,12 @@ Não precisa instalar nada.
 - **Estado na URL:** a aba aberta fica no endereço (`#contas`). Por isso o "voltar" do navegador e o recarregar funcionam, e dá para abrir uma aba por link.
 - **Ícones por nome:** as categorias guardam o *nome* do ícone (`carrinho`), não o desenho. É a mesma ideia dos tokens de cor: trocar o visual mexe num lugar só.
 - **Next best action** (fintech): apps de banco não mostram só o saldo, eles sugerem o próximo passo ("pague sua fatura", "seu limite está perto do fim"). É assim que um aviso vira engajamento em vez de ruído.
+
+### Redesign V3 a V5: formulário, frase rápida e voz
+- **Reduzir atrito:** cada toque a menos importa. Os chips trocam um menu por um toque, "Ontem" troca o calendário, a categoria já preenche a descrição, e a frase rápida troca o formulário inteiro por uma linha.
+- **"Desfazer" em vez de "Tem certeza?":** depois de salvar, um aviso com Desfazer resolve o erro sem interromper o fluxo certo. O "Tem certeza?" continua só para excluir.
+- **Interpretar linguagem com regras:** o intérprete não usa IA. São regras simples (primeiro número = valor, dicionário de palavras = categoria, "ontem" = data). Por isso é rápido, funciona sem internet e é previsível. O limite é que só entende o que está no dicionário.
+- **Confirmar antes de gravar:** a frase nunca é salva direto. O app mostra o que entendeu e você confere. É o padrão de "humano no circuito" para qualquer automação que mexe com dinheiro.
+- **Recurso progressivo:** a voz usa um recurso do navegador. Se ele não existir, o botão some e o resto continua funcionando (*progressive enhancement*).
+- **Testar o que não dá para testar de verdade:** sem microfone no ambiente de teste, um "falso microfone" simula a fala. É a mesma técnica (*mock*) usada para testar integrações com bancos sem mexer em dinheiro real.
+- **Fricção × conversão** (fintech): em apps financeiros, cada passo a mais derruba a taxa de conclusão (de um cadastro, de um Pix). Medir e cortar passos é trabalho central do PO.
