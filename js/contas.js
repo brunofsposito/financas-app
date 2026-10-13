@@ -102,6 +102,22 @@ const Contas = {
       .sort((a, b) => a.vencimento.localeCompare(b.vencimento));
   },
 
+  // Previsão (Entrega 2.4): quanto ainda falta pagar de contas fixas no mês.
+  // Usa os mesmos filtros da tela (tipo e categoria), para bater com o resumo.
+  // SELECT SUM(valor), COUNT(*) FROM contas do mês WHERE não paga AND <filtros>
+  aPagarNoMes(ano, mes, hojeISO, filtros) {
+    const doMes = this.doMes(ano, mes, hojeISO);
+    const pendentes = Lancamentos.filtrar(
+      doMes.filter((o) => o.status !== 'paga').map((o) => o.conta),
+      filtros,
+    );
+    return {
+      temContas: doMes.length > 0,
+      quantidade: pendentes.length,
+      total: pendentes.reduce((soma, c) => soma + c.valor, 0),
+    };
+  },
+
   // Para o alerta no topo: contas atrasadas do mês atual e contas que vencem
   // nos próximos dias (olhando também o mês seguinte, para o fim do mês).
   alertas(hojeISO) {
