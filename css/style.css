@@ -101,25 +101,71 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 .botao-hoje[hidden] { display: none; }
 
-/* ---------- Alerta (contas e orçamentos) ---------- */
+/* ---------- Aviso: o mais urgente, com a ação que resolve ---------- */
 
-.alerta {
-  display: block;
-  width: 100%;
-  margin: 8px 0 14px;
-  padding: 13px 16px;
-  border-radius: 16px;
+.aviso {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 6px;
+  padding: 10px 10px 10px 14px;
+  border-radius: 18px;
   border: 1px solid var(--aviso);
   background: var(--aviso-fundo);
-  color: var(--texto);
+}
+.aviso[hidden] { display: none; }
+.aviso-icone { display: flex; color: var(--aviso); flex-shrink: 0; }
+.aviso-texto { flex: 1; min-width: 0; font-size: 0.85rem; font-weight: 500; line-height: 1.3; }
+.aviso-acao {
+  flex-shrink: 0;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: var(--pilula);
+  border: none;
+  background: var(--aviso);
+  color: var(--sobre-neon);
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  text-align: left;
   cursor: pointer;
 }
-.alerta.alerta-atrasada { border-color: var(--perigo); background: var(--perigo-fundo); }
-.alerta[hidden] { display: none; }
+.aviso-perigo { border-color: var(--perigo); background: var(--perigo-fundo); }
+.aviso-perigo .aviso-icone { color: var(--perigo); }
+.aviso-perigo .aviso-acao { background: var(--perigo); }
+
+.mais-avisos {
+  display: block;
+  margin: 0 0 12px auto;
+  padding: 6px 4px;
+  border: none;
+  background: none;
+  color: var(--texto-suave);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.mais-avisos[hidden] { display: none; }
+
+/* Lista completa de avisos (janela "Avisos") */
+.lista-avisos { list-style: none; margin: 0 0 18px; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.aviso-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 10px 12px 14px;
+  border-radius: 18px;
+  background: var(--superficie);
+  border: 1px solid transparent;
+}
+.aviso-item .aviso-icone { color: var(--aviso); }
+.aviso-item.aviso-perigo { border-color: var(--perigo); background: var(--superficie); }
+.aviso-item.aviso-perigo .aviso-icone { color: var(--perigo); }
+.aviso-item-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.aviso-titulo { font-size: 0.85rem; font-weight: 500; }
+.aviso-detalhe { font-size: 0.75rem; color: var(--texto-suave); }
+.aviso-item .aviso-acao { background: var(--texto); }
+.aviso-item.aviso-perigo .aviso-acao { background: var(--perigo); }
 
 /* ---------- Filtros ---------- */
 
@@ -276,8 +322,9 @@ button { -webkit-tap-highlight-color: transparent; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
+  color: var(--texto);
 }
+.item-entrada .item-icone { color: var(--lima); }
 .item-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .item-descricao { font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .item-detalhe { font-size: 0.75rem; color: var(--texto-suave); }
@@ -314,7 +361,8 @@ button { -webkit-tap-highlight-color: transparent; }
 .barra-linha:focus-visible { outline: 2px solid var(--lima); outline-offset: -2px; }
 
 .barra-topo { display: flex; justify-content: space-between; gap: 8px; font-size: 0.85rem; margin-bottom: 6px; }
-.barra-nome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barra-nome { display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barra-nome .icone { flex-shrink: 0; color: var(--texto-suave); }
 .barra-valor { font-weight: 600; white-space: nowrap; }
 .barra-pct { font-weight: 400; color: var(--texto-suave); margin-left: 4px; }
 
@@ -339,6 +387,9 @@ button { -webkit-tap-highlight-color: transparent; }
 /* ---------- Selos de status ---------- */
 
 .selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 0.7rem;
   font-weight: 600;
   padding: 5px 10px;
@@ -440,7 +491,8 @@ button { -webkit-tap-highlight-color: transparent; }
 /* A conta atrasada ganha o botão em limão: é a ação mais importante da tela */
 .conta-atrasada .botao-paguei { background: var(--lima); border-color: var(--lima); color: var(--sobre-neon); }
 
-.botao-calendario { display: block; width: 100%; margin-top: 10px; }
+.botao-calendario { display: flex; width: 100%; margin-top: 10px; }
+.botao-calendario svg { color: var(--lima); }
 .botao-calendario[hidden] { display: none; }
 .dialogo .botao-calendario { margin-top: 14px; font-size: 0.9rem; }
 
@@ -451,14 +503,56 @@ button { -webkit-tap-highlight-color: transparent; }
 .dados .botao { font-size: 0.85rem; }
 .mensagem-backup { font-size: 0.8rem; color: var(--texto-suave); margin: 8px 0 0; min-height: 1.2em; }
 
-/* ---------- Botão + ---------- */
+/* ---------- Navegação por abas (V2) + botão + ---------- */
+
+.aba[hidden] { display: none; }
+
+.navegacao {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+}
+.nav-abas {
+  flex: 1;
+  height: 66px;
+  border-radius: 33px;
+  background: rgba(24, 24, 22, 0.92);
+  border: 1px solid var(--borda);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 6px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+.nav-aba {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  color: var(--texto-suave);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+/* Aba ativa: branco (= selecionado) */
+.nav-aba.ativa { background: var(--texto); color: var(--sobre-neon); }
 
 .botao-novo {
-  position: fixed;
-  right: 20px;
-  bottom: calc(22px + env(safe-area-inset-bottom));
-  width: 64px;
-  height: 64px;
+  flex-shrink: 0;
+  width: 66px;
+  height: 66px;
   border-radius: 50%;
   border: none;
   background: var(--lima);
@@ -533,6 +627,10 @@ button { -webkit-tap-highlight-color: transparent; }
 .acoes { display: flex; gap: 10px; }
 .botao {
   flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font: inherit;
   font-size: 0.95rem;
   padding: 14px;

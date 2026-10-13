@@ -37,6 +37,41 @@ const el = {
   erro: document.getElementById('erro'),
 };
 
+// ---------- Abas (V2) ----------
+// A aba aberta fica no endereço da página (#contas, #orcamentos...).
+// Assim o botão "voltar" do navegador funciona e dá para abrir uma aba por link.
+
+const ABAS = ['inicio', 'contas', 'orcamentos', 'ajustes'];
+
+function abaDoEndereco() {
+  const aba = location.hash.slice(1);
+  return ABAS.includes(aba) ? aba : 'inicio';
+}
+
+function irParaAba(aba) {
+  if (abaDoEndereco() !== aba) history.pushState(null, '', `#${aba}`);
+  mostrarAba();
+}
+
+function mostrarAba() {
+  const aba = abaDoEndereco();
+  document.querySelectorAll('[data-aba]').forEach((secao) => {
+    secao.hidden = secao.dataset.aba !== aba;
+  });
+  document.querySelectorAll('.nav-aba').forEach((botao) => {
+    const ativa = botao.dataset.ir === aba;
+    botao.classList.toggle('ativa', ativa);
+    if (ativa) botao.setAttribute('aria-current', 'page');
+    else botao.removeAttribute('aria-current');
+  });
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.nav-aba').forEach((botao) => {
+  botao.addEventListener('click', () => irParaAba(botao.dataset.ir));
+});
+window.addEventListener('popstate', mostrarAba); // botão "voltar"
+
 // ---------- Navegação entre meses ----------
 
 function ehMesAtual() {
@@ -93,7 +128,7 @@ function renderizar() {
 
   renderizarFiltros(filtrando);
   renderizarContas(); // tela-contas.js
-  renderizarAlerta(); // tela-contas.js
+  renderizarAvisos(); // tela-avisos.js
   renderizarPrevisao(saldo); // tela-contas.js
   renderizarDashboard(doMes); // tela-dashboard.js
   renderizarOrcamentos(); // tela-orcamentos.js
@@ -122,7 +157,7 @@ function preencherFiltroCategoria() {
   const grupo = (rotulo, categorias) => {
     const g = document.createElement('optgroup');
     g.label = rotulo;
-    g.append(...categorias.map((c) => new Option(`${c.icone} ${c.nome}`, c.id)));
+    g.append(...categorias.map((c) => new Option(c.nome, c.id)));
     return g;
   };
   el.filtroCategoria.replaceChildren(
@@ -167,7 +202,7 @@ function criarItemDaLista(l) {
   // Cada item é um botão: tocar nele abre o lançamento para editar
   li.innerHTML = `
     <button type="button" class="item item-${l.movimento}">
-      <span class="item-icone" aria-hidden="true">${categoria.icone}</span>
+      <span class="item-icone">${icone(categoria.icone)}</span>
       <span class="item-texto">
         <span class="item-descricao"></span>
         <span class="item-detalhe"></span>
@@ -179,7 +214,7 @@ function criarItemDaLista(l) {
   // uma descrição com código HTML seja interpretada pelo navegador.
   li.querySelector('.item-descricao').textContent = l.descricao;
   li.querySelector('.item-detalhe').textContent =
-    `${dia}/${mes} · ${categoria.nome} · ${l.tipo === 'pessoal' ? 'Pessoal' : 'Profissional'}${l.contaId ? ' · 🔁 Conta fixa' : ''}`;
+    `${dia}/${mes} · ${categoria.nome} · ${l.tipo === 'pessoal' ? 'Pessoal' : 'Profissional'}${l.contaId ? ' · Conta fixa' : ''}`;
   li.querySelector('button').addEventListener('click', () => abrirFormulario(l));
   return li;
 }
@@ -188,7 +223,7 @@ function criarItemDaLista(l) {
 
 function preencherCategorias(movimento) {
   const select = el.formulario.elements.categoria;
-  select.replaceChildren(...CATEGORIAS[movimento].map((c) => new Option(`${c.icone} ${c.nome}`, c.id)));
+  select.replaceChildren(...CATEGORIAS[movimento].map((c) => new Option(c.nome, c.id)));
 }
 
 // Data sugerida para um lançamento novo: hoje, se a tela está no mês atual.
@@ -370,4 +405,5 @@ document.addEventListener('DOMContentLoaded', () => {
   preencherFiltroCategoria();
   renderizarUltimoBackup();
   renderizar();
+  mostrarAba();
 });
