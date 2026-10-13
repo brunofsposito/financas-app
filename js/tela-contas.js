@@ -2,7 +2,6 @@
 // formulário de conta e o alerta no topo. As regras ficam em contas.js.
 
 Object.assign(el, {
-  alertaContas: document.getElementById('alerta-contas'),
   secaoContas: document.getElementById('secao-contas'),
   listaContas: document.getElementById('lista-contas'),
   contasVazio: document.getElementById('contas-vazio'),
@@ -34,11 +33,14 @@ function renderizarContas() {
   el.botaoCalendario.hidden = Contas.listar().length === 0;
 }
 
+// Ícone de cada status: o selo nunca depende só da cor
+const ICONE_STATUS_CONTA = { paga: 'check', atrasada: 'alerta', hoje: 'relogio', proxima: 'relogio', futura: 'calendario' };
+
 // Texto curto do status, ex.: "Vence em 3 dias", "Atrasada há 2 dias"
 function textoStatus({ status, dias, pagamento, vencimento }) {
   const [, mes, dia] = (pagamento ? pagamento.data : vencimento).split('-');
   switch (status) {
-    case 'paga': return `✅ Paga ${dia}/${mes}`;
+    case 'paga': return `Paga ${dia}/${mes}`;
     case 'atrasada': return `Atrasada há ${-dias} ${plural(-dias, 'dia', 'dias')}`;
     case 'hoje': return 'Vence hoje';
     case 'proxima': return `Vence em ${dias} ${plural(dias, 'dia', 'dias')}`;
@@ -56,12 +58,12 @@ function criarItemConta(ocorrencia) {
   li.className = `conta conta-${status}`;
   li.innerHTML = `
     <button type="button" class="item">
-      <span class="item-icone" aria-hidden="true">${categoria.icone}</span>
+      <span class="item-icone">${icone(categoria.icone)}</span>
       <span class="item-texto">
         <span class="item-descricao"></span>
         <span class="item-detalhe">Todo dia ${conta.dia} · ${pagamento ? 'pago' : 'previsto'} ${Dinheiro.formatar(valor)}</span>
       </span>
-      <span class="selo selo-${status}">${textoStatus(ocorrencia)}</span>
+      <span class="selo selo-${status}">${icone(ICONE_STATUS_CONTA[status], 14)}${textoStatus(ocorrencia)}</span>
     </button>
   `;
   li.querySelector('.item-descricao').textContent = conta.descricao;
@@ -106,47 +108,8 @@ function renderizarPrevisao(saldo) {
   el.previsao.textContent = Dinheiro.formatar(previsto);
   el.previsao.classList.toggle('negativo', previsto < 0);
   el.previsaoDetalhe.textContent = quantidade === 0
-    ? '✅ Todas as contas fixas do mês estão pagas.'
+    ? 'Todas as contas fixas do mês estão pagas.'
     : `Saldo ${Dinheiro.formatar(saldo)} − ${Dinheiro.formatar(total)} de ${quantidade} ${plural(quantidade, 'conta a pagar', 'contas a pagar')}`;
-}
-
-// ---------- Alerta no topo ----------
-
-function renderizarAlerta() {
-  const hoje = hojeISO();
-  const { atrasadas, emBreve } = Contas.alertas(hoje);
-  const orcamentos = Orcamentos.alertas(hoje); // orçamentos do mês atual que pedem atenção
-  const partes = [];
-  if (atrasadas.length) {
-    partes.push(`${atrasadas.length} ${plural(atrasadas.length, 'conta atrasada', 'contas atrasadas')}`);
-  }
-  if (emBreve.length) {
-    partes.push(`${emBreve.length} ${plural(emBreve.length, 'vence', 'vencem')} nos próximos ${Contas.DIAS_ALERTA} dias`);
-  }
-  const estourados = orcamentos.filter((o) => o.status === 'estourado').length;
-  const emRisco = orcamentos.length - estourados;
-  if (estourados) partes.push(`${estourados} ${plural(estourados, 'orçamento estourado', 'orçamentos estourados')}`);
-  if (emRisco) partes.push(`${emRisco} ${plural(emRisco, 'orçamento', 'orçamentos')} perto do limite`);
-
-  el.alertaContas.hidden = partes.length === 0;
-  if (!partes.length) return;
-
-  const grave = atrasadas.length > 0 || estourados > 0;
-  el.alertaContas.classList.toggle('alerta-atrasada', grave);
-  el.alertaContas.textContent = `${grave ? '⚠️' : '🔔'} ${partes.join(' · ')}`;
-  // Tocar no alerta: se há conta, leva ao mês da mais urgente e rola até as contas;
-  // se só há orçamento, volta ao mês atual e rola até os orçamentos.
-  const primeira = atrasadas[0] || emBreve[0];
-  el.alertaContas.onclick = () => {
-    if (primeira) {
-      const [ano, mes] = primeira.vencimento.split('-').map(Number);
-      irParaMes(ano, mes);
-      el.secaoContas.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      irParaHoje();
-      el.secaoOrcamentos.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
 }
 
 // ---------- Formulário de conta fixa ----------
@@ -160,7 +123,7 @@ function abrirFormularioConta(conta = null) {
   el.tituloConta.textContent = conta ? 'Editar conta fixa' : 'Nova conta fixa';
   el.excluirConta.hidden = !conta;
   el.calendarioConta.hidden = !conta;
-  f.categoria.replaceChildren(...CATEGORIAS.saida.map((c) => new Option(`${c.icone} ${c.nome}`, c.id)));
+  f.categoria.replaceChildren(...CATEGORIAS.saida.map((c) => new Option(c.nome, c.id)));
 
   if (conta) {
     f.descricao.value = conta.descricao;
