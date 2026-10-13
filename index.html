@@ -18,10 +18,24 @@
   </header>
 
   <main>
+    <!-- Filtros: valem para o resumo e para a lista -->
+    <section class="filtros" aria-label="Filtros">
+      <div class="chips" role="group" aria-label="Filtrar por tipo">
+        <button type="button" class="chip" data-tipo="" aria-pressed="true">Todos</button>
+        <button type="button" class="chip" data-tipo="pessoal" aria-pressed="false">Pessoal</button>
+        <button type="button" class="chip" data-tipo="profissional" aria-pressed="false">Profissional</button>
+      </div>
+      <select id="filtro-categoria" class="filtro-categoria" aria-label="Filtrar por categoria"></select>
+      <p id="aviso-filtro" class="aviso-filtro" hidden>
+        Filtro ativo: os valores abaixo mostram só os lançamentos filtrados.
+        <button type="button" id="limpar-filtros" class="link">Limpar</button>
+      </p>
+    </section>
+
     <!-- Resumo do mês -->
     <section class="resumo" aria-label="Resumo do mês">
       <div class="card card-saldo">
-        <span class="rotulo">Saldo do mês</span>
+        <span class="rotulo" id="rotulo-saldo">Saldo do mês</span>
         <strong id="saldo">R$ 0,00</strong>
       </div>
       <div class="card card-entrou">
@@ -38,7 +52,7 @@
     <section aria-label="Lançamentos do mês">
       <h2 class="subtitulo">Lançamentos</h2>
       <ul id="lista" class="lista"></ul>
-      <p id="vazio" class="vazio">Nenhum lançamento neste mês.<br>Toque em <strong>+</strong> para começar.</p>
+      <p id="vazio" class="vazio"></p>
     </section>
   </main>
 

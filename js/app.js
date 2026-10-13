@@ -8,6 +8,7 @@ const estado = {
   ano: hoje.getFullYear(),
   mes: hoje.getMonth() + 1, // getMonth() começa em 0 (janeiro = 0)
   editandoId: null, // id do lançamento aberto no formulário (null = novo)
+  filtros: { tipo: '', categoria: '' }, // '' = todos
 };
 
 const el = {
@@ -15,6 +16,11 @@ const el = {
   mesAnterior: document.getElementById('mes-anterior'),
   mesSeguinte: document.getElementById('mes-seguinte'),
   botaoHoje: document.getElementById('botao-hoje'),
+  chips: document.querySelectorAll('.chip'),
+  filtroCategoria: document.getElementById('filtro-categoria'),
+  avisoFiltro: document.getElementById('aviso-filtro'),
+  limparFiltros: document.getElementById('limpar-filtros'),
+  rotuloSaldo: document.getElementById('rotulo-saldo'),
   entrou: document.getElementById('entrou'),
   saiu: document.getElementById('saiu'),
   saldo: document.getElementById('saldo'),
@@ -64,17 +70,72 @@ function renderizar() {
   el.tituloMes.textContent = `${MESES[estado.mes - 1]} ${estado.ano}`;
   el.botaoHoje.hidden = ehMesAtual();
 
+  // Primeiro o mês, depois os filtros. O resumo e a lista usam o mesmo resultado.
   const doMes = Lancamentos.doMes(estado.ano, estado.mes);
-  const { entrou, saiu, saldo } = Lancamentos.resumo(doMes);
+  const visiveis = Lancamentos.filtrar(doMes, estado.filtros);
+  const { entrou, saiu, saldo } = Lancamentos.resumo(visiveis);
+  const filtrando = temFiltroAtivo();
 
   el.entrou.textContent = Dinheiro.formatar(entrou);
   el.saiu.textContent = Dinheiro.formatar(saiu);
   el.saldo.textContent = Dinheiro.formatar(saldo);
   el.saldo.classList.toggle('negativo', saldo < 0);
+  el.rotuloSaldo.textContent = filtrando ? 'Saldo do mês (filtrado)' : 'Saldo do mês';
 
-  el.lista.replaceChildren(...doMes.map(criarItemDaLista));
-  el.vazio.hidden = doMes.length > 0;
+  el.lista.replaceChildren(...visiveis.map(criarItemDaLista));
+  el.vazio.hidden = visiveis.length > 0;
+  el.vazio.innerHTML = doMes.length === 0
+    ? 'Nenhum lançamento neste mês.<br>Toque em <strong>+</strong> para começar.'
+    : 'Nenhum lançamento com esses filtros neste mês.';
+
+  renderizarFiltros(filtrando);
 }
+
+// ---------- Filtros ----------
+
+function temFiltroAtivo() {
+  return Boolean(estado.filtros.tipo || estado.filtros.categoria);
+}
+
+function preencherFiltroCategoria() {
+  const grupo = (rotulo, categorias) => {
+    const g = document.createElement('optgroup');
+    g.label = rotulo;
+    g.append(...categorias.map((c) => new Option(`${c.icone} ${c.nome}`, c.id)));
+    return g;
+  };
+  el.filtroCategoria.replaceChildren(
+    new Option('Todas as categorias', ''),
+    grupo('Entradas', CATEGORIAS.entrada),
+    grupo('Saídas', CATEGORIAS.saida),
+  );
+}
+
+function renderizarFiltros(filtrando) {
+  el.chips.forEach((chip) => {
+    chip.setAttribute('aria-pressed', String(chip.dataset.tipo === estado.filtros.tipo));
+  });
+  el.filtroCategoria.value = estado.filtros.categoria;
+  el.filtroCategoria.classList.toggle('ativo', Boolean(estado.filtros.categoria));
+  el.avisoFiltro.hidden = !filtrando;
+}
+
+el.chips.forEach((chip) => {
+  chip.addEventListener('click', () => {
+    estado.filtros.tipo = chip.dataset.tipo;
+    renderizar();
+  });
+});
+
+el.filtroCategoria.addEventListener('change', () => {
+  estado.filtros.categoria = el.filtroCategoria.value;
+  renderizar();
+});
+
+el.limparFiltros.addEventListener('click', () => {
+  estado.filtros = { tipo: '', categoria: '' };
+  renderizar();
+});
 
 function criarItemDaLista(l) {
   const categoria = buscarCategoria(l.categoria);
@@ -196,4 +257,5 @@ el.botaoExcluir.addEventListener('click', () => {
   renderizar();
 });
 
+preencherFiltroCategoria();
 renderizar();
