@@ -102,3 +102,24 @@ Decisões importantes do projeto e o motivo de cada uma. Formato inspirado em AD
 **Data:** 13/10/2026
 **Decisão:** começar a Fase 2 (contas recorrentes) já, sem esperar a semana de uso da Fase 1. O dashboard (Entrega 6) fica para depois.
 **Por quê:** os lembretes de contas são a dor nº 1 (seção 2 do briefing). Com a Fase 2, o app pode substituir os lembretes atuais já na semana de uso.
+
+### D18 · 🛠️ Pagamento de conta = lançamento com `contaId` e `competencia`
+**Data:** 13/10/2026
+**Decisão:** a conta fixa não guarda se foi paga. "Paguei" cria um lançamento comum, ligado à conta e ao mês (competência). O status é calculado juntando as duas tabelas.
+**Por quê:** uma fonte só da verdade. Excluir ou editar o pagamento reflete na conta automaticamente, e o pagamento entra no resumo do mês como qualquer saída.
+**Junto:** o valor da conta é *previsto*. Na hora de pagar dá para ajustar (ex.: conta de luz que varia).
+
+### D19 · 🛠️ Regras do calendário das contas
+**Data:** 13/10/2026
+**Decisão:**
+- A conta vale **a partir do mês em que foi cadastrada** (para não aparecerem meses antigos "atrasados").
+- **Dia 31 em mês curto** vira o último dia do mês (28/02, 30/04...).
+- **"Vence em breve"** = nos próximos 5 dias. O alerta olha também o mês seguinte, para o fim do mês não esconder contas do dia 1º ou 2.
+- O alerta mostra atrasadas **só do mês atual**.
+- Excluir uma conta encerra a recorrência, mas **mantém os pagamentos já feitos** nos lançamentos.
+**Quando rever:** depois da semana de uso (ex.: se 5 dias for pouco ou muito).
+
+### D20 · 🛠️ Backup versão 2, compatível com a versão 1
+**Data:** 13/10/2026
+**Decisão:** o backup passa a incluir as contas fixas. Arquivos antigos (só com lançamentos) continuam sendo aceitos.
+**Por quê:** um backup sem as contas perderia o cadastro da Fase 2. Manter a compatibilidade garante que o backup feito ontem ainda funcione.

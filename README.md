@@ -12,6 +12,8 @@ App simples de finanças pessoais, feito para o celular, que mostra **quanto ent
 - Lista dos lançamentos do mês.
 - Filtros por tipo (pessoal ou profissional) e por categoria. O resumo também é filtrado.
 - Editar e excluir: toque num lançamento da lista.
+- **Contas fixas** (aluguel, internet, assinaturas): cadastro com dia de vencimento, status no mês (paga, vence em X dias, atrasada) e botão **Paguei**, que cria o lançamento.
+- **Alerta no topo** quando há conta atrasada ou vencendo nos próximos 5 dias.
 - Os dados ficam salvos no próprio navegador (continuam lá ao fechar e abrir).
 - Backup: exportar todos os lançamentos para um arquivo e importar de volta (seção "Seus dados", no fim da tela).
 
@@ -31,17 +33,19 @@ Não precisa instalar nada.
 | `index.html` | A página e as telas |
 | `css/style.css` | O visual, pensado primeiro para o celular |
 | `js/categorias.js` | A lista fixa de categorias (como uma tabela de apoio) |
-| `js/storage.js` | O "banco de dados": lê e grava no localStorage |
+| `js/storage.js` | O "banco de dados": lê e grava no localStorage, uma "tabela" por chave |
 | `js/lancamentos.js` | As regras: criar, editar, excluir, filtrar (mês, tipo, categoria) e somar |
-| `js/backup.js` | Exportar e importar os lançamentos (montar, validar e juntar o arquivo) |
+| `js/contas.js` | Regras das contas fixas: vencimento, status e alertas |
+| `js/backup.js` | Exportar e importar os dados (montar, validar e juntar o arquivo) |
 | `js/app.js` | Liga a tela às regras: cliques e desenho da lista |
+| `js/tela-contas.js` | A parte da tela das contas fixas: lista, "Paguei", formulário e alerta |
 
 ## Fases
 
 | Fase | Tema | Status |
 |---|---|---|
 | 1 | MVP: o quadro do mês | ✅ Construída, em semana de uso |
-| 2 | Contas recorrentes e previsão | ⏳ |
+| 2 | Contas recorrentes e previsão | 🚧 Em andamento (adiantada, ver D17) |
 | 3 | Importar extrato do banco | ⏳ |
 | 4 | Estudo de Open Finance | ⏳ |
 | 5 | Métricas do produto | ⏳ |
@@ -57,7 +61,17 @@ Não precisa instalar nada.
 
 - [x] **Extra:** exportar e importar backup (antes da semana de uso)
 
-**Backlog:** dashboard parte B, gráfico de linhas com a evolução mês a mês (quando houver 2 ou 3 meses de dados). Ver D11.
+### Fase 2, por entrega
+
+- [x] **Entrega 2.1:** contas fixas, com status no mês e botão "Paguei"
+- [x] **Entrega 2.2:** alerta no topo do app
+- [ ] **Entrega 2.3:** adicionar as contas ao Calendário do iPhone (com alarme)
+- [ ] **Entrega 2.4:** previsão de saldo até o fim do mês
+
+**Backlog:**
+- Dashboard parte B, gráfico de linhas com a evolução mês a mês (quando houver 2 ou 3 meses de dados). Ver D11.
+- Entrega 6 (dashboard por categoria): depois da Fase 2 (D17).
+- Notificação push de verdade, se o app virar produto (D16).
 
 ## Aprendizados
 
@@ -93,3 +107,10 @@ Não precisa instalar nada.
 - **Nunca confie no arquivo de entrada:** antes de importar, o app confere se o arquivo é mesmo um backup dele e se cada lançamento é válido. Se algo estiver errado, não importa nada (tudo ou nada, como uma *transação* no banco).
 - **MERGE pelo id:** importar junta os dados em vez de substituir. O mesmo id é o mesmo lançamento, então importar duas vezes não duplica nada. Essa propriedade se chama **idempotência**.
 - **Portabilidade de dados** (fintech): a LGPD garante ao titular o direito de levar os próprios dados. É o mesmo princípio que sustenta o Open Finance, que veremos na Fase 4.
+
+### Fase 2, Entregas 2.1 e 2.2: contas fixas e alerta
+- **Chave estrangeira e JOIN:** o pagamento é um lançamento comum com `contaId` e `competencia`. O status "paga" é *calculado* juntando contas com lançamentos (um `LEFT JOIN`), em vez de guardado. Uma fonte só da verdade: excluir o pagamento faz a conta voltar a "pendente".
+- **Dado derivado × dado guardado:** status, dias para vencer e alerta não são salvos. São calculados toda vez a partir de "hoje". Assim nunca ficam desatualizados.
+- **Migração sem dor:** o `storage.js` passou a guardar "tabelas", mas a chave dos lançamentos não mudou, então os dados antigos continuaram funcionando. O backup ganhou a versão 2, e os arquivos da versão 1 ainda são aceitos (compatibilidade retroativa).
+- **Recorrência e competência** (fintech): a conta tem *competência* (o mês a que ela se refere) e o pagamento tem *data* (quando o dinheiro saiu). Pagar em novembro a conta de outubro conta em novembro no caixa, mas quita outubro. É assim que funcionam boletos, faturas e o débito automático.
+- **Limites da plataforma:** um site sem servidor não consegue "acordar" o celular num horário marcado. Por isso o lembrete com o app fechado vai pelo Calendário (Entrega 2.3), e não por push (D16).
