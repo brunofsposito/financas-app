@@ -36,7 +36,7 @@ const Dinheiro = {
 const Lancamentos = {
   // SELECT * FROM lancamentos
   listar() {
-    return Storage.carregar();
+    return Storage.carregar('lancamentos');
   },
 
   // SELECT * FROM lancamentos WHERE data LIKE '2026-10%' ORDER BY data DESC
@@ -59,9 +59,15 @@ const Lancamentos = {
       tipo: dados.tipo, // 'pessoal' ou 'profissional'
       criadoEm: new Date().toISOString(),
     };
+    // Pagamento de conta recorrente: guarda de qual conta e de qual mês ele é.
+    // É a "chave estrangeira" que liga o lançamento à conta (ver contas.js).
+    if (dados.contaId) {
+      lancamento.contaId = dados.contaId;
+      lancamento.competencia = dados.competencia; // 'AAAA-MM'
+    }
     const todos = this.listar();
     todos.push(lancamento);
-    Storage.salvar(todos);
+    Storage.salvar('lancamentos', todos);
     return lancamento;
   },
 
@@ -85,14 +91,14 @@ const Lancamentos = {
       tipo: dados.tipo,
       atualizadoEm: new Date().toISOString(),
     };
-    Storage.salvar(todos);
+    Storage.salvar('lancamentos', todos);
     return todos[indice];
   },
 
   // DELETE FROM lancamentos WHERE id = ?
   excluir(id) {
     const restantes = this.listar().filter((l) => l.id !== id);
-    Storage.salvar(restantes);
+    Storage.salvar('lancamentos', restantes);
   },
 
   // ... WHERE tipo = ? AND categoria = ?
