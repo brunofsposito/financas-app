@@ -12,7 +12,7 @@ App simples de finanças pessoais, feito para o celular (visual escuro com cores
 - Cadastro de entradas e saídas com valor, descrição, categoria (chips com ícone), data (Hoje/Ontem) e tipo (pessoal ou profissional), com "Desfazer" logo depois de salvar.
 - Lista dos lançamentos do mês.
 - Filtros por tipo (pessoal ou profissional) e por categoria. O resumo também é filtrado.
-- **Para onde foi o dinheiro:** gráfico de barras com as saídas do mês por categoria. Tocar numa barra filtra os lançamentos daquela categoria.
+- **Aba Análises:** quanto saiu por mês (linha, com média e troca de categoria), sobrou ou faltou em cada mês (colunas), comparação com o mês anterior até o mesmo dia, e "para onde foi o dinheiro" (barras por categoria; tocar leva aos lançamentos).
 - Editar e excluir: toque num lançamento da lista.
 - **Orçamento por categoria:** limite mensal (ex.: Mercado até R$ 800) com barra de progresso. A barra separa o que já foi gasto do que está previsto em contas fixas, e mostra os status "perto do limite", "vai estourar" e "estourou".
 - **Contas fixas** (aluguel, internet, assinaturas): cadastro com dia de vencimento, status no mês (paga, vence em X dias, atrasada) e botão **Paguei**, que cria o lançamento.
@@ -49,6 +49,8 @@ Não precisa instalar nada.
 | `js/frase.js` | Intérprete da frase rápida: valor, entrada/saída, categoria, data e recorrência (só regras, sem servidor) |
 | `js/tela-frase.js` | A barra da frase rápida e o microfone (voz) |
 | `js/app.js` | Liga a tela às regras: abas, mês, filtros, formulário e lista de lançamentos |
+| `js/analises.js` | Regras das análises: gastos e saldo por mês, média, comparação "até o mesmo dia" |
+| `js/tela-analises.js` | A aba Análises: gráficos em SVG desenhados pelo app, comparação e estado inicial |
 | `js/tela-dashboard.js` | O gráfico "Para onde foi o dinheiro" (saídas por categoria) |
 | `js/tela-orcamentos.js` | A parte da tela dos orçamentos: barras de progresso e formulário |
 | `js/tela-contas.js` | A parte da tela das contas fixas: lista, "Paguei", formulário e alerta |
@@ -84,6 +86,7 @@ Não precisa instalar nada.
 ### Novas funcionalidades (depois das Fases 1 e 2)
 
 - [x] **Orçamento por categoria**, com gasto, previsto e alertas
+- [x] **Aba Análises** (dashboard parte B): evolução mês a mês, saldo por mês e comparação com o mês anterior
 
 ### Redesign "Lima neon" (D26)
 
@@ -94,7 +97,6 @@ Não precisa instalar nada.
 - [x] **V5 · Voz:** microfone na barra da frase rápida (reconhecimento de voz do próprio navegador)
 
 **Backlog:**
-- Dashboard parte B, gráfico de linhas com a evolução mês a mês (quando houver 2 ou 3 meses de dados). Ver D11.
 - Notificação push de verdade, se o app virar produto (D16).
 - **Voz no iPhone só funciona na primeira fala** a cada abertura do app (D35). Investigação pausada; o microfone do teclado é a alternativa.
 - Entradas fixas (ex.: salário recorrente) para a previsão de meses futuros (D22).
@@ -190,3 +192,11 @@ Não precisa instalar nada.
 - **Recurso progressivo:** a voz usa um recurso do navegador. Se ele não existir, o botão some e o resto continua funcionando (*progressive enhancement*).
 - **Testar o que não dá para testar de verdade:** sem microfone no ambiente de teste, um "falso microfone" simula a fala. É a mesma técnica (*mock*) usada para testar integrações com bancos sem mexer em dinheiro real.
 - **Fricção × conversão** (fintech): em apps financeiros, cada passo a mais derruba a taxa de conclusão (de um cadastro, de um Pix). Medir e cortar passos é trabalho central do PO.
+
+### Aba Análises (dashboard parte B)
+- **Uma pergunta, um gráfico:** "estou gastando mais?" é tendência, e tendência pede linha. "Estou sobrando?" é positivo × negativo, e isso pede colunas em volta do zero. Juntar as duas num gráfico só confundiria.
+- **Comparação justa:** outubro até o dia 13 é comparado com setembro até o dia 13, não com setembro inteiro. Senão todo mês "em andamento" pareceria ótimo.
+- **Média honesta:** só entram meses fechados e com dados. Meses antes de começar a usar o app não contam como "gastei zero".
+- **Estado vazio também é design:** com um mês só, a tela explica quando o gráfico vai aparecer, em vez de mostrar uma linha com um ponto.
+- **Gráfico sem biblioteca:** as linhas e colunas são SVG montados pelo próprio código, a partir dos dados. É o que bibliotecas de gráfico fazem por baixo, e aqui ficou leve e sem dependência.
+- **Análise de tendência e sazonalidade** (fintech): bancos usam exatamente essa comparação ("você gastou 18% mais em mercado que no mês passado") em resumos mensais e em modelos de crédito, que olham a estabilidade do saldo ao longo do tempo.

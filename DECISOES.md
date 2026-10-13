@@ -238,3 +238,14 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 **Situação:** pelo ícone da Tela de Início, a voz funciona **na primeira fala** a cada abertura do app. Nas seguintes, o microfone liga mas nenhuma palavra chega. Tentativas que **não** resolveram: encerrar cada sessão, reaproveitar um único ouvinte, e recarregar o app ("Reativar voz").
 **Decisão (Bruno):** pausar a investigação e seguir com outras funcionalidades. Enquanto isso, quando a voz trava, o app explica e abre o teclado, para usar o microfone do teclado (que sempre funciona). O botão "Reativar voz" foi escondido.
 **Quando retomar:** testar no Safari (sem ser pela Tela de Início) para isolar se é limitação do modo "app web". Alternativas: a voz pelo teclado como caminho principal, ou um app nativo no futuro.
+
+### D36 · 🧭🛠️ Aba Análises: linha de gastos, colunas de saldo e comparação "até o mesmo dia"
+**Data:** 14/10/2026
+**Decisão (protótipo aprovado pelo Bruno):**
+- Nova aba **Análises** (a 5ª na barra). Ela recebe o "Para onde foi o dinheiro", que **saiu do Início**. Tocar numa barra leva ao Início, já filtrado.
+- **Quanto saiu por mês:** linha dos últimos 6 meses (a janela termina no mês do topo da tela), com chips para trocar a categoria (as 4 que mais pesaram), linha tracejada da **média** e tocar no mês para ver o valor e a diferença para a média. O mês em andamento aparece **tracejado, como "parcial"**.
+- **Sobrou ou faltou:** colunas do saldo de cada mês **fechado** (limão para cima, rosa para baixo) e um resumo em frase.
+- **Comparação com o mês anterior "até o mesmo dia"** no mês corrente, ou meses inteiros num mês já fechado, com as 3 categorias que mais mudaram. Gastar menos = limão; gastar mais = laranja.
+- **Média** só com meses fechados e com dados.
+- Com **menos de 2 meses de dados**, a tela mostra um estado inicial explicando quando a evolução aparece.
+**Por quê:** era o pedido original do dashboard "ao longo do tempo" (D11). A comparação até o mesmo dia evita conclusões erradas sobre um mês que ainda não fechou.
