@@ -1,4 +1,7 @@
-# financas-app
+# Sobra.
+
+> Quanto entra, quanto sai, quanto sobra.
+
 
 App simples de finanças pessoais, feito para o celular (visual escuro com cores neon), que mostra **quanto entrou, quanto saiu e quanto sobrou** no mês, separando o que é **pessoal** do que é **profissional**.
 
@@ -36,6 +39,8 @@ Não precisa instalar nada.
 | Arquivo | Papel |
 |---|---|
 | `index.html` | A página e as telas |
+| `manifest.webmanifest` | "Arquivo de instalação" do app: nome, ícones e cores na Tela de Início |
+| `icones/` | Ícone do app (`sobra.svg` é o desenho-mestre; os PNG são gerados a partir dele) |
 | `css/style.css` | O visual, pensado primeiro para o celular |
 | `js/categorias.js` | A lista fixa de categorias (como uma tabela de apoio) |
 | `js/storage.js` | O "banco de dados": lê e grava no localStorage, uma "tabela" por chave |
@@ -200,3 +205,10 @@ Não precisa instalar nada.
 - **Estado vazio também é design:** com um mês só, a tela explica quando o gráfico vai aparecer, em vez de mostrar uma linha com um ponto.
 - **Gráfico sem biblioteca:** as linhas e colunas são SVG montados pelo próprio código, a partir dos dados. É o que bibliotecas de gráfico fazem por baixo, e aqui ficou leve e sem dependência.
 - **Análise de tendência e sazonalidade** (fintech): bancos usam exatamente essa comparação ("você gastou 18% mais em mercado que no mês passado") em resumos mensais e em modelos de crédito, que olham a estabilidade do saldo ao longo do tempo.
+
+### Nome e logo: Sobra
+- **Nome que nasce da dor:** "quanto sobra?" era a pergunta que o app precisava responder. Um nome que é a própria pergunta é fácil de lembrar e de explicar.
+- **Ícone que mostra a resposta:** o anel cinza é o que já saiu; o arco limão é o que sobra. O mesmo desenho vira logo, ícone e, no futuro, até um medidor dentro do app.
+- **Uma fonte da verdade para o ícone:** os PNG (180, 192 e 512 px) são gerados a partir de um SVG só. Mudar o logo é mudar um arquivo.
+- **Manifest (PWA):** um JSON que diz ao celular o nome, os ícones, as cores e que o app abre em tela cheia. É o que separa "um site" de "um app instalado".
+- **Marca × registro** (negócio): antes de ir para o mercado, é preciso checar o INPI, as lojas de apps e o domínio. Um nome bom que já é de outra empresa vira um problema jurídico.

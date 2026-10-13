@@ -249,3 +249,9 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - **Média** só com meses fechados e com dados.
 - Com **menos de 2 meses de dados**, a tela mostra um estado inicial explicando quando a evolução aparece.
 **Por quê:** era o pedido original do dashboard "ao longo do tempo" (D11). A comparação até o mesmo dia evita conclusões erradas sobre um mês que ainda não fechou.
+
+### D37 · 🧭 Nome "Sobra" e ícone do anel
+**Data:** 14/10/2026
+**Decisão (Bruno, "por enquanto"):** o app passa a se chamar **Sobra**, com a assinatura "sobra." (ponto em limão) e a frase "Quanto entra, quanto sai, quanto sobra." O ícone é um anel: o cinza é o que já saiu e o arco limão é o que sobra. Opções descartadas: Fôlego (emocional, mas não diz que é de finanças) e Trilho (sério demais).
+**Técnico:** `manifest.webmanifest` (nome, ícones 192/512, tela cheia, cores) e `apple-touch-icon` de 180 px para o iPhone, todos gerados a partir de `icones/sobra.svg`. O endereço do app e o nome do repositório continuam `financas-app`.
+**Pendente antes de ir para o mercado:** verificar o nome no INPI, nas lojas de apps e o domínio.

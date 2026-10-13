@@ -5,12 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0a0a0a">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Finanças</title>
+  <title>Sobra</title>
+  <meta name="description" content="Quanto entra, quanto sai, quanto sobra.">
+  <!-- Instalação como app (D37): nome, ícones e cores -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icones/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="Sobra">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <!-- Fonte Sora (D26). Sem internet, o app usa a fonte do sistema. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=2026.10.14-1">
+  <link rel="stylesheet" href="css/style.css?v=2026.10.14-2">
 </head>
 <body>
   <header class="topo">
@@ -205,7 +213,10 @@
       <p id="mensagem-backup" class="mensagem-backup" role="status"></p>
     </section>
 
-    <p class="versao">Versão 2026.10.14-1</p>
+    <div class="marca">
+      <span class="marca-nome">sobra<span class="marca-ponto">.</span></span>
+      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.14-2</span>
+    </div>
     </div>
   </main>
 
@@ -370,22 +381,22 @@
   <!-- "?v=..." em cada arquivo: quebra o cache. Ao publicar uma versão nova, troque o número
        (aqui e em Ajustes) e o celular é obrigado a baixar os arquivos novos. -->
   <!-- A ordem importa: cada arquivo usa o que foi carregado antes dele -->
-  <script src="js/icones.js?v=2026.10.14-1"></script>
-  <script src="js/categorias.js?v=2026.10.14-1"></script>
-  <script src="js/storage.js?v=2026.10.14-1"></script>
-  <script src="js/lancamentos.js?v=2026.10.14-1"></script>
-  <script src="js/contas.js?v=2026.10.14-1"></script>
-  <script src="js/frase.js?v=2026.10.14-1"></script>
-  <script src="js/calendario.js?v=2026.10.14-1"></script>
-  <script src="js/orcamentos.js?v=2026.10.14-1"></script>
-  <script src="js/analises.js?v=2026.10.14-1"></script>
-  <script src="js/backup.js?v=2026.10.14-1"></script>
-  <script src="js/app.js?v=2026.10.14-1"></script>
-  <script src="js/tela-contas.js?v=2026.10.14-1"></script>
-  <script src="js/tela-dashboard.js?v=2026.10.14-1"></script>
-  <script src="js/tela-orcamentos.js?v=2026.10.14-1"></script>
-  <script src="js/tela-analises.js?v=2026.10.14-1"></script>
-  <script src="js/tela-avisos.js?v=2026.10.14-1"></script>
-  <script src="js/tela-frase.js?v=2026.10.14-1"></script>
+  <script src="js/icones.js?v=2026.10.14-2"></script>
+  <script src="js/categorias.js?v=2026.10.14-2"></script>
+  <script src="js/storage.js?v=2026.10.14-2"></script>
+  <script src="js/lancamentos.js?v=2026.10.14-2"></script>
+  <script src="js/contas.js?v=2026.10.14-2"></script>
+  <script src="js/frase.js?v=2026.10.14-2"></script>
+  <script src="js/calendario.js?v=2026.10.14-2"></script>
+  <script src="js/orcamentos.js?v=2026.10.14-2"></script>
+  <script src="js/analises.js?v=2026.10.14-2"></script>
+  <script src="js/backup.js?v=2026.10.14-2"></script>
+  <script src="js/app.js?v=2026.10.14-2"></script>
+  <script src="js/tela-contas.js?v=2026.10.14-2"></script>
+  <script src="js/tela-dashboard.js?v=2026.10.14-2"></script>
+  <script src="js/tela-orcamentos.js?v=2026.10.14-2"></script>
+  <script src="js/tela-analises.js?v=2026.10.14-2"></script>
+  <script src="js/tela-avisos.js?v=2026.10.14-2"></script>
+  <script src="js/tela-frase.js?v=2026.10.14-2"></script>
 </body>
 </html>

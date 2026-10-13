@@ -636,7 +636,10 @@ button { -webkit-tap-highlight-color: transparent; }
 
 /* ---------- Seus dados (backup) ---------- */
 
-.versao { margin: 32px 0 0; text-align: center; font-size: 0.75rem; color: var(--texto-suave); }
+.marca { margin: 40px 0 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.marca-nome { font-size: 1.6rem; font-weight: 600; letter-spacing: -1px; }
+.marca-ponto { color: var(--lima); }
+.versao { text-align: center; font-size: 0.75rem; line-height: 1.5; color: var(--texto-suave); }
 
 .dados { margin-top: 8px; }
 .dados-texto { font-size: 0.8rem; color: var(--texto-suave); margin: 0 0 12px; }
