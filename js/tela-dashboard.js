@@ -61,7 +61,7 @@ function criarBarra({ categoria, valor, fracao }, maior, selecionada, temDestaqu
     <button type="button" class="barra-linha${temDestaque ? (ativa ? ' destacada' : ' apagada') : ''}"
       aria-pressed="${ativa}" aria-label="${cat.nome}: ${Dinheiro.formatar(valor)}, ${pct} das saídas">
       <span class="barra-topo">
-        <span class="barra-nome">${cat.icone} ${cat.nome}</span>
+        <span class="barra-nome">${icone(cat.icone, 16)}${cat.nome}</span>
         <span class="barra-valor">${Dinheiro.formatar(valor)} <span class="barra-pct">${pct}</span></span>
       </span>
       <span class="barra-trilho"><span class="barra" style="width: ${largura}%"></span></span>
