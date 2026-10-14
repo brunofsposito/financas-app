@@ -2,8 +2,10 @@
 // localStorage é um "banco" bem simples do navegador: guarda texto por chave.
 // Por isso transformamos cada lista em texto (JSON) para salvar
 // e de volta em lista para ler.
-// Cada "tabela" (lancamentos, contas) fica numa chave própria.
-// Se um dia trocarmos por um servidor, só este arquivo muda.
+// Cada "tabela" (lancamentos, contas, orcamentos) fica numa chave própria.
+//
+// Com a nuvem (nuvem.js), este continua sendo o único ponto de gravação: depois de
+// salvar no celular, ele avisa a nuvem do que mudou (D03 pagando a conta).
 
 const Storage = {
   // O "v1" no nome permite mudar o formato dos dados no futuro sem perder o antigo.
@@ -22,9 +24,12 @@ const Storage = {
     }
   },
 
-  salvar(tabela, registros) {
+  // opcoes.semNuvem: gravação que veio DA nuvem (não precisa voltar para ela)
+  salvar(tabela, registros, opcoes = {}) {
     try {
+      const antes = opcoes.semNuvem ? null : this.carregar(tabela);
       localStorage.setItem(this.chave(tabela), JSON.stringify(registros));
+      if (antes && typeof Nuvem !== 'undefined') Nuvem.anotarMudancas(tabela, antes, registros);
       return true;
     } catch (erro) {
       console.error(`Não foi possível salvar os dados (${tabela}).`, erro);
