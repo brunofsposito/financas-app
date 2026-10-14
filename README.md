@@ -22,7 +22,7 @@ App simples de finanças pessoais, feito para o celular (visual escuro com cores
 - **Alerta no topo** quando há conta atrasada ou vencendo nos próximos 5 dias.
 - **Previsão para o fim do mês:** saldo do mês menos as contas fixas ainda não pagas.
 - **Adicionar ao Calendário do iPhone:** cada conta vira um evento mensal com alarmes (um dia antes e no dia, às 9h). O aviso chega mesmo com o app fechado.
-- Os dados ficam salvos no próprio navegador (continuam lá ao fechar e abrir).
+- **Conta na nuvem (opcional):** com login, tudo é salvo automaticamente no Supabase e sincronizado entre aparelhos, funcionando também sem internet. Sem login, os dados ficam só no navegador (continuam lá ao fechar e abrir).
 - Backup: exportar todos os lançamentos para um arquivo e importar de volta (seção "Seus dados", no fim da tela).
 
 ## Como rodar
@@ -48,6 +48,12 @@ Não precisa instalar nada.
 | `js/orcamentos.js` | Regras dos orçamentos: gasto, previsto e status de cada limite |
 | `js/contas.js` | Regras das contas fixas: vencimento, status e alertas |
 | `js/calendario.js` | Gera o arquivo de calendário (.ics) com as contas fixas e os alarmes |
+| `js/config.js` | Endereço e chave pública do projeto Supabase (vazio = só no celular) |
+| `js/nuvem.js` | Login e sincronização "offline primeiro": fila de alterações, enviar e puxar |
+| `js/tela-nuvem.js` | A seção "Sua conta" em Ajustes |
+| `js/vendor/` | Biblioteca do Supabase incluída no app (sem depender de CDN) |
+| `supabase/schema.sql` | Tabelas e regras de segurança (RLS) do banco na nuvem |
+| `docs/SUPABASE.md` | Passo a passo para ligar a nuvem |
 | `js/backup.js` | Exportar e importar os dados (montar, validar e juntar o arquivo) |
 | `js/icones.js` | Catálogo de ícones de linha (SVG); categorias e telas usam o nome do ícone |
 | `js/tela-avisos.js` | Avisos: o mais urgente no topo, com a ação que resolve; os demais em "+N avisos" |
@@ -212,3 +218,11 @@ Não precisa instalar nada.
 - **Uma fonte da verdade para o ícone:** os PNG (180, 192 e 512 px) são gerados a partir de um SVG só. Mudar o logo é mudar um arquivo.
 - **Manifest (PWA):** um JSON que diz ao celular o nome, os ícones, as cores e que o app abre em tela cheia. É o que separa "um site" de "um app instalado".
 - **Marca × registro** (negócio): antes de ir para o mercado, é preciso checar o INPI, as lojas de apps e o domínio. Um nome bom que já é de outra empresa vira um problema jurídico.
+
+### Banco na nuvem (Supabase)
+- **Offline primeiro:** o app salva no celular e anota a alteração numa fila. Com internet, a fila sobe para a nuvem. Por isso continua instantâneo e funciona sem sinal.
+- **RLS (Row Level Security):** a regra "cada pessoa só vê as próprias linhas" fica **no banco**, não no app. Mesmo que alguém tenha a chave pública, não lê os dados dos outros. É a segregação de dados que bancos exigem.
+- **Upsert e sincronização:** cada alteração vira um `INSERT ... ON CONFLICT DO UPDATE`. Ao abrir, o app puxa tudo e dá prioridade ao que ainda não foi enviado.
+- **Arquitetura que paga a conta:** como só o `storage.js` grava dados (D03, do primeiro dia), ligar a nuvem foi adicionar um aviso num lugar só, sem mexer nas telas.
+- **Testar sem o serviço real:** um "Supabase falso" simulou dois celulares, falta de internet e outro usuário.
+- **LGPD na prática** (fintech): os dados financeiros agora ficam num servidor (no Brasil, região São Paulo), protegidos por login e RLS, e "sair" apaga a cópia do aparelho. É o tipo de decisão que um PO de fintech precisa saber justificar.

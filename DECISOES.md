@@ -255,3 +255,17 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 **Decisão (Bruno, "por enquanto"):** o app passa a se chamar **Sobra**, com a assinatura "sobra." (ponto em limão) e a frase "Quanto entra, quanto sai, quanto sobra." O ícone é um anel: o cinza é o que já saiu e o arco limão é o que sobra. Opções descartadas: Fôlego (emocional, mas não diz que é de finanças) e Trilho (sério demais).
 **Técnico:** `manifest.webmanifest` (nome, ícones 192/512, tela cheia, cores) e `apple-touch-icon` de 180 px para o iPhone, todos gerados a partir de `icones/sobra.svg`. O endereço do app e o nome do repositório continuam `financas-app`.
 **Pendente antes de ir para o mercado:** verificar o nome no INPI, nas lojas de apps e o domínio.
+
+### D38 · 🧭🛠️ Banco na nuvem com Supabase, "offline primeiro"
+**Data:** 14/10/2026
+**Contexto:** o backup manual era um incômodo (dados só no celular, D02).
+**Decisão (Bruno):** adotar o **Supabase** (PostgreSQL + login) como banco na nuvem. Isso muda o princípio da D02: com login, os dados financeiros ficam também num servidor de terceiros, na região São Paulo.
+**Como:**
+- **Tabelas** `lancamentos`, `contas` e `orcamentos`, iguais às do app, com `user_id` e **RLS** ("só o dono") — `supabase/schema.sql`.
+- **Offline primeiro:** o app grava no celular, o `storage.js` anota cada mudança numa **fila**, e a fila é enviada (upsert/delete) quando houver internet. Ao abrir ou entrar, o app **puxa** tudo e dá prioridade ao que ainda não foi enviado.
+- **Primeiro login** neste celular: tudo o que já existe localmente sobe para a nuvem.
+- **Sair** apaga a cópia local (a nuvem mantém tudo), para outra pessoa no mesmo aparelho não ver os dados.
+- **Login com e-mail e senha** (funciona dentro do app instalado; o "link mágico" abriria o Safari, fora do app).
+- **Biblioteca do Supabase incluída no repositório** (`js/vendor/`), sem CDN. A chave pública fica em `js/config.js` (é pública por design; quem protege é o RLS). A chave secreta nunca entra no app.
+- Sem configuração, o app funciona exatamente como antes, só no celular.
+**Limitações:** o plano gratuito pausa o projeto depois de 7 dias sem uso. Em conflitos entre aparelhos, vence a última alteração enviada. Testado com um Supabase simulado; falta validar com o projeto real.
