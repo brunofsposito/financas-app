@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=2026.10.14-2">
+  <link rel="stylesheet" href="css/style.css?v=2026.10.14-3">
 </head>
 <body>
   <header class="topo">
@@ -198,11 +198,48 @@
     <!-- ===== Aba Ajustes ===== -->
     <div class="aba" data-aba="ajustes" hidden>
 
+    <!-- Conta e sincronização na nuvem (Supabase) -->
+    <section class="conta-nuvem" aria-labelledby="titulo-nuvem">
+      <h2 class="subtitulo" id="titulo-nuvem">Sua conta</h2>
+      <p id="nuvem-desligada" class="dados-texto">A sincronização na nuvem ainda não foi configurada. Por enquanto, os dados ficam só neste celular.</p>
+
+      <form id="form-nuvem" class="form-nuvem" novalidate hidden>
+        <p class="dados-texto">Entre para salvar tudo na nuvem automaticamente. Sem backup manual, e com os mesmos dados em qualquer aparelho.</p>
+        <label class="campo">
+          <span>E-mail</span>
+          <input name="email" type="email" autocomplete="email" inputmode="email" required>
+        </label>
+        <label class="campo">
+          <span>Senha</span>
+          <input name="senha" type="password" autocomplete="current-password" minlength="6" required>
+        </label>
+        <p id="nuvem-erro" class="mensagem-backup" role="status"></p>
+        <div class="acoes">
+          <button type="button" id="nuvem-criar" class="botao botao-secundario">Criar conta</button>
+          <button type="submit" class="botao botao-primario">Entrar</button>
+        </div>
+      </form>
+
+      <div id="nuvem-conectada" class="nuvem-conectada" hidden>
+        <div class="nuvem-linha">
+          <span class="item-icone"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.7-9h1.8a4.5 4.5 0 1 1 0 9z"/></svg></span>
+          <span class="item-texto">
+            <span id="nuvem-email" class="item-descricao"></span>
+            <span id="nuvem-status" class="nuvem-status" role="status"></span>
+          </span>
+        </div>
+        <div class="acoes">
+          <button type="button" id="nuvem-sair" class="botao botao-secundario">Sair</button>
+          <button type="button" id="nuvem-sincronizar" class="botao botao-secundario">Sincronizar agora</button>
+        </div>
+      </div>
+    </section>
+
     <!-- Backup -->
     <section class="dados" aria-label="Seus dados">
       <h2 class="subtitulo">Seus dados</h2>
       <p class="dados-texto">
-        Os lançamentos ficam só neste navegador. Faça backup de vez em quando.
+        <span id="dados-explicacao">Os lançamentos ficam só neste navegador. Faça backup de vez em quando.</span>
         <br><span id="ultimo-backup">Nenhum backup feito ainda.</span>
       </p>
       <div class="acoes">
@@ -215,7 +252,7 @@
 
     <div class="marca">
       <span class="marca-nome">sobra<span class="marca-ponto">.</span></span>
-      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.14-2</span>
+      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.14-3</span>
     </div>
     </div>
   </main>
@@ -381,22 +418,27 @@
   <!-- "?v=..." em cada arquivo: quebra o cache. Ao publicar uma versão nova, troque o número
        (aqui e em Ajustes) e o celular é obrigado a baixar os arquivos novos. -->
   <!-- A ordem importa: cada arquivo usa o que foi carregado antes dele -->
-  <script src="js/icones.js?v=2026.10.14-2"></script>
-  <script src="js/categorias.js?v=2026.10.14-2"></script>
-  <script src="js/storage.js?v=2026.10.14-2"></script>
-  <script src="js/lancamentos.js?v=2026.10.14-2"></script>
-  <script src="js/contas.js?v=2026.10.14-2"></script>
-  <script src="js/frase.js?v=2026.10.14-2"></script>
-  <script src="js/calendario.js?v=2026.10.14-2"></script>
-  <script src="js/orcamentos.js?v=2026.10.14-2"></script>
-  <script src="js/analises.js?v=2026.10.14-2"></script>
-  <script src="js/backup.js?v=2026.10.14-2"></script>
-  <script src="js/app.js?v=2026.10.14-2"></script>
-  <script src="js/tela-contas.js?v=2026.10.14-2"></script>
-  <script src="js/tela-dashboard.js?v=2026.10.14-2"></script>
-  <script src="js/tela-orcamentos.js?v=2026.10.14-2"></script>
-  <script src="js/tela-analises.js?v=2026.10.14-2"></script>
-  <script src="js/tela-avisos.js?v=2026.10.14-2"></script>
-  <script src="js/tela-frase.js?v=2026.10.14-2"></script>
+  <!-- Nuvem: configuração do projeto e biblioteca do Supabase (incluída no app, sem CDN) -->
+  <script src="js/config.js?v=2026.10.14-3"></script>
+  <script src="js/vendor/supabase-2.117.3.js"></script>
+  <script src="js/icones.js?v=2026.10.14-3"></script>
+  <script src="js/categorias.js?v=2026.10.14-3"></script>
+  <script src="js/storage.js?v=2026.10.14-3"></script>
+  <script src="js/lancamentos.js?v=2026.10.14-3"></script>
+  <script src="js/contas.js?v=2026.10.14-3"></script>
+  <script src="js/frase.js?v=2026.10.14-3"></script>
+  <script src="js/calendario.js?v=2026.10.14-3"></script>
+  <script src="js/orcamentos.js?v=2026.10.14-3"></script>
+  <script src="js/analises.js?v=2026.10.14-3"></script>
+  <script src="js/backup.js?v=2026.10.14-3"></script>
+  <script src="js/nuvem.js?v=2026.10.14-3"></script>
+  <script src="js/app.js?v=2026.10.14-3"></script>
+  <script src="js/tela-contas.js?v=2026.10.14-3"></script>
+  <script src="js/tela-dashboard.js?v=2026.10.14-3"></script>
+  <script src="js/tela-orcamentos.js?v=2026.10.14-3"></script>
+  <script src="js/tela-analises.js?v=2026.10.14-3"></script>
+  <script src="js/tela-avisos.js?v=2026.10.14-3"></script>
+  <script src="js/tela-frase.js?v=2026.10.14-3"></script>
+  <script src="js/tela-nuvem.js?v=2026.10.14-3"></script>
 </body>
 </html>

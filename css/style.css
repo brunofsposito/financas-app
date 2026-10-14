@@ -634,6 +634,18 @@ button { -webkit-tap-highlight-color: transparent; }
 .botao-calendario[hidden] { display: none; }
 .dialogo .botao-calendario { margin-top: 14px; font-size: 0.9rem; }
 
+/* ---------- Conta e nuvem ---------- */
+
+.conta-nuvem { margin-bottom: 8px; }
+.form-nuvem[hidden], .nuvem-conectada[hidden], #nuvem-desligada[hidden] { display: none; }
+.nuvem-conectada { display: flex; flex-direction: column; gap: 14px; background: var(--superficie); border-radius: var(--raio); padding: 14px; }
+.nuvem-linha { display: flex; align-items: center; gap: 12px; }
+.nuvem-status { font-size: 0.78rem; }
+.nuvem-ok { color: var(--lima); }
+.nuvem-aviso { color: var(--aviso); }
+.nuvem-perigo { color: var(--perigo); }
+.nuvem-conectada .botao:disabled { opacity: 0.5; }
+
 /* ---------- Seus dados (backup) ---------- */
 
 .marca { margin: 40px 0 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
