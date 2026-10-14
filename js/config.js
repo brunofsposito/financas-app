@@ -10,6 +10,6 @@
 // Enquanto estiver vazio, o app funciona só no celular, como antes.
 
 const CONFIG_NUVEM = {
-  url: '',
-  chave: '',
+  url: 'https://wauxtuxwxyeqohbtkgav.supabase.co',
+  chave: 'sb_publishable_dRmhN69s-KpuPvVsVX7Ijw_r42WmTps',
 };
