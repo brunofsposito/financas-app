@@ -8,8 +8,13 @@ Dá para fazer pelo celular, mas é mais confortável no computador.
 2. **New project**:
    - **Name:** `sobra`
    - **Database Password:** clique em *Generate a password* e **guarde num lugar seguro** (o app não usa essa senha; ela serve só para acesso direto ao banco).
-   - **Region:** **South America (São Paulo)**. Os dados ficam no Brasil e o app responde mais rápido.
+   - **Region:** **South America (São Paulo)** se aparecer; se a tela só oferecer regiões amplas, escolha **Americas**.
    - **Plano:** Free.
+   - **Security:**
+     - ✅ **Enable Data API** (ligado: o app conversa com o banco por ela);
+     - ⬜ **Automatically expose new tables** (desligado: o `schema.sql` libera as tabelas uma a uma, com `grant`);
+     - ✅ **Enable automatic RLS** (ligado: rede de segurança para tabelas futuras).
+   - **Postgres Type:** Postgres (default).
 3. Espere o projeto ficar pronto (1 a 2 minutos).
 
 ## 2. Criar as tabelas

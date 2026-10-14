@@ -53,7 +53,16 @@ create table if not exists public.orcamentos (
 -- Índice para a consulta mais comum: lançamentos de um mês
 create index if not exists lancamentos_por_data on public.lancamentos (user_id, data);
 
+-- ---------- Segurança: quem pode acessar as tabelas ----------
+-- Com "Automatically expose new tables" desligado no projeto, nenhuma tabela
+-- nova fica acessível pela API. Liberamos só para quem está logado (authenticated);
+-- visitante anônimo (anon) não acessa nada. É como um GRANT de SQL comum.
+grant select, insert, update, delete on public.lancamentos to authenticated;
+grant select, insert, update, delete on public.contas      to authenticated;
+grant select, insert, update, delete on public.orcamentos  to authenticated;
+
 -- ---------- Segurança: RLS ----------
+-- O GRANT diz "pode acessar a tabela"; o RLS diz "quais linhas".
 alter table public.lancamentos enable row level security;
 alter table public.contas      enable row level security;
 alter table public.orcamentos  enable row level security;
