@@ -282,3 +282,13 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - **Orçamento fica fora do formulário** por enquanto (decisão adiada pelo Bruno).
 **Próximo passo:** projeção do acumulado (sem saldo inicial e sem juros, decisão do Bruno), usando fixos + média dos gastos variáveis.
 
+
+### D40 · 🧭🛠️ Categoria, tipo e entrada/saída sugeridos pelo nome
+**Data:** 15/10/2026
+**Contexto:** ao digitar "Internet", o Bruno ainda precisava escolher Moradia e Pessoal na mão.
+**Decisão (Bruno):** o formulário já pré-seleciona a partir da descrição.
+**Como:** `sugerirPelaDescricao` (em `frase.js`, junto das outras regras de texto):
+1. **Histórico primeiro:** se você já lançou algo com o mesmo nome, repete a categoria, o tipo e o movimento daquela vez (o app aprende com o seu uso).
+2. **Dicionário depois:** o mesmo da frase rápida ("internet" → Moradia; "salário" → entrada, Salário, Profissional).
+- Só no **lançamento novo**; na edição, vale o que foi salvo. Se você escolher categoria, tipo ou movimento na mão, a sugestão para de mexer.
+- A tela avisa "Categoria · sugerida pelo nome" (visibilidade do status, Nielsen 1) e rola o carrossel até a categoria escolhida.

@@ -117,3 +117,29 @@ function somarDias(iso, dias) {
   const data = new Date(a, m - 1, d + dias);
   return dataISO(data.getFullYear(), data.getMonth() + 1, data.getDate());
 }
+
+// ---------- Sugestão pelo nome (formulário) ----------
+
+// Ao digitar a descrição, sugere categoria, tipo e (às vezes) entrada/saída.
+// 1º o seu histórico: o último lançamento com o mesmo nome (aprende com você).
+// 2º o dicionário: "internet" -> Moradia, "salário" -> Salário (entrada, profissional).
+// Devolve { movimento, categoria, tipo } ou null quando não reconhece.
+function sugerirPelaDescricao(descricao, movimentoAtual, lancamentos = []) {
+  const nome = normalizar(descricao.trim());
+  if (nome.length < 3) return null;
+
+  // SELECT ... FROM lancamentos WHERE descricao = ? ORDER BY data DESC LIMIT 1
+  const anterior = lancamentos
+    .filter((l) => normalizar(l.descricao) === nome)
+    .sort((a, b) => b.data.localeCompare(a.data))[0];
+  if (anterior) return { movimento: anterior.movimento, categoria: anterior.categoria, tipo: anterior.tipo };
+
+  // Palavra de entrada ("salário", "freela") vira entrada; senão, fica no que está escolhido
+  const movimento = PALAVRAS_ENTRADA.test(nome) ? 'entrada' : movimentoAtual;
+  const encontrada = DICIONARIO_CATEGORIAS[movimento].find(([regra]) => regra.test(nome));
+  if (!encontrada) return null;
+  const categoria = encontrada[1];
+  const tipo = PALAVRAS_PROFISSIONAL.test(nome) || categoria === 'salario' ? 'profissional' : 'pessoal';
+  return { movimento, categoria, tipo };
+}
+

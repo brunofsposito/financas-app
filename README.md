@@ -20,6 +20,7 @@ App simples de finanças pessoais, feito para o celular (visual escuro com cores
 - **Orçamento por categoria:** limite mensal (ex.: Mercado até R$ 800) com barra de progresso. A barra separa o que já foi gasto do que está previsto em contas fixas, e mostra os status "perto do limite", "vai estourar" e "estourou".
 - **Fixos do mês:** contas (aluguel, internet, assinaturas) e entradas fixas (salário), com dia de vencimento, status no mês (paga/recebida, vence em X dias, atrasada) e botões **Paguei** / **Recebi**, que criam o lançamento.
 - **"Repete todo mês" no próprio lançamento:** ao lançar uma conta paga ou uma entrada, ligue a chave e ela vira fixo, sem ir a outra aba.
+- **Sugestão pelo nome:** digitou "Internet", o app já marca Moradia e Pessoal; "Salário" vira entrada profissional. Primeiro ele olha o seu histórico, depois um dicionário.
 - **Alerta no topo** quando há conta atrasada ou vencendo nos próximos 5 dias.
 - **Previsão para o fim do mês:** saldo do mês, mais as entradas fixas que ainda vão cair, menos as contas fixas ainda não pagas.
 - **Adicionar ao Calendário do iPhone:** cada conta vira um evento mensal com alarmes (um dia antes e no dia, às 9h). O aviso chega mesmo com o app fechado.
@@ -236,4 +237,4 @@ Não precisa instalar nada.
 - **Molde × ocorrência:** o fixo é o "molde" (tabela `contas`) e cada mês é uma ocorrência (o lançamento com `contaId` e `competencia`). Ligar a chave grava os dois de uma vez.
 - **Migração de banco sem quebrar nada:** `alter table ... add column if not exists movimento ... default 'saida'`. As contas antigas viram saídas automaticamente, e o app trata o campo ausente do mesmo jeito.
 - **Fluxo de caixa com os dois lados** (fintech): a previsão agora soma o que vai entrar e subtrai o que vai sair. Separar o **fixo** (certo) do **variável** (estimado) é a base da projeção que vem a seguir.
-
+- **Classificação automática** (fintech): sugerir a categoria pelo nome é o que bancos fazem com o nome do estabelecimento na fatura. Histórico pessoal primeiro, regra geral depois, e a decisão final é sempre do usuário.

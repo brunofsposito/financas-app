@@ -888,6 +888,8 @@ button { -webkit-tap-highlight-color: transparent; }
 
 .grupo-chips { margin: 0 0 14px; padding: 0; border: none; min-width: 0; }
 .grupo-chips legend { font-size: 0.78rem; color: var(--texto-suave); padding: 0; margin-bottom: 8px; }
+.grupo-chips .sugerida { color: var(--lima); }
+.grupo-chips .sugerida[hidden] { display: none; }
 
 /* Chips de categoria: uma linha que rola para o lado */
 .chips-rolagem {

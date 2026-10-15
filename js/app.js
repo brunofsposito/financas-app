@@ -10,6 +10,7 @@ const estado = {
   editandoId: null, // id do lançamento aberto no formulário (null = novo)
   pagando: null, // { contaId, competencia } quando o formulário registra o pagamento de uma conta
   diaTocado: false, // a pessoa mexeu no "todo dia"? Se não, ele acompanha a data escolhida
+  escolhaManual: false, // a pessoa já escolheu categoria/tipo/movimento? Então a sugestão pelo nome para
   filtros: { tipo: '', categoria: '' }, // '' = todos
 };
 
@@ -45,6 +46,7 @@ const el = {
   repeteDiaRotulo: document.getElementById('repete-dia-rotulo'),
   repeteAjuda: document.getElementById('repete-ajuda'),
   infoConta: document.getElementById('info-conta'),
+  categoriaSugerida: document.getElementById('categoria-sugerida'),
   toast: document.getElementById('toast'),
   toastTexto: document.getElementById('toast-texto'),
   toastDesfazer: document.getElementById('toast-desfazer'),
@@ -291,6 +293,9 @@ function abrirFormulario(lancamento = null, pagamento = null, sugestao = null) {
   el.erro.textContent = '';
   estado.editandoId = lancamento ? lancamento.id : null;
   estado.pagando = pagamento ? { contaId: pagamento.conta.id, competencia: pagamento.competencia } : null;
+  // Só o lançamento novo, em branco, recebe sugestão pelo nome. Nos outros, o que está salvo vale.
+  estado.escolhaManual = Boolean(lancamento || pagamento || sugestao);
+  el.categoriaSugerida.hidden = true;
 
   el.tituloFormulario.textContent = lancamento ? 'Editar lançamento'
     : pagamento ? `${Contas.ehEntrada(pagamento.conta) ? 'Receber' : 'Pagar'}: ${pagamento.conta.descricao}`
@@ -350,6 +355,27 @@ function sugerirDiaRepete() {
   f.dia.value = Number(f.data.value.slice(8, 10));
 }
 
+// ---------- Sugestão pelo nome ----------
+
+// Digitou "Internet": já marca Moradia e Pessoal (frase.js decide; aqui só aplica na tela)
+function aplicarSugestaoPelaDescricao() {
+  if (estado.escolhaManual) return;
+  const f = el.formulario.elements;
+  const s = sugerirPelaDescricao(f.descricao.value, f.movimento.value, Lancamentos.listar());
+  if (!s) return;
+  if (f.movimento.value !== s.movimento) {
+    f.movimento.value = s.movimento;
+    preencherCategorias(s.movimento);
+    atualizarTextosRepete();
+  }
+  f.categoria.value = s.categoria;
+  f.tipo.value = s.tipo;
+  el.categoriaSugerida.hidden = false;
+  // A categoria escolhida pode estar fora da vista no carrossel
+  const chip = el.chipsCategoria.querySelector('input:checked');
+  if (chip) chip.closest('label').scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+}
+
 function lerFormulario() {
   const f = el.formulario.elements;
   const valor = Dinheiro.paraCentavos(f.valor.value);
@@ -393,9 +419,15 @@ el.formulario.addEventListener('input', (evento) => {
   el.erro.textContent = ''; // corrigiu algo: some a mensagem de erro
   if (evento.target.name === 'valor') ajustarLarguraValor();
   if (evento.target.name === 'dia') estado.diaTocado = true;
+  if (evento.target.name === 'descricao') aplicarSugestaoPelaDescricao();
 });
 
 el.formulario.addEventListener('change', (evento) => {
+  // Escolheu na mão: a sugestão pelo nome não mexe mais
+  if (['categoria', 'tipo', 'movimento'].includes(evento.target.name)) {
+    estado.escolhaManual = true;
+    el.categoriaSugerida.hidden = true;
+  }
   // Ao trocar entre Entrada e Saída, a lista de categorias muda junto
   if (evento.target.name === 'movimento') {
     preencherCategorias(evento.target.value);
