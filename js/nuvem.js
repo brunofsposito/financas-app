@@ -30,12 +30,12 @@ const TABELAS_NUVEM = {
     chave: 'id',
     conflito: 'user_id,id',
     paraLinha: (c, uid) => ({
-      user_id: uid, id: c.id, descricao: c.descricao, valor: c.valor, dia: c.dia,
+      user_id: uid, id: c.id, movimento: c.movimento || 'saida', descricao: c.descricao, valor: c.valor, dia: c.dia,
       categoria: c.categoria, tipo: c.tipo, inicio: c.inicio,
       criado_em: c.criadoEm || new Date().toISOString(), atualizado_em: c.atualizadoEm || null,
     }),
     paraLocal: (r) => limparVazios({
-      id: r.id, descricao: r.descricao, valor: r.valor, dia: r.dia, categoria: r.categoria,
+      id: r.id, movimento: r.movimento, descricao: r.descricao, valor: r.valor, dia: r.dia, categoria: r.categoria,
       tipo: r.tipo, inicio: r.inicio, criadoEm: r.criado_em, atualizadoEm: r.atualizado_em,
     }),
   },

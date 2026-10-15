@@ -40,6 +40,11 @@ create table if not exists public.contas (
   primary key (user_id, id)
 );
 
+-- Entradas fixas (D39): a conta pode ser saída (aluguel) ou entrada (salário).
+-- "add column if not exists" deixa rodar este arquivo de novo num banco que já existe.
+alter table public.contas add column if not exists movimento text not null default 'saida'
+  check (movimento in ('entrada', 'saida'));
+
 -- ---------- Orçamentos (um limite por categoria) ----------
 create table if not exists public.orcamentos (
   user_id       uuid not null default auth.uid() references auth.users (id) on delete cascade,

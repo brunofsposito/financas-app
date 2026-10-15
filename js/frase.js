@@ -1,7 +1,7 @@
 // Frase rápida (V4): transforma "gastei 45 no mercado ontem" num lançamento.
 // Só regras, sem servidor e sem IA: valor = primeiro número; entrada ou saída
 // por palavras como "recebi"; categoria por um dicionário de palavras; data por
-// "hoje", "ontem", "dia 10" ou "10/10". Com "todo dia 7", vira conta fixa.
+// "hoje", "ontem", "dia 10" ou "10/10". Com "todo dia 7", vira fixo (conta ou entrada).
 // Este arquivo não sabe nada de tela: recebe um texto e devolve dados.
 
 // Palavras que indicam dinheiro ENTRANDO
@@ -95,7 +95,7 @@ function interpretarFrase(texto, hoje = hojeISO()) {
   const descricao = criarDescricao(original) || buscarCategoria(categoria).nome;
 
   const dados = { movimento, valor, descricao, categoria, tipo, data };
-  if (diaConta && movimento === 'saida') {
+  if (diaConta) {
     return { ok: true, tipo: 'conta', dados: { ...dados, dia: Math.min(Math.max(diaConta, 1), 31) } };
   }
   return { ok: true, tipo: 'lancamento', dados };

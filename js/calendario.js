@@ -32,8 +32,12 @@ const Calendario = {
   evento(conta) {
     const [ano, mes] = conta.inicio.split('-').map(Number);
     const primeiro = Contas.vencimentoNoMes(conta, ano, mes).replace(/-/g, '');
-    const titulo = `💸 ${conta.descricao} · ${Dinheiro.formatar(conta.valor)}`;
+    const entrada = Contas.ehEntrada(conta);
+    const titulo = `${entrada ? '💰' : '💸'} ${conta.descricao} · ${Dinheiro.formatar(conta.valor)}`;
     const url = location.href.split('#')[0].split('?')[0];
+    const descricao = entrada
+      ? `Entrada fixa: cai todo dia ${conta.dia}. Valor previsto: ${Dinheiro.formatar(conta.valor)}.\nQuando cair, toque em "Recebi" no app: ${url}`
+      : `Conta fixa: vence todo dia ${conta.dia}. Valor previsto: ${Dinheiro.formatar(conta.valor)}.\nDepois de pagar, toque em "Paguei" no app: ${url}`;
     return [
       'BEGIN:VEVENT',
       // UID fixo por conta: identifica o mesmo evento se for importado de novo
@@ -42,10 +46,11 @@ const Calendario = {
       `DTSTART;VALUE=DATE:${primeiro}`,
       `RRULE:${this.regraMensal(conta.dia)}`,
       `SUMMARY:${escapar(titulo)}`,
-      `DESCRIPTION:${escapar(`Conta fixa: vence todo dia ${conta.dia}. Valor previsto: ${Dinheiro.formatar(conta.valor)}.\nDepois de pagar, toque em "Paguei" no app: ${url}`)}`,
+      `DESCRIPTION:${escapar(descricao)}`,
       `URL:${url}`,
       'TRANSP:TRANSPARENT', // não marca você como "ocupado" no dia
-      ...this.ALARMES.flatMap((a) => [
+      // Alarme só para conta a pagar: entrada não precisa de lembrete de vencimento
+      ...(entrada ? [] : this.ALARMES).flatMap((a) => [
         'BEGIN:VALARM',
         'ACTION:DISPLAY',
         `TRIGGER:${a.gatilho}`,

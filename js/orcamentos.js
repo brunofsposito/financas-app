@@ -39,7 +39,8 @@ const Orcamentos = {
   // status: 'estourado' | 'vai-estourar' | 'perto' | 'ok'
   doMes(ano, mes, hojeISO) {
     const lancamentos = Lancamentos.doMes(ano, mes);
-    const contasPendentes = Contas.doMes(ano, mes, hojeISO).filter((o) => o.status !== 'paga');
+    const contasPendentes = Contas.doMes(ano, mes, hojeISO)
+      .filter((o) => o.status !== 'paga' && !Contas.ehEntrada(o.conta));
 
     return this.listar()
       .map(({ categoria, limite }) => {

@@ -99,6 +99,11 @@ const Lancamentos = {
       tipo: dados.tipo,
       atualizadoEm: new Date().toISOString(),
     };
+    // Lançamento que virou recorrente na edição: passa a apontar para a conta nova
+    if (dados.contaId) {
+      todos[indice].contaId = dados.contaId;
+      todos[indice].competencia = dados.competencia;
+    }
     Storage.salvar('lancamentos', todos);
     return todos[indice];
   },

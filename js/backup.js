@@ -100,6 +100,7 @@ function orcamentoValido(o) {
 function contaValida(c) {
   return c
     && typeof c.id === 'string' && c.id
+    && (c.movimento === undefined || c.movimento === 'entrada' || c.movimento === 'saida')
     && typeof c.descricao === 'string'
     && Number.isInteger(c.valor) && c.valor > 0
     && Number.isInteger(c.dia) && c.dia >= 1 && c.dia <= 31

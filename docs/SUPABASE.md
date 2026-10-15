@@ -57,3 +57,12 @@ Dá para fazer pelo celular, mas é mais confortável no computador.
   where movimento = 'saida' and data >= date_trunc('month', now())
   group by categoria order by 2 desc;
   ```
+
+## Atualizações do banco
+Quando o app ganha um campo novo, rode o comando no **SQL Editor** (pode rodar mais de uma vez, sem problema):
+
+| Data | O que muda | SQL |
+|---|---|---|
+| 15/10/2026 | Entradas fixas (D39): coluna `movimento` em `contas` | `alter table public.contas add column if not exists movimento text not null default 'saida' check (movimento in ('entrada', 'saida'));` |
+
+Rodar o `schema.sql` inteiro de novo também funciona: ele só cria o que ainda não existe.

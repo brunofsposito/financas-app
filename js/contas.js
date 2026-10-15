@@ -1,4 +1,5 @@
-// Contas recorrentes (Fase 2): aluguel, internet, assinaturas...
+// Contas recorrentes (Fase 2): aluguel, internet, assinaturas... e também
+// entradas fixas, como o salário (campo `movimento`, D39).
 // Uma conta é um "molde" que se repete todo mês num dia de vencimento.
 //
 // A conta NÃO guarda se foi paga. O pagamento é um lançamento comum com
@@ -17,9 +18,19 @@ const Contas = {
     return this.listar().find((c) => c.id === id) || null;
   },
 
+  // Contas antigas não têm `movimento`: todas eram saídas
+  movimento(conta) {
+    return conta.movimento || 'saida';
+  },
+
+  ehEntrada(conta) {
+    return this.movimento(conta) === 'entrada';
+  },
+
   criar(dados) {
     const conta = {
       id: gerarId(),
+      movimento: dados.movimento || 'saida', // 'entrada' (ex.: salário) ou 'saida' (ex.: aluguel)
       descricao: dados.descricao.trim(),
       valor: dados.valor, // valor previsto, em centavos (pode variar na hora de pagar)
       dia: dados.dia, // dia do vencimento, de 1 a 31
@@ -40,6 +51,7 @@ const Contas = {
     if (indice === -1) return null;
     todas[indice] = {
       ...todas[indice],
+      movimento: dados.movimento || 'saida',
       descricao: dados.descricao.trim(),
       valor: dados.valor,
       dia: dados.dia,
@@ -102,31 +114,34 @@ const Contas = {
       .sort((a, b) => a.vencimento.localeCompare(b.vencimento));
   },
 
-  // Previsão (Entrega 2.4): quanto ainda falta pagar de contas fixas no mês.
+  // Previsão (Entrega 2.4): o que ainda falta pagar e receber de fixos no mês.
   // Usa os mesmos filtros da tela (tipo e categoria), para bater com o resumo.
-  // SELECT SUM(valor), COUNT(*) FROM contas do mês WHERE não paga AND <filtros>
-  aPagarNoMes(ano, mes, hojeISO, filtros) {
+  // SELECT movimento, SUM(valor), COUNT(*) FROM contas do mês
+  // WHERE não paga AND <filtros> GROUP BY movimento
+  pendentesNoMes(ano, mes, hojeISO, filtros) {
     const doMes = this.doMes(ano, mes, hojeISO);
     const pendentes = Lancamentos.filtrar(
       doMes.filter((o) => o.status !== 'paga').map((o) => o.conta),
       filtros,
     );
+    const resumo = (lista) => ({ quantidade: lista.length, total: lista.reduce((soma, c) => soma + c.valor, 0) });
     return {
       temContas: doMes.length > 0,
-      quantidade: pendentes.length,
-      total: pendentes.reduce((soma, c) => soma + c.valor, 0),
+      aPagar: resumo(pendentes.filter((c) => !this.ehEntrada(c))),
+      aReceber: resumo(pendentes.filter((c) => this.ehEntrada(c))),
     };
   },
 
   // Para o alerta no topo: contas atrasadas do mês atual e contas que vencem
   // nos próximos dias (olhando também o mês seguinte, para o fim do mês).
+  // Só saídas: entrada fixa (salário) não é algo que você precisa "pagar".
   alertas(hojeISO) {
     const [ano, mes] = hojeISO.split('-').map(Number);
     const seguinte = new Date(ano, mes, 1); // mês seguinte (o Date resolve a virada de ano)
     const ocorrencias = [
       ...this.doMes(ano, mes, hojeISO),
       ...this.doMes(seguinte.getFullYear(), seguinte.getMonth() + 1, hojeISO),
-    ];
+    ].filter((o) => !this.ehEntrada(o.conta));
     return {
       atrasadas: ocorrencias.filter((o) => o.status === 'atrasada'),
       emBreve: ocorrencias.filter((o) => o.status === 'hoje' || o.status === 'proxima'),
