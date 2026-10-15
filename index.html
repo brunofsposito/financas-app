@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=2026.10.15-7">
+  <link rel="stylesheet" href="css/style.css?v=2026.10.15-8">
 </head>
 <body>
   <header class="topo">
@@ -112,6 +112,11 @@
       <ul id="lista-contas" class="lista"></ul>
       <p id="contas-vazio" class="vazio vazio-contas"></p>
       <button type="button" id="ver-pagos" class="ver-pagos" aria-expanded="false" hidden></button>
+      <!-- Convite de 1 toque para ligar os lembretes (D46) -->
+      <button type="button" id="lembretes-convite" class="convite-lembretes" hidden>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        Avisar no celular quando a conta vencer
+      </button>
       <ul id="lista-pagos" class="lista lista-pagos" hidden></ul>
     </section>
 
@@ -251,6 +256,18 @@
     </section>
 
     <!-- Backup -->
+    <!-- Lembretes de vencimento por notificação (D46) -->
+    <section class="lembretes-ajustes" aria-labelledby="titulo-lembretes">
+      <h2 class="subtitulo" id="titulo-lembretes">Lembretes de vencimento</h2>
+      <p id="lembretes-texto" class="dados-texto"></p>
+      <button type="button" id="lembretes-ativar" class="botao botao-primario botao-largo" hidden>Ativar lembretes</button>
+      <div id="lembretes-ativos" class="acoes" hidden>
+        <button type="button" id="lembretes-testar" class="botao botao-secundario">Enviar um teste</button>
+        <button type="button" id="lembretes-desativar" class="botao botao-secundario">Desativar</button>
+      </div>
+      <p id="lembretes-mensagem" class="mensagem-backup" role="status"></p>
+    </section>
+
     <!-- Calendário do iPhone (Entrega 2.3): os fixos viram eventos com alarme -->
     <section class="calendario-ajustes" aria-labelledby="titulo-calendario">
       <h2 class="subtitulo" id="titulo-calendario">Calendário</h2>
@@ -275,7 +292,7 @@
 
     <div class="marca">
       <span class="marca-nome">sobra<span class="marca-ponto">.</span></span>
-      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.15-7</span>
+      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.15-8</span>
     </div>
     </div>
   </main>
@@ -466,28 +483,30 @@
        (aqui e em Ajustes) e o celular é obrigado a baixar os arquivos novos. -->
   <!-- A ordem importa: cada arquivo usa o que foi carregado antes dele -->
   <!-- Nuvem: configuração do projeto e biblioteca do Supabase (incluída no app, sem CDN) -->
-  <script src="js/config.js?v=2026.10.15-7"></script>
+  <script src="js/config.js?v=2026.10.15-8"></script>
   <script src="js/vendor/supabase-2.117.3.js"></script>
-  <script src="js/icones.js?v=2026.10.15-7"></script>
-  <script src="js/categorias.js?v=2026.10.15-7"></script>
-  <script src="js/storage.js?v=2026.10.15-7"></script>
-  <script src="js/lancamentos.js?v=2026.10.15-7"></script>
-  <script src="js/contas.js?v=2026.10.15-7"></script>
-  <script src="js/frase.js?v=2026.10.15-7"></script>
-  <script src="js/calendario.js?v=2026.10.15-7"></script>
-  <script src="js/orcamentos.js?v=2026.10.15-7"></script>
-  <script src="js/analises.js?v=2026.10.15-7"></script>
-  <script src="js/projecao.js?v=2026.10.15-7"></script>
-  <script src="js/backup.js?v=2026.10.15-7"></script>
-  <script src="js/nuvem.js?v=2026.10.15-7"></script>
-  <script src="js/app.js?v=2026.10.15-7"></script>
-  <script src="js/tela-contas.js?v=2026.10.15-7"></script>
-  <script src="js/tela-dashboard.js?v=2026.10.15-7"></script>
-  <script src="js/tela-orcamentos.js?v=2026.10.15-7"></script>
-  <script src="js/tela-analises.js?v=2026.10.15-7"></script>
-  <script src="js/tela-projecao.js?v=2026.10.15-7"></script>
-  <script src="js/tela-avisos.js?v=2026.10.15-7"></script>
-  <script src="js/tela-frase.js?v=2026.10.15-7"></script>
-  <script src="js/tela-nuvem.js?v=2026.10.15-7"></script>
+  <script src="js/icones.js?v=2026.10.15-8"></script>
+  <script src="js/categorias.js?v=2026.10.15-8"></script>
+  <script src="js/storage.js?v=2026.10.15-8"></script>
+  <script src="js/lancamentos.js?v=2026.10.15-8"></script>
+  <script src="js/contas.js?v=2026.10.15-8"></script>
+  <script src="js/frase.js?v=2026.10.15-8"></script>
+  <script src="js/calendario.js?v=2026.10.15-8"></script>
+  <script src="js/orcamentos.js?v=2026.10.15-8"></script>
+  <script src="js/analises.js?v=2026.10.15-8"></script>
+  <script src="js/projecao.js?v=2026.10.15-8"></script>
+  <script src="js/backup.js?v=2026.10.15-8"></script>
+  <script src="js/nuvem.js?v=2026.10.15-8"></script>
+  <script src="js/lembretes.js?v=2026.10.15-8"></script>
+  <script src="js/app.js?v=2026.10.15-8"></script>
+  <script src="js/tela-contas.js?v=2026.10.15-8"></script>
+  <script src="js/tela-dashboard.js?v=2026.10.15-8"></script>
+  <script src="js/tela-orcamentos.js?v=2026.10.15-8"></script>
+  <script src="js/tela-analises.js?v=2026.10.15-8"></script>
+  <script src="js/tela-projecao.js?v=2026.10.15-8"></script>
+  <script src="js/tela-avisos.js?v=2026.10.15-8"></script>
+  <script src="js/tela-frase.js?v=2026.10.15-8"></script>
+  <script src="js/tela-nuvem.js?v=2026.10.15-8"></script>
+  <script src="js/tela-lembretes.js?v=2026.10.15-8"></script>
 </body>
 </html>

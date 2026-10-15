@@ -665,7 +665,28 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 .ver-pagos[hidden], .lista-pagos[hidden] { display: none; }
 .lista-pagos { margin-top: 4px; }
-.calendario-ajustes { margin-bottom: 24px; }
+.calendario-ajustes, .lembretes-ajustes { margin-bottom: 24px; }
+.lembretes-ajustes .acoes[hidden],
+.lembretes-ajustes .botao[hidden] { display: none; }
+/* Convite para ligar os lembretes: linha discreta com sino, abaixo dos fixos */
+.convite-lembretes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--lima);
+  background: none;
+  border: 1px dashed var(--borda-forte);
+  border-radius: var(--raio);
+  cursor: pointer;
+}
+.convite-lembretes[hidden] { display: none; }
 
 .conta { position: relative; }
 /* Com botão "Paguei", o item reserva espaço à direita para ele (uma linha só, D43) */

@@ -156,6 +156,7 @@ function renderizar() {
   renderizarOrcamentos(); // tela-orcamentos.js
   renderizarAnalises(); // tela-analises.js
   renderizarProjecao(); // tela-projecao.js
+  renderizarLembretes(); // tela-lembretes.js (o convite depende de haver contas fixas)
 }
 
 // O saldo em destaque: inteiro grande e fino, centavos e "R$" pequenos ao lado

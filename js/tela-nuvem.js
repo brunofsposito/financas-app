@@ -86,6 +86,8 @@ el.nuvemSair.addEventListener('click', async () => {
     ? `Ainda há ${pendentes} ${plural(pendentes, 'alteração', 'alterações')} sem enviar e ${plural(pendentes, 'ela será perdida', 'elas serão perdidas')}. Sair mesmo assim?`
     : 'Sair da conta? Os dados saem deste celular, mas continuam salvos na nuvem.';
   if (!confirm(aviso)) return;
+  // Os lembretes deste celular eram da conta que está saindo: desliga antes
+  await Lembretes.desativar().catch(() => {});
   await Nuvem.sair();
   renderizar();
 });

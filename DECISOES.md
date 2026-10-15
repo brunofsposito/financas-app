@@ -342,3 +342,16 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - **Sem contar duas vezes:** nos meses antigos, um lançamento feito à mão que "bate" com um fixo de hoje (mesmo nome, ou mesma categoria com valor até 15% diferente) é tratado como fixo, não como variável. Sem isso, o salário de setembro entraria duas vezes.
 **Tela:** card no topo de Análises com três números (fim do mês, fim do ano, em 12 meses; em dezembro, "em 6 meses"), a linha do acumulado com a faixa, toque para ver cada mês e uma linha explicando a conta. Valores em reais inteiros: é estimativa, centavos passariam falsa precisão.
 **Não faz (ainda):** juros/rendimento, metas, saldo inicial.
+
+### D46 · 🧭🛠️ Lembretes de vencimento por notificação (push)
+**Data:** 15/10/2026
+**Pedido do Bruno:** o que for recorrente deve, por padrão, avisar no celular no dia de pagar (fatura, financiamento...).
+**Decisões do Bruno:** avisar **1 dia antes e no dia, às 9h**; a notificação mostra **o nome e o valor** ("Fatura do cartão vence hoje · R$ 1.250,00"); **conta já paga não avisa**.
+**Por que precisa de servidor:** com o app fechado, o iPhone não executa nada do Sobra, e app da web não pode agendar aviso local. Quem avisa é a nuvem, como nos apps de banco.
+**Como:**
+- **App:** `sw.js` (service worker) recebe e mostra a notificação com o app fechado. Em Ajustes, "Ativar lembretes" pede a permissão (o iPhone exige um toque, uma vez) e grava a inscrição deste celular na tabela `lembretes_push` (RLS "só o dono"). Na Início, um convite de 1 toque aparece abaixo dos fixos enquanto os lembretes estão desligados.
+- **Nuvem:** a função `lembretes` (Supabase Edge Function) roda todo dia às 9h de Brasília (pg_cron + pg_net). Ela busca as contas fixas de saída que vencem hoje ou amanhã, descarta as já pagas e envia o push. Inscrições que o celular cancelou (404/410) são apagadas.
+- **"Por padrão":** depois de ligado uma vez, todo fixo de saída, inclusive os criados depois, avisa sem precisar fazer nada.
+- **Padrão Web Push** (RFC 8291 + VAPID) escrito com WebCrypto, sem biblioteca: testado cifrando aqui e decifrando com a biblioteca de referência (`http_ece`). A chave privada VAPID e o token do agendamento ficam só nos segredos do Supabase, fora do repositório.
+- **Sair da conta** desliga os lembretes do celular.
+**Limitações:** só com o app instalado na tela de início (iOS 16.4+) e com login. O envio real só pode ser testado no iPhone.

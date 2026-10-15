@@ -12,4 +12,7 @@
 const CONFIG_NUVEM = {
   url: 'https://wauxtuxwxyeqohbtkgav.supabase.co',
   chave: 'sb_publishable_dRmhN69s-KpuPvVsVX7Ijw_r42WmTps',
+  // Lembretes (D46): chave PÚBLICA VAPID, o "crachá" que o celular confere em cada
+  // notificação. A chave privada fica só nos segredos da função no Supabase.
+  vapidPublica: 'BIXKaj97QLomh1CtYYzcqocSE3sf-2hclLJjsEPj5ozo1ZTCMDSo0_GSofJUMbjAfmCjN1mqzDIim6nVSNN0Ads',
 };

@@ -22,6 +22,7 @@ App simples de finanças pessoais, feito para o celular (visual escuro com cores
 - **A pagar e a receber** (na Início): contas (aluguel, internet, assinaturas) e entradas fixas (salário), com dia de vencimento, status no mês (paga/recebida, vence em X dias, atrasada) e botões **Paguei** / **Recebi**, que criam o lançamento.
 - **"Repete todo mês" no próprio lançamento:** ao lançar uma conta paga ou uma entrada, ligue a chave e ela vira fixo, sem ir a outra aba.
 - **Sugestão pelo nome:** digitou "Internet", o app já marca Moradia e Pessoal; "Salário" vira entrada profissional. Primeiro ele olha o seu histórico, depois um dicionário.
+- **Lembretes no celular:** notificação 1 dia antes e no dia do vencimento de cada conta fixa, às 9h, mesmo com o app fechado (veja `docs/LEMBRETES.md`).
 - **Alerta no topo** quando há conta atrasada ou vencendo nos próximos 5 dias.
 - **Previsão para o fim do mês:** saldo do mês, mais as entradas fixas que ainda vão cair, menos as contas fixas ainda não pagas.
 - **Adicionar ao Calendário do iPhone:** cada conta vira um evento mensal com alarmes (um dia antes e no dia, às 9h). O aviso chega mesmo com o app fechado.
@@ -108,6 +109,7 @@ Não precisa instalar nada.
 - [x] **Pacote B de UX** (D43): Início mais limpa, com filtro recolhido, previsão discreta e fixos em uma linha
 - [x] **Pacote C de UX** (D44): rótulos nas abas, mês só onde importa, microfone escondido no iPhone
 - [x] **Projeção do acumulado** (D45): quanto vai sobrar no fim do mês, no fim do ano e em 12 meses, sem juros
+- [x] **Lembretes de vencimento** (D46): notificação no celular 1 dia antes e no dia, às 9h
 
 ### Redesign "Lima neon" (D26)
 
@@ -266,4 +268,10 @@ Não precisa instalar nada.
 - **Faixa, não número mágico:** mostrar o pior e o melhor caso é mais honesto que um número só. Bancos fazem o mesmo em simuladores.
 - **Não contar duas vezes:** quando o modelo muda (o salário virou fixo), os dados antigos precisam ser "conciliados" com o novo modelo. É uma versão simples da conciliação da Fase 3.
 - **Precisão honesta:** estimativa em reais inteiros. Centavos numa previsão sugerem uma certeza que ela não tem.
+
+### Lembretes por notificação
+- **Por que precisa de servidor:** app no celular não executa nada fechado. Quem "acorda" e avisa é um job agendado na nuvem (pg_cron), como nos bancos.
+- **Consentimento** (fintech/LGPD): o iPhone exige que a pessoa autorize com um toque; nenhum app liga notificação sozinho. E "sair da conta" desliga.
+- **Criptografia de ponta a ponta:** a mensagem sai cifrada para aquele celular específico (só ele tem a chave), e a Apple só repassa. O servidor prova quem é com uma assinatura (VAPID).
+- **Segredo fica no servidor:** a chave privada e o token do agendamento nunca entram no repositório nem no app.
 
