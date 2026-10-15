@@ -602,6 +602,23 @@ button { -webkit-tap-highlight-color: transparent; }
 .subtitulo-linha .link { padding: 6px 0; font-size: 0.85rem; }
 
 .vazio-contas { font-size: 0.85rem; padding: 8px 0; text-align: left; }
+.contas { margin-bottom: 24px; }
+/* "Ver 2 já pagos": discreto, os pagos são consulta, não ação */
+.ver-pagos {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.ver-pagos[hidden], .lista-pagos[hidden] { display: none; }
+.lista-pagos { margin-top: 4px; }
+.calendario-ajustes { margin-bottom: 24px; }
 
 .conta { position: relative; }
 .conta .item { padding-bottom: 12px; }

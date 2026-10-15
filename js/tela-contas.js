@@ -1,10 +1,13 @@
-// Tela das contas fixas (Fase 2): lista do mês com status, botão "Paguei",
-// formulário de conta e o alerta no topo. As regras ficam em contas.js.
+// Fixos do mês (Fase 2; D41: agora um bloco da Início, não mais uma aba):
+// o que falta pagar e receber, com "Paguei"/"Recebi", e o formulário do fixo.
+// As regras ficam em contas.js.
 
 Object.assign(el, {
   secaoContas: document.getElementById('secao-contas'),
   listaContas: document.getElementById('lista-contas'),
   contasVazio: document.getElementById('contas-vazio'),
+  verPagos: document.getElementById('ver-pagos'),
+  listaPagos: document.getElementById('lista-pagos'),
   botaoNovaConta: document.getElementById('botao-nova-conta'),
   dialogoConta: document.getElementById('dialogo-conta'),
   formularioConta: document.getElementById('formulario-conta'),
@@ -22,16 +25,43 @@ Object.assign(el, {
 });
 
 estado.editandoContaId = null;
+estado.verPagos = false; // os fixos já pagos/recebidos ficam recolhidos
 
 const plural = (n, um, varios) => (n === 1 ? um : varios);
 
 // ---------- Lista de contas do mês ----------
 
+// Na Início, o que importa é o que AINDA falta: os pendentes aparecem,
+// os já pagos/recebidos ficam atrás de "Ver N já pagos".
 function renderizarContas() {
   const ocorrencias = Contas.doMes(estado.ano, estado.mes, hojeISO());
-  el.listaContas.replaceChildren(...ocorrencias.map(criarItemConta));
-  el.contasVazio.hidden = ocorrencias.length > 0;
-  el.botaoCalendario.hidden = Contas.listar().length === 0;
+  const pendentes = ocorrencias.filter((o) => o.status !== 'paga');
+  const pagos = ocorrencias.filter((o) => o.status === 'paga');
+
+  el.listaContas.replaceChildren(...pendentes.map(criarItemConta));
+  el.contasVazio.hidden = pendentes.length > 0;
+  el.contasVazio.innerHTML = ocorrencias.length === 0
+    ? 'Ao lançar uma conta ou o salário, ligue <strong>Repete todo mês</strong> e ele aparece aqui nos próximos meses.'
+    : 'Tudo pago e recebido neste mês.';
+
+  el.verPagos.hidden = pagos.length === 0;
+  el.verPagos.setAttribute('aria-expanded', String(estado.verPagos));
+  el.verPagos.textContent = estado.verPagos
+    ? 'Esconder os já pagos'
+    : `Ver ${pagos.length} ${plural(pagos.length, 'já pago', 'já pagos')}`;
+  el.listaPagos.hidden = !estado.verPagos || pagos.length === 0;
+  el.listaPagos.replaceChildren(...(estado.verPagos ? pagos.map(criarItemConta) : []));
+}
+
+el.verPagos.addEventListener('click', () => {
+  estado.verPagos = !estado.verPagos;
+  renderizarContas();
+});
+
+// Usado pelos avisos ("Ver contas"): vai para a Início e rola até os fixos
+function verFixos() {
+  irParaAba('inicio');
+  el.secaoContas.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Ícone de cada status: o selo nunca depende só da cor
@@ -233,7 +263,14 @@ function exportarParaCalendario(contas) {
     : `Arquivo gerado com ${contas.length} contas. Abra e toque em "Adicionar tudo".`;
 }
 
-el.botaoCalendario.addEventListener('click', () => exportarParaCalendario(Contas.listar()));
+el.botaoCalendario.addEventListener('click', () => {
+  const contas = Contas.listar();
+  if (contas.length === 0) {
+    el.mensagemCalendario.textContent = 'Ainda não há fixos. Ao lançar, ligue "Repete todo mês".';
+    return;
+  }
+  exportarParaCalendario(contas);
+});
 
 el.calendarioConta.addEventListener('click', () => {
   const conta = Contas.buscar(estado.editandoContaId);

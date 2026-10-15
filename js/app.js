@@ -56,10 +56,10 @@ const el = {
 // A aba aberta fica no endereço da página (#contas, #orcamentos...).
 // Assim o botão "voltar" do navegador funciona e dá para abrir uma aba por link.
 
-const ABAS = ['inicio', 'contas', 'orcamentos', 'analises', 'ajustes'];
+const ABAS = ['inicio', 'orcamentos', 'analises', 'ajustes'];
 
 function abaDoEndereco() {
-  const aba = location.hash.slice(1);
+  const aba = location.hash.slice(1); // '#contas' antigo (D41) cai na Início
   return ABAS.includes(aba) ? aba : 'inicio';
 }
 
@@ -334,7 +334,7 @@ function abrirFormulario(lancamento = null, pagamento = null, sugestao = null) {
 function prepararRepete(conta, jaEhFixo) {
   el.blocoRepete.hidden = jaEhFixo;
   el.infoConta.hidden = !conta;
-  if (conta) el.infoConta.textContent = `Faz parte do fixo “${conta.descricao}”, todo dia ${conta.dia}. Para mudar, vá em Fixos.`;
+  if (conta) el.infoConta.textContent = `Faz parte do fixo “${conta.descricao}” (todo dia ${conta.dia}).`;
   estado.diaTocado = false;
   el.campoRepeteDia.hidden = true;
   atualizarTextosRepete();

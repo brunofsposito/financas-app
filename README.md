@@ -18,7 +18,7 @@ App simples de finanças pessoais, feito para o celular (visual escuro com cores
 - **Aba Análises:** quanto saiu por mês (linha, com média e troca de categoria), sobrou ou faltou em cada mês (colunas), comparação com o mês anterior até o mesmo dia, e "para onde foi o dinheiro" (barras por categoria; tocar leva aos lançamentos).
 - Editar e excluir: toque num lançamento da lista.
 - **Orçamento por categoria:** limite mensal (ex.: Mercado até R$ 800) com barra de progresso. A barra separa o que já foi gasto do que está previsto em contas fixas, e mostra os status "perto do limite", "vai estourar" e "estourou".
-- **Fixos do mês:** contas (aluguel, internet, assinaturas) e entradas fixas (salário), com dia de vencimento, status no mês (paga/recebida, vence em X dias, atrasada) e botões **Paguei** / **Recebi**, que criam o lançamento.
+- **A pagar e a receber** (na Início): contas (aluguel, internet, assinaturas) e entradas fixas (salário), com dia de vencimento, status no mês (paga/recebida, vence em X dias, atrasada) e botões **Paguei** / **Recebi**, que criam o lançamento.
 - **"Repete todo mês" no próprio lançamento:** ao lançar uma conta paga ou uma entrada, ligue a chave e ela vira fixo, sem ir a outra aba.
 - **Sugestão pelo nome:** digitou "Internet", o app já marca Moradia e Pessoal; "Salário" vira entrada profissional. Primeiro ele olha o seu histórico, depois um dicionário.
 - **Alerta no topo** quando há conta atrasada ou vencendo nos próximos 5 dias.
@@ -102,6 +102,7 @@ Não precisa instalar nada.
 - [x] **Aba Análises** (dashboard parte B): evolução mês a mês, saldo por mês e comparação com o mês anterior
 - [x] **Banco na nuvem** (Supabase): salva sozinho, sem backup manual
 - [x] **Lançamento único com "Repete todo mês"** e entradas fixas (D39)
+- [x] **Sugestão de categoria pelo nome** (D40) e **fixos na Início**, sem aba própria (D41)
 - [ ] **Projeção do acumulado** (curto, médio e longo prazo, sem juros)
 
 ### Redesign "Lima neon" (D26)
@@ -238,3 +239,4 @@ Não precisa instalar nada.
 - **Migração de banco sem quebrar nada:** `alter table ... add column if not exists movimento ... default 'saida'`. As contas antigas viram saídas automaticamente, e o app trata o campo ausente do mesmo jeito.
 - **Fluxo de caixa com os dois lados** (fintech): a previsão agora soma o que vai entrar e subtrai o que vai sair. Separar o **fixo** (certo) do **variável** (estimado) é a base da projeção que vem a seguir.
 - **Classificação automática** (fintech): sugerir a categoria pelo nome é o que bancos fazem com o nome do estabelecimento na fatura. Histórico pessoal primeiro, regra geral depois, e a decisão final é sempre do usuário.
+- **Arquitetura de informação:** cada aba é um lugar a mais para lembrar. Juntar o que vence com o saldo e a previsão põe a informação onde a decisão acontece, e mostrar só o pendente (os pagos ficam recolhidos) reduz o ruído.

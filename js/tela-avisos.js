@@ -66,7 +66,7 @@ function montarAvisos() {
       detalhe: `Limite de ${Dinheiro.formatar(o.limite)}`,
       ordem: -o.uso,
       acao: o.status === 'vai-estourar'
-        ? { rotulo: 'Ver contas', executar: () => irParaAba('contas') }
+        ? { rotulo: 'Ver contas', executar: () => { el.dialogoAvisos.close(); verFixos(); } }
         : { rotulo: 'Ver gastos', executar: () => verGastosDaCategoria(o.categoria) },
     });
   }

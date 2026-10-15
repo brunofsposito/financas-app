@@ -292,3 +292,14 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 2. **Dicionário depois:** o mesmo da frase rápida ("internet" → Moradia; "salário" → entrada, Salário, Profissional).
 - Só no **lançamento novo**; na edição, vale o que foi salvo. Se você escolher categoria, tipo ou movimento na mão, a sugestão para de mexer.
 - A tela avisa "Categoria · sugerida pelo nome" (visibilidade do status, Nielsen 1) e rola o carrossel até a categoria escolhida.
+
+### D41 · 🧭 Fim da aba de fixos: "A pagar e a receber" na Início
+**Data:** 15/10/2026
+**Contexto:** com a chave "Repete todo mês" (D39), o cadastro saiu da aba de fixos. Para o Bruno, ter uma tela só para recorrentes não fazia mais sentido.
+**Decisão (Bruno, opção "a"):** a aba sai da navegação (5 → 4 abas). A lista vira um bloco **"A pagar e a receber"** na Início, logo abaixo da previsão.
+**Como:**
+- O bloco mostra só o que **ainda falta** pagar ou receber. Os já pagos ficam recolhidos em "Ver N já pagos" (consulta, não ação).
+- "+ Novo fixo" continua no bloco, para cadastrar algo que ainda não foi pago.
+- A exportação para o **Calendário** foi para **Ajustes** (é configuração, usada raramente).
+- O endereço antigo `#contas` abre a Início. O aviso "Ver contas" rola até o bloco.
+**Por quê:** menos lugares para procurar (Nielsen 6 e 8). O que vence fica ao lado do saldo e da previsão, que é onde a decisão acontece.
