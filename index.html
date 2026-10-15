@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=2026.10.15-4">
+  <link rel="stylesheet" href="css/style.css?v=2026.10.15-5">
 </head>
 <body>
   <header class="topo">
@@ -62,38 +62,43 @@
     <p id="frase-erro" class="frase-erro" role="alert"></p>
     <button type="button" id="reativar-voz" class="reativar-voz" hidden>Reativar voz</button>
 
-    <!-- Filtros: valem para o resumo e para a lista -->
-    <section class="filtros" aria-label="Filtros">
-      <div class="chips" role="group" aria-label="Filtrar por tipo">
-        <button type="button" class="chip" data-tipo="" aria-pressed="true">Todos</button>
-        <button type="button" class="chip" data-tipo="pessoal" aria-pressed="false">Pessoal</button>
-        <button type="button" class="chip" data-tipo="profissional" aria-pressed="false">Profissional</button>
+    <!-- Resumo do mês. O filtro fica recolhido num botão ao lado do saldo (D43):
+         ele vale para o saldo, a previsão e a lista, por isso mora aqui em cima. -->
+    <section class="resumo" aria-label="Resumo do mês">
+      <div class="resumo-topo">
+        <span class="rotulo" id="rotulo-saldo">Saldo do mês</span>
+        <button type="button" id="botao-filtros" class="botao-filtros" aria-expanded="false" aria-controls="painel-filtros">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg>
+          <span id="botao-filtros-texto">Filtrar</span>
+        </button>
       </div>
-      <select id="filtro-categoria" class="filtro-categoria" aria-label="Filtrar por categoria"></select>
+
+      <div id="painel-filtros" class="filtros" hidden>
+        <div class="chips" role="group" aria-label="Filtrar por tipo">
+          <button type="button" class="chip" data-tipo="" aria-pressed="true">Todos</button>
+          <button type="button" class="chip" data-tipo="pessoal" aria-pressed="false">Pessoal</button>
+          <button type="button" class="chip" data-tipo="profissional" aria-pressed="false">Profissional</button>
+        </div>
+        <select id="filtro-categoria" class="filtro-categoria" aria-label="Filtrar por categoria"></select>
+      </div>
       <p id="aviso-filtro" class="aviso-filtro" hidden>
-        Filtro ativo: os valores abaixo mostram só os lançamentos filtrados.
+        <span id="aviso-filtro-texto"></span>
         <button type="button" id="limpar-filtros" class="link">Limpar</button>
       </p>
-    </section>
 
-    <!-- Resumo do mês -->
-    <section class="resumo" aria-label="Resumo do mês">
-      <div class="card card-saldo">
-        <span class="rotulo" id="rotulo-saldo">Saldo do mês</span>
-        <strong id="saldo" class="valor-heroi">R$ 0,00</strong>
+      <strong id="saldo" class="valor-heroi">R$ 0,00</strong>
+
+      <div class="entrou-saiu">
+        <div><span class="rotulo">Entrou</span><strong id="entrou">R$ 0,00</strong></div>
+        <div><span class="rotulo">Saiu</span><strong id="saiu">R$ 0,00</strong></div>
       </div>
-      <div class="card card-entrou">
-        <span class="rotulo">Entrou</span>
-        <strong id="entrou">R$ 0,00</strong>
-      </div>
-      <div class="card card-saiu">
-        <span class="rotulo">Saiu</span>
-        <strong id="saiu">R$ 0,00</strong>
-      </div>
-      <!-- Previsão (Fase 2): saldo menos as contas fixas ainda não pagas -->
-      <div id="card-previsao" class="card card-previsao" hidden>
-        <span class="rotulo">Previsão para o fim do mês</span>
-        <strong id="previsao">R$ 0,00</strong>
+
+      <!-- Previsão (Fase 2): saldo + entradas fixas a receber − contas fixas a pagar -->
+      <div id="card-previsao" class="card-previsao" hidden>
+        <div class="previsao-linha">
+          <span class="rotulo">Previsão para o fim do mês</span>
+          <strong id="previsao">R$ 0,00</strong>
+        </div>
         <span id="previsao-detalhe" class="previsao-detalhe"></span>
       </div>
     </section>
@@ -254,7 +259,7 @@
 
     <div class="marca">
       <span class="marca-nome">sobra<span class="marca-ponto">.</span></span>
-      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.15-4</span>
+      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.15-5</span>
     </div>
     </div>
   </main>
@@ -445,26 +450,26 @@
        (aqui e em Ajustes) e o celular é obrigado a baixar os arquivos novos. -->
   <!-- A ordem importa: cada arquivo usa o que foi carregado antes dele -->
   <!-- Nuvem: configuração do projeto e biblioteca do Supabase (incluída no app, sem CDN) -->
-  <script src="js/config.js?v=2026.10.15-4"></script>
+  <script src="js/config.js?v=2026.10.15-5"></script>
   <script src="js/vendor/supabase-2.117.3.js"></script>
-  <script src="js/icones.js?v=2026.10.15-4"></script>
-  <script src="js/categorias.js?v=2026.10.15-4"></script>
-  <script src="js/storage.js?v=2026.10.15-4"></script>
-  <script src="js/lancamentos.js?v=2026.10.15-4"></script>
-  <script src="js/contas.js?v=2026.10.15-4"></script>
-  <script src="js/frase.js?v=2026.10.15-4"></script>
-  <script src="js/calendario.js?v=2026.10.15-4"></script>
-  <script src="js/orcamentos.js?v=2026.10.15-4"></script>
-  <script src="js/analises.js?v=2026.10.15-4"></script>
-  <script src="js/backup.js?v=2026.10.15-4"></script>
-  <script src="js/nuvem.js?v=2026.10.15-4"></script>
-  <script src="js/app.js?v=2026.10.15-4"></script>
-  <script src="js/tela-contas.js?v=2026.10.15-4"></script>
-  <script src="js/tela-dashboard.js?v=2026.10.15-4"></script>
-  <script src="js/tela-orcamentos.js?v=2026.10.15-4"></script>
-  <script src="js/tela-analises.js?v=2026.10.15-4"></script>
-  <script src="js/tela-avisos.js?v=2026.10.15-4"></script>
-  <script src="js/tela-frase.js?v=2026.10.15-4"></script>
-  <script src="js/tela-nuvem.js?v=2026.10.15-4"></script>
+  <script src="js/icones.js?v=2026.10.15-5"></script>
+  <script src="js/categorias.js?v=2026.10.15-5"></script>
+  <script src="js/storage.js?v=2026.10.15-5"></script>
+  <script src="js/lancamentos.js?v=2026.10.15-5"></script>
+  <script src="js/contas.js?v=2026.10.15-5"></script>
+  <script src="js/frase.js?v=2026.10.15-5"></script>
+  <script src="js/calendario.js?v=2026.10.15-5"></script>
+  <script src="js/orcamentos.js?v=2026.10.15-5"></script>
+  <script src="js/analises.js?v=2026.10.15-5"></script>
+  <script src="js/backup.js?v=2026.10.15-5"></script>
+  <script src="js/nuvem.js?v=2026.10.15-5"></script>
+  <script src="js/app.js?v=2026.10.15-5"></script>
+  <script src="js/tela-contas.js?v=2026.10.15-5"></script>
+  <script src="js/tela-dashboard.js?v=2026.10.15-5"></script>
+  <script src="js/tela-orcamentos.js?v=2026.10.15-5"></script>
+  <script src="js/tela-analises.js?v=2026.10.15-5"></script>
+  <script src="js/tela-avisos.js?v=2026.10.15-5"></script>
+  <script src="js/tela-frase.js?v=2026.10.15-5"></script>
+  <script src="js/tela-nuvem.js?v=2026.10.15-5"></script>
 </body>
 </html>

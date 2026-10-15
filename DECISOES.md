@@ -312,3 +312,14 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - **Excluir sem "Tem certeza?", com Desfazer:** vale para lançamento, fixo e limite de orçamento. Confirmar a cada exclusão treina a pessoa a tocar "OK" sem ler; desfazer protege de verdade (Nielsen 3). Ficaram com confirmação só as ações que não dá para desfazer pelo app: importar backup e sair da conta.
 - **Arrastar para a esquerda** um lançamento da lista exclui (gesto padrão do iPhone). De 3 toques e 2 rolagens para 1 gesto. Arrastar pouco não exclui, e a rolagem vertical continua normal.
 - **Categorias por uso:** no formulário, as mais usadas nos últimos 60 dias vêm primeiro, e a escolhida sempre aparece no carrossel.
+
+### D43 · 🧭🛠️ Pacote B da auditoria de UX: Início mais limpa
+**Data:** 15/10/2026
+**Contexto:** na Início, filtros e cards grandes empurravam a lista de lançamentos para longe da primeira tela (Nielsen 8).
+**O que mudou:**
+- **Filtro recolhido** num botão "Filtrar" ao lado do saldo. Fica ali (e não na lista) porque vale para o saldo, a previsão e a lista. Com filtro ativo, o botão vira "Filtrado (2)" em limão e uma linha lembra "Mostrando só: Pessoal · Mercado · Limpar" (Nielsen 1).
+- **Entrou e Saiu** num bloco só, dividido ao meio.
+- **Previsão** numa linha escura, com o número em limão (ou rosa, se negativa). Antes era um card limão inteiro, o elemento mais forte da tela sem ser uma ação, contrariando a regra "limão = ação/positivo" (Nielsen 4).
+- **Fixos pendentes em uma linha:** o status vai para o texto ("Vence em 2 dias", em laranja; "Atrasada", em rosa) e o botão Paguei fica ao lado, não embaixo.
+- Com filtro ativo e nada pendente nele, a previsão diz "Nenhum fixo pendente neste filtro" (antes dizia que estava tudo pago, o que não era verdade).
+**Resultado:** com 3 fixos pendentes e um aviso, a lista começa cerca de 250 px mais acima. Sem fixos pendentes, ela aparece na primeira tela.

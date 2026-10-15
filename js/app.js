@@ -23,6 +23,10 @@ const el = {
   chips: document.querySelectorAll('.chip'),
   filtroCategoria: document.getElementById('filtro-categoria'),
   avisoFiltro: document.getElementById('aviso-filtro'),
+  avisoFiltroTexto: document.getElementById('aviso-filtro-texto'),
+  botaoFiltros: document.getElementById('botao-filtros'),
+  botaoFiltrosTexto: document.getElementById('botao-filtros-texto'),
+  painelFiltros: document.getElementById('painel-filtros'),
   limparFiltros: document.getElementById('limpar-filtros'),
   rotuloSaldo: document.getElementById('rotulo-saldo'),
   entrou: document.getElementById('entrou'),
@@ -191,7 +195,14 @@ function renderizarFiltros(filtrando) {
   });
   el.filtroCategoria.value = estado.filtros.categoria;
   el.filtroCategoria.classList.toggle('ativo', Boolean(estado.filtros.categoria));
+  // Com o painel fechado, uma linha lembra o filtro ativo: "Mostrando só: Pessoal · Mercado"
+  const partes = [];
+  if (estado.filtros.tipo) partes.push(estado.filtros.tipo === 'pessoal' ? 'Pessoal' : 'Profissional');
+  if (estado.filtros.categoria) partes.push(buscarCategoria(estado.filtros.categoria).nome);
+  el.avisoFiltroTexto.textContent = `Mostrando só: ${partes.join(' · ')}.`;
   el.avisoFiltro.hidden = !filtrando;
+  el.botaoFiltros.classList.toggle('ativo', filtrando);
+  el.botaoFiltrosTexto.textContent = filtrando ? `Filtrado (${partes.length})` : 'Filtrar';
 }
 
 el.chips.forEach((chip) => {
@@ -204,6 +215,12 @@ el.chips.forEach((chip) => {
 el.filtroCategoria.addEventListener('change', () => {
   estado.filtros.categoria = el.filtroCategoria.value;
   renderizar();
+});
+
+el.botaoFiltros.addEventListener('click', () => {
+  const abrir = el.painelFiltros.hidden;
+  el.painelFiltros.hidden = !abrir;
+  el.botaoFiltros.setAttribute('aria-expanded', String(abrir));
 });
 
 el.limparFiltros.addEventListener('click', () => {

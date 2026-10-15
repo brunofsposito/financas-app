@@ -104,6 +104,7 @@ Não precisa instalar nada.
 - [x] **Lançamento único com "Repete todo mês"** e entradas fixas (D39)
 - [x] **Sugestão de categoria pelo nome** (D40) e **fixos na Início**, sem aba própria (D41)
 - [x] **Pacote A de UX** (D42): Paguei em 1 toque, excluir com Desfazer e arrastando, categorias por uso
+- [x] **Pacote B de UX** (D43): Início mais limpa, com filtro recolhido, previsão discreta e fixos em uma linha
 - [ ] **Projeção do acumulado** (curto, médio e longo prazo, sem juros)
 
 ### Redesign "Lima neon" (D26)
@@ -247,4 +248,9 @@ Não precisa instalar nada.
 - **Desfazer > confirmar** (Nielsen 3): "Tem certeza?" vira hábito e ninguém lê. Agir na hora e oferecer Desfazer é mais rápido e mais seguro. A confirmação fica só para o que não tem volta.
 - **Bons padrões** (Nielsen 5 e 7): o valor previsto já é o mais provável, então "Paguei" salva direto; o caso raro (valor diferente) tem a saída "Ajustar". As categorias se ordenam pelo seu uso.
 - **Gestos são atalhos, não o único caminho:** arrastar para excluir é para quem já conhece; o botão "Excluir lançamento" continua no formulário.
+
+### Pacote B de UX: Início mais limpa
+- **Hierarquia visual:** a cor mais forte da tela deve estar no que é mais importante ou acionável. O card limão inteiro da previsão gritava mais que o saldo e os botões.
+- **Divulgação progressiva:** o que se usa pouco (filtros) fica recolhido, mas o estado ativo continua sempre visível ("Filtrado (2)"), para nunca enganar quem olha o saldo.
+- **Mapeamento** (Norman): o filtro fica junto do saldo porque é o saldo que ele muda.
 

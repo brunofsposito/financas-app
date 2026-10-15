@@ -92,14 +92,20 @@ function criarItemConta(ocorrencia) {
 
   const li = document.createElement('li');
   li.className = `conta conta-${status}${entrada ? ' conta-entrada' : ''}`;
+  // Pendente (D43): uma linha só, com o status no detalhe e o botão ao lado.
+  // Já pago: o selo "Paga 15/10" no lugar do botão.
+  const sinal = entrada ? '+' : '';
+  const detalhe = pagamento
+    ? `Todo dia ${conta.dia} · ${feito} ${sinal}${Dinheiro.formatar(valor)}`
+    : `<span class="status-conta status-${status}">${icone(ICONE_STATUS_CONTA[status], 12)}${textoStatus(ocorrencia)}</span> · ${sinal}${Dinheiro.formatar(valor)}`;
   li.innerHTML = `
     <button type="button" class="item">
       <span class="item-icone">${icone(categoria.icone)}</span>
       <span class="item-texto">
         <span class="item-descricao"></span>
-        <span class="item-detalhe">Todo dia ${conta.dia} · ${pagamento ? feito : 'previsto'} ${entrada ? '+' : ''}${Dinheiro.formatar(valor)}</span>
+        <span class="item-detalhe">${detalhe}</span>
       </span>
-      <span class="selo selo-${status}">${icone(ICONE_STATUS_CONTA[status], 14)}${textoStatus(ocorrencia)}</span>
+      ${pagamento ? `<span class="selo selo-paga">${icone('check', 14)}${textoStatus(ocorrencia)}</span>` : ''}
     </button>
   `;
   li.querySelector('.item-descricao').textContent = conta.descricao;
@@ -168,9 +174,9 @@ function renderizarPrevisao(saldo) {
   if (aPagar.quantidade) {
     partes.push(`− ${Dinheiro.formatar(aPagar.total)} de ${aPagar.quantidade} ${plural(aPagar.quantidade, 'conta a pagar', 'contas a pagar')}`);
   }
-  el.previsaoDetalhe.textContent = partes.length === 1
-    ? 'Todos os fixos do mês já foram pagos e recebidos.'
-    : partes.join(' ');
+  // Com filtro, a previsão só considera os fixos do filtro: o texto precisa dizer isso
+  const semPendentes = temFiltroAtivo() ? 'Nenhum fixo pendente neste filtro.' : 'Todos os fixos do mês já foram pagos e recebidos.';
+  el.previsaoDetalhe.textContent = partes.length === 1 ? semPendentes : partes.join(' ');
 }
 
 // ---------- Formulário de conta fixa ----------
