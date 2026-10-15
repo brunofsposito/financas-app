@@ -18,9 +18,10 @@ App simples de finanças pessoais, feito para o celular (visual escuro com cores
 - **Aba Análises:** quanto saiu por mês (linha, com média e troca de categoria), sobrou ou faltou em cada mês (colunas), comparação com o mês anterior até o mesmo dia, e "para onde foi o dinheiro" (barras por categoria; tocar leva aos lançamentos).
 - Editar e excluir: toque num lançamento da lista.
 - **Orçamento por categoria:** limite mensal (ex.: Mercado até R$ 800) com barra de progresso. A barra separa o que já foi gasto do que está previsto em contas fixas, e mostra os status "perto do limite", "vai estourar" e "estourou".
-- **Contas fixas** (aluguel, internet, assinaturas): cadastro com dia de vencimento, status no mês (paga, vence em X dias, atrasada) e botão **Paguei**, que cria o lançamento.
+- **Fixos do mês:** contas (aluguel, internet, assinaturas) e entradas fixas (salário), com dia de vencimento, status no mês (paga/recebida, vence em X dias, atrasada) e botões **Paguei** / **Recebi**, que criam o lançamento.
+- **"Repete todo mês" no próprio lançamento:** ao lançar uma conta paga ou uma entrada, ligue a chave e ela vira fixo, sem ir a outra aba.
 - **Alerta no topo** quando há conta atrasada ou vencendo nos próximos 5 dias.
-- **Previsão para o fim do mês:** saldo do mês menos as contas fixas ainda não pagas.
+- **Previsão para o fim do mês:** saldo do mês, mais as entradas fixas que ainda vão cair, menos as contas fixas ainda não pagas.
 - **Adicionar ao Calendário do iPhone:** cada conta vira um evento mensal com alarmes (um dia antes e no dia, às 9h). O aviso chega mesmo com o app fechado.
 - **Conta na nuvem (opcional):** com login, tudo é salvo automaticamente no Supabase e sincronizado entre aparelhos, funcionando também sem internet. Sem login, os dados ficam só no navegador (continuam lá ao fechar e abrir).
 - Backup: exportar todos os lançamentos para um arquivo e importar de volta (seção "Seus dados", no fim da tela).
@@ -98,6 +99,9 @@ Não precisa instalar nada.
 
 - [x] **Orçamento por categoria**, com gasto, previsto e alertas
 - [x] **Aba Análises** (dashboard parte B): evolução mês a mês, saldo por mês e comparação com o mês anterior
+- [x] **Banco na nuvem** (Supabase): salva sozinho, sem backup manual
+- [x] **Lançamento único com "Repete todo mês"** e entradas fixas (D39)
+- [ ] **Projeção do acumulado** (curto, médio e longo prazo, sem juros)
 
 ### Redesign "Lima neon" (D26)
 
@@ -226,3 +230,10 @@ Não precisa instalar nada.
 - **Arquitetura que paga a conta:** como só o `storage.js` grava dados (D03, do primeiro dia), ligar a nuvem foi adicionar um aviso num lugar só, sem mexer nas telas.
 - **Testar sem o serviço real:** um "Supabase falso" simulou dois celulares, falta de internet e outro usuário.
 - **LGPD na prática** (fintech): os dados financeiros agora ficam num servidor (no Brasil, região São Paulo), protegidos por login e RLS, e "sair" apaga a cópia do aparelho. É o tipo de decisão que um PO de fintech precisa saber justificar.
+
+### Lançamento único e entradas fixas
+- **Um formulário, uma decisão a mais:** em vez de abas separadas para "lançar" e "cadastrar conta fixa", a recorrência virou uma chave no mesmo formulário. Menos caminhos = menos atrito (a dor nº 2: registrar dá trabalho).
+- **Molde × ocorrência:** o fixo é o "molde" (tabela `contas`) e cada mês é uma ocorrência (o lançamento com `contaId` e `competencia`). Ligar a chave grava os dois de uma vez.
+- **Migração de banco sem quebrar nada:** `alter table ... add column if not exists movimento ... default 'saida'`. As contas antigas viram saídas automaticamente, e o app trata o campo ausente do mesmo jeito.
+- **Fluxo de caixa com os dois lados** (fintech): a previsão agora soma o que vai entrar e subtrai o que vai sair. Separar o **fixo** (certo) do **variável** (estimado) é a base da projeção que vem a seguir.
+

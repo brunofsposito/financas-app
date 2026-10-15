@@ -269,3 +269,16 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - **Biblioteca do Supabase incluída no repositório** (`js/vendor/`), sem CDN. A chave pública fica em `js/config.js` (é pública por design; quem protege é o RLS). A chave secreta nunca entra no app.
 - Sem configuração, o app funciona exatamente como antes, só no celular.
 **Limitações:** o plano gratuito pausa o projeto depois de 7 dias sem uso. Em conflitos entre aparelhos, vence a última alteração enviada. Testado com um Supabase simulado; falta validar com o projeto real.
+
+### D39 · 🧭🛠️ Lançamento único com "Repete todo mês" e entradas fixas
+**Data:** 15/10/2026
+**Contexto:** lançar, cadastrar conta fixa e definir orçamento ficavam em abas diferentes, e a conta fixa só aceitava saída (o salário não tinha onde entrar).
+**Decisão (Bruno):** um lugar só para lançar. Ao subir uma entrada ou uma conta paga, a pessoa define ali mesmo se ela se repete todo mês.
+**Como:**
+- Chave **"Repete todo mês"** no formulário de lançamento, com o dia (sugerido pela data, editável). Ligada, cria o fixo a partir do mês do lançamento e já registra o lançamento como o pagamento/recebimento daquele mês. Desfazer apaga os dois.
+- Vale também na **edição** de um lançamento avulso (ele passa a ser o primeiro mês do fixo). Lançamento que já é de um fixo mostra de qual é, em vez da chave.
+- A tabela `contas` ganha **`movimento`** (`entrada` | `saida`, padrão `saida`). Entradas fixas: botão **Recebi**, textos "Cai em X dias", sem alerta de vencimento e sem alarme no Calendário. A previsão do mês soma as entradas a receber.
+- A aba Contas vira **"Fixos do mês"**: lista, edição e o cadastro de um fixo que ainda não foi pago (ex.: aluguel do mês que vem).
+- **Orçamento fica fora do formulário** por enquanto (decisão adiada pelo Bruno).
+**Próximo passo:** projeção do acumulado (sem saldo inicial e sem juros, decisão do Bruno), usando fixos + média dos gastos variáveis.
+
