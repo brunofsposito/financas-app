@@ -323,3 +323,10 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - **Fixos pendentes em uma linha:** o status vai para o texto ("Vence em 2 dias", em laranja; "Atrasada", em rosa) e o botão Paguei fica ao lado, não embaixo.
 - Com filtro ativo e nada pendente nele, a previsão diz "Nenhum fixo pendente neste filtro" (antes dizia que estava tudo pago, o que não era verdade).
 **Resultado:** com 3 fixos pendentes e um aviso, a lista começa cerca de 250 px mais acima. Sem fixos pendentes, ela aparece na primeira tela.
+
+### D44 · 🧭🛠️ Pacote C da auditoria de UX: navegação clara
+**Data:** 15/10/2026
+**O que mudou:**
+- **Rótulos nas abas** (Início, Orçamento, Análises, Ajustes) embaixo dos ícones. Antes eram só ícones, e a pizza não diz "orçamento" (Nielsen 6: reconhecer em vez de lembrar). É o padrão dos apps de banco.
+- **Seletor de mês e avisos só onde importam:** em Ajustes, que não depende do mês, eles somem e a aba ganha um título próprio (Nielsen 8).
+- **Microfone escondido no iPhone:** a voz do navegador só funciona na primeira vez no app instalado (D35). Um botão que falha corrói a confiança no resto do app (Nielsen 5). No iPhone, o campo diz "Escreva ou dite: mercado 45", apontando para o ditado do teclado, que funciona sempre. Em outros aparelhos, o microfone continua.

@@ -73,8 +73,15 @@ const ESPERA_PRIMEIRA_PALAVRA = 6000;
 
 el.reativarVoz = document.getElementById('reativar-voz');
 
+// No iPhone, a voz do navegador só funciona na primeira vez (D35). Um botão que
+// falha corrói a confiança (Nielsen 5): lá, o microfone some e a dica aponta para
+// o ditado do teclado, que funciona sempre (D44).
+const EH_IPHONE = /iPhone|iPad|iPod/.test(navigator.userAgent)
+  || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPad se identifica como Mac
+if (EH_IPHONE) document.getElementById('frase-texto').placeholder = 'Escreva ou dite: mercado 45';
+
 function vozDisponivel() {
-  return Boolean(Reconhecimento) && !vozFalhou;
+  return Boolean(Reconhecimento) && !vozFalhou && !EH_IPHONE;
 }
 
 // Erros que significam "este aparelho/navegador não consegue": não adianta tentar de novo

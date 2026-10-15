@@ -75,6 +75,7 @@ function irParaAba(aba) {
 
 function mostrarAba() {
   const aba = abaDoEndereco();
+  document.body.dataset.aba = aba; // o CSS esconde o seletor de mês em Ajustes
   document.querySelectorAll('[data-aba]').forEach((secao) => {
     secao.hidden = secao.dataset.aba !== aba;
   });

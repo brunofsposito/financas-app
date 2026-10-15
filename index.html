@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=2026.10.15-5">
+  <link rel="stylesheet" href="css/style.css?v=2026.10.15-6">
 </head>
 <body>
   <header class="topo">
@@ -196,6 +196,8 @@
 
     <!-- ===== Aba Ajustes ===== -->
     <div class="aba" data-aba="ajustes" hidden>
+    <!-- Ajustes não depende do mês: sem o seletor do topo, a aba ganha um título próprio (D44) -->
+    <h1 class="titulo-aba">Ajustes</h1>
 
     <!-- Conta e sincronização na nuvem (Supabase) -->
     <section class="conta-nuvem" aria-labelledby="titulo-nuvem">
@@ -259,7 +261,7 @@
 
     <div class="marca">
       <span class="marca-nome">sobra<span class="marca-ponto">.</span></span>
-      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.15-5</span>
+      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.15-6</span>
     </div>
     </div>
   </main>
@@ -267,10 +269,10 @@
   <!-- Navegação por abas (V2) + botão de novo lançamento -->
   <nav class="navegacao" aria-label="Navegação principal">
     <div class="nav-abas">
-      <button type="button" class="nav-aba" data-ir="inicio" aria-label="Início"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg></button>
-      <button type="button" class="nav-aba" data-ir="orcamentos" aria-label="Orçamentos"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12A9 9 0 1 1 12 3v9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg></button>
-      <button type="button" class="nav-aba" data-ir="analises" aria-label="Análises"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></button>
-      <button type="button" class="nav-aba" data-ir="ajustes" aria-label="Ajustes e backup"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></button>
+      <button type="button" class="nav-aba" data-ir="inicio"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg><span class="nav-rotulo">Início</span></button>
+      <button type="button" class="nav-aba" data-ir="orcamentos"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12A9 9 0 1 1 12 3v9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg><span class="nav-rotulo">Orçamento</span></button>
+      <button type="button" class="nav-aba" data-ir="analises"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg><span class="nav-rotulo">Análises</span></button>
+      <button type="button" class="nav-aba" data-ir="ajustes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg><span class="nav-rotulo">Ajustes</span></button>
     </div>
     <button type="button" id="botao-novo" class="botao-novo" aria-label="Novo lançamento">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -450,26 +452,26 @@
        (aqui e em Ajustes) e o celular é obrigado a baixar os arquivos novos. -->
   <!-- A ordem importa: cada arquivo usa o que foi carregado antes dele -->
   <!-- Nuvem: configuração do projeto e biblioteca do Supabase (incluída no app, sem CDN) -->
-  <script src="js/config.js?v=2026.10.15-5"></script>
+  <script src="js/config.js?v=2026.10.15-6"></script>
   <script src="js/vendor/supabase-2.117.3.js"></script>
-  <script src="js/icones.js?v=2026.10.15-5"></script>
-  <script src="js/categorias.js?v=2026.10.15-5"></script>
-  <script src="js/storage.js?v=2026.10.15-5"></script>
-  <script src="js/lancamentos.js?v=2026.10.15-5"></script>
-  <script src="js/contas.js?v=2026.10.15-5"></script>
-  <script src="js/frase.js?v=2026.10.15-5"></script>
-  <script src="js/calendario.js?v=2026.10.15-5"></script>
-  <script src="js/orcamentos.js?v=2026.10.15-5"></script>
-  <script src="js/analises.js?v=2026.10.15-5"></script>
-  <script src="js/backup.js?v=2026.10.15-5"></script>
-  <script src="js/nuvem.js?v=2026.10.15-5"></script>
-  <script src="js/app.js?v=2026.10.15-5"></script>
-  <script src="js/tela-contas.js?v=2026.10.15-5"></script>
-  <script src="js/tela-dashboard.js?v=2026.10.15-5"></script>
-  <script src="js/tela-orcamentos.js?v=2026.10.15-5"></script>
-  <script src="js/tela-analises.js?v=2026.10.15-5"></script>
-  <script src="js/tela-avisos.js?v=2026.10.15-5"></script>
-  <script src="js/tela-frase.js?v=2026.10.15-5"></script>
-  <script src="js/tela-nuvem.js?v=2026.10.15-5"></script>
+  <script src="js/icones.js?v=2026.10.15-6"></script>
+  <script src="js/categorias.js?v=2026.10.15-6"></script>
+  <script src="js/storage.js?v=2026.10.15-6"></script>
+  <script src="js/lancamentos.js?v=2026.10.15-6"></script>
+  <script src="js/contas.js?v=2026.10.15-6"></script>
+  <script src="js/frase.js?v=2026.10.15-6"></script>
+  <script src="js/calendario.js?v=2026.10.15-6"></script>
+  <script src="js/orcamentos.js?v=2026.10.15-6"></script>
+  <script src="js/analises.js?v=2026.10.15-6"></script>
+  <script src="js/backup.js?v=2026.10.15-6"></script>
+  <script src="js/nuvem.js?v=2026.10.15-6"></script>
+  <script src="js/app.js?v=2026.10.15-6"></script>
+  <script src="js/tela-contas.js?v=2026.10.15-6"></script>
+  <script src="js/tela-dashboard.js?v=2026.10.15-6"></script>
+  <script src="js/tela-orcamentos.js?v=2026.10.15-6"></script>
+  <script src="js/tela-analises.js?v=2026.10.15-6"></script>
+  <script src="js/tela-avisos.js?v=2026.10.15-6"></script>
+  <script src="js/tela-frase.js?v=2026.10.15-6"></script>
+  <script src="js/tela-nuvem.js?v=2026.10.15-6"></script>
 </body>
 </html>

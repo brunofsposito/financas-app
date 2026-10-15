@@ -105,6 +105,7 @@ Não precisa instalar nada.
 - [x] **Sugestão de categoria pelo nome** (D40) e **fixos na Início**, sem aba própria (D41)
 - [x] **Pacote A de UX** (D42): Paguei em 1 toque, excluir com Desfazer e arrastando, categorias por uso
 - [x] **Pacote B de UX** (D43): Início mais limpa, com filtro recolhido, previsão discreta e fixos em uma linha
+- [x] **Pacote C de UX** (D44): rótulos nas abas, mês só onde importa, microfone escondido no iPhone
 - [ ] **Projeção do acumulado** (curto, médio e longo prazo, sem juros)
 
 ### Redesign "Lima neon" (D26)
@@ -253,4 +254,9 @@ Não precisa instalar nada.
 - **Hierarquia visual:** a cor mais forte da tela deve estar no que é mais importante ou acionável. O card limão inteiro da previsão gritava mais que o saldo e os botões.
 - **Divulgação progressiva:** o que se usa pouco (filtros) fica recolhido, mas o estado ativo continua sempre visível ("Filtrado (2)"), para nunca enganar quem olha o saldo.
 - **Mapeamento** (Norman): o filtro fica junto do saldo porque é o saldo que ele muda.
+
+### Pacote C de UX: navegação clara
+- **Ícone sozinho não comunica:** quem usa todo dia decora, mas quem chega agora adivinha. Rótulo curto embaixo do ícone resolve sem ocupar espaço.
+- **Contexto só onde ele vale:** o seletor de mês em Ajustes sugeria que as configurações mudam por mês. Tirar elementos que não se aplicam também é design.
+- **Melhor esconder que falhar:** um recurso que funciona "às vezes" custa mais confiança do que não ter o recurso. Em produto financeiro, confiança é o ativo principal.
 
