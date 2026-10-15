@@ -330,3 +330,15 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - **Rótulos nas abas** (Início, Orçamento, Análises, Ajustes) embaixo dos ícones. Antes eram só ícones, e a pizza não diz "orçamento" (Nielsen 6: reconhecer em vez de lembrar). É o padrão dos apps de banco.
 - **Seletor de mês e avisos só onde importam:** em Ajustes, que não depende do mês, eles somem e a aba ganha um título próprio (Nielsen 8).
 - **Microfone escondido no iPhone:** a voz do navegador só funciona na primeira vez no app instalado (D35). Um botão que falha corrói a confiança no resto do app (Nielsen 5). No iPhone, o campo diz "Escreva ou dite: mercado 45", apontando para o ditado do teclado, que funciona sempre. Em outros aparelhos, o microfone continua.
+
+### D45 · 🧭🛠️ Projeção do acumulado: "Quanto vai sobrar"
+**Data:** 15/10/2026
+**Decisões do Bruno:** projetar só o que sobra **a partir de agora** (sem perguntar o saldo guardado hoje) e **sem juros**.
+**Como a conta funciona** (`projecao.js`):
+- **Fixos** (certos): entradas fixas − contas fixas cadastradas, mês a mês.
+- **Variáveis** (estimados): a média de (entradas − saídas fora dos fixos) nos últimos **3 meses fechados** com lançamentos.
+- **Mês atual:** saldo de hoje + fixos que faltam + a fração dos variáveis que falta do mês (proporcional aos dias).
+- **Faixa:** a mesma conta com o **pior** e o **melhor** mês recente de variáveis, no lugar da média. Aparece com 2+ meses de histórico.
+- **Sem contar duas vezes:** nos meses antigos, um lançamento feito à mão que "bate" com um fixo de hoje (mesmo nome, ou mesma categoria com valor até 15% diferente) é tratado como fixo, não como variável. Sem isso, o salário de setembro entraria duas vezes.
+**Tela:** card no topo de Análises com três números (fim do mês, fim do ano, em 12 meses; em dezembro, "em 6 meses"), a linha do acumulado com a faixa, toque para ver cada mês e uma linha explicando a conta. Valores em reais inteiros: é estimativa, centavos passariam falsa precisão.
+**Não faz (ainda):** juros/rendimento, metas, saldo inicial.

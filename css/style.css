@@ -499,6 +499,15 @@ button { -webkit-tap-highlight-color: transparent; }
   gap: 12px;
 }
 .analise-card[hidden] { display: none; }
+
+/* Projeção (D45): três números antes do gráfico; o número é a resposta, o gráfico é o caminho */
+.projecao-numeros { display: flex; flex-direction: column; border-radius: 16px; background: var(--fundo); }
+.projecao-numero { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 11px 14px; }
+.projecao-numero + .projecao-numero { border-top: 1px solid var(--borda); }
+.projecao-rotulo { font-size: 0.85rem; }
+.projecao-quando { font-size: 0.75rem; color: var(--texto-suave); }
+.projecao-numero strong { font-size: 1.05rem; font-weight: 600; color: var(--lima); white-space: nowrap; }
+.projecao-numero strong.negativo { color: var(--perigo); }
 .analise-cabecalho { display: flex; flex-direction: column; gap: 2px; }
 .analise-titulo { margin: 0; font-size: 0.95rem; font-weight: 600; }
 .analise-sub { margin: 0; font-size: 0.75rem; color: var(--texto-suave); }
@@ -521,9 +530,12 @@ button { -webkit-tap-highlight-color: transparent; }
 
 /* Gráficos SVG ocupam a largura do card */
 .grafico-evolucao,
-.grafico-saldos { position: relative; }
+.grafico-saldos,
+.grafico-projecao { position: relative; }
+.grafico-projecao[hidden], .projecao-numeros[hidden], #projecao-como[hidden], #projecao-vazio[hidden] { display: none; }
 .grafico-evolucao svg,
 .grafico-saldos svg,
+.grafico-projecao svg,
 .inicio-analises-esboco svg { display: block; width: 100%; height: auto; }
 
 /* "Botões invisíveis" sobre cada mês do gráfico de linha (área de toque grande) */

@@ -155,6 +155,7 @@ function renderizar() {
   renderizarDashboard(doMes); // tela-dashboard.js
   renderizarOrcamentos(); // tela-orcamentos.js
   renderizarAnalises(); // tela-analises.js
+  renderizarProjecao(); // tela-projecao.js
 }
 
 // O saldo em destaque: inteiro grande e fino, centavos e "R$" pequenos ao lado

@@ -15,6 +15,7 @@ App simples de finanças pessoais, feito para o celular (visual escuro com cores
 - Cadastro de entradas e saídas com valor, descrição, categoria (chips com ícone), data (Hoje/Ontem) e tipo (pessoal ou profissional), com "Desfazer" logo depois de salvar.
 - Lista dos lançamentos do mês.
 - Filtros por tipo (pessoal ou profissional) e por categoria. O resumo também é filtrado.
+- **Quanto vai sobrar** (em Análises): projeção do acumulado para o fim do mês, o fim do ano e 12 meses, com faixa de pior e melhor caso.
 - **Aba Análises:** quanto saiu por mês (linha, com média e troca de categoria), sobrou ou faltou em cada mês (colunas), comparação com o mês anterior até o mesmo dia, e "para onde foi o dinheiro" (barras por categoria; tocar leva aos lançamentos).
 - Editar e excluir: toque num lançamento da lista, ou **arraste para a esquerda** para excluir. Toda exclusão tem **Desfazer**.
 - **Orçamento por categoria:** limite mensal (ex.: Mercado até R$ 800) com barra de progresso. A barra separa o que já foi gasto do que está previsto em contas fixas, e mostra os status "perto do limite", "vai estourar" e "estourou".
@@ -106,7 +107,7 @@ Não precisa instalar nada.
 - [x] **Pacote A de UX** (D42): Paguei em 1 toque, excluir com Desfazer e arrastando, categorias por uso
 - [x] **Pacote B de UX** (D43): Início mais limpa, com filtro recolhido, previsão discreta e fixos em uma linha
 - [x] **Pacote C de UX** (D44): rótulos nas abas, mês só onde importa, microfone escondido no iPhone
-- [ ] **Projeção do acumulado** (curto, médio e longo prazo, sem juros)
+- [x] **Projeção do acumulado** (D45): quanto vai sobrar no fim do mês, no fim do ano e em 12 meses, sem juros
 
 ### Redesign "Lima neon" (D26)
 
@@ -259,4 +260,10 @@ Não precisa instalar nada.
 - **Ícone sozinho não comunica:** quem usa todo dia decora, mas quem chega agora adivinha. Rótulo curto embaixo do ícone resolve sem ocupar espaço.
 - **Contexto só onde ele vale:** o seletor de mês em Ajustes sugeria que as configurações mudam por mês. Tirar elementos que não se aplicam também é design.
 - **Melhor esconder que falhar:** um recurso que funciona "às vezes" custa mais confiança do que não ter o recurso. Em produto financeiro, confiança é o ativo principal.
+
+### Projeção do acumulado
+- **Fixo × variável** (fintech): projetar fluxo de caixa é separar o que é contratado (salário, aluguel) do que é comportamento (mercado, Uber). O primeiro é certo; o segundo é estimado pela média.
+- **Faixa, não número mágico:** mostrar o pior e o melhor caso é mais honesto que um número só. Bancos fazem o mesmo em simuladores.
+- **Não contar duas vezes:** quando o modelo muda (o salário virou fixo), os dados antigos precisam ser "conciliados" com o novo modelo. É uma versão simples da conciliação da Fase 3.
+- **Precisão honesta:** estimativa em reais inteiros. Centavos numa previsão sugerem uma certeza que ela não tem.
 

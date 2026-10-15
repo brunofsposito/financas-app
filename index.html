@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=2026.10.15-6">
+  <link rel="stylesheet" href="css/style.css?v=2026.10.15-7">
 </head>
 <body>
   <header class="topo">
@@ -147,6 +147,20 @@
         <p id="analises-sub" class="analise-sub"></p>
       </div>
 
+      <!-- Projeção do acumulado (D45): quanto vai sobrar daqui para frente -->
+      <section id="card-projecao" class="analise-card" aria-labelledby="titulo-projecao">
+        <div class="analise-cabecalho">
+          <h2 id="titulo-projecao" class="analise-titulo">Quanto vai sobrar</h2>
+          <p class="analise-sub">Acumulado a partir de hoje, se continuar no ritmo atual</p>
+        </div>
+        <div id="projecao-numeros" class="projecao-numeros"></div>
+        <div id="grafico-projecao" class="grafico-projecao"></div>
+        <p id="projecao-como" class="analise-sub"></p>
+        <p id="projecao-vazio" class="analise-sub" hidden>
+          A projeção aparece quando houver fixos cadastrados (ligue <strong>Repete todo mês</strong> no salário e nas contas) ou um mês fechado de lançamentos.
+        </p>
+      </section>
+
       <!-- Quanto saiu por mês (linha) -->
       <section id="card-evolucao" class="analise-card" aria-labelledby="titulo-evolucao">
         <div class="analise-cabecalho">
@@ -261,7 +275,7 @@
 
     <div class="marca">
       <span class="marca-nome">sobra<span class="marca-ponto">.</span></span>
-      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.15-6</span>
+      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.15-7</span>
     </div>
     </div>
   </main>
@@ -452,26 +466,28 @@
        (aqui e em Ajustes) e o celular é obrigado a baixar os arquivos novos. -->
   <!-- A ordem importa: cada arquivo usa o que foi carregado antes dele -->
   <!-- Nuvem: configuração do projeto e biblioteca do Supabase (incluída no app, sem CDN) -->
-  <script src="js/config.js?v=2026.10.15-6"></script>
+  <script src="js/config.js?v=2026.10.15-7"></script>
   <script src="js/vendor/supabase-2.117.3.js"></script>
-  <script src="js/icones.js?v=2026.10.15-6"></script>
-  <script src="js/categorias.js?v=2026.10.15-6"></script>
-  <script src="js/storage.js?v=2026.10.15-6"></script>
-  <script src="js/lancamentos.js?v=2026.10.15-6"></script>
-  <script src="js/contas.js?v=2026.10.15-6"></script>
-  <script src="js/frase.js?v=2026.10.15-6"></script>
-  <script src="js/calendario.js?v=2026.10.15-6"></script>
-  <script src="js/orcamentos.js?v=2026.10.15-6"></script>
-  <script src="js/analises.js?v=2026.10.15-6"></script>
-  <script src="js/backup.js?v=2026.10.15-6"></script>
-  <script src="js/nuvem.js?v=2026.10.15-6"></script>
-  <script src="js/app.js?v=2026.10.15-6"></script>
-  <script src="js/tela-contas.js?v=2026.10.15-6"></script>
-  <script src="js/tela-dashboard.js?v=2026.10.15-6"></script>
-  <script src="js/tela-orcamentos.js?v=2026.10.15-6"></script>
-  <script src="js/tela-analises.js?v=2026.10.15-6"></script>
-  <script src="js/tela-avisos.js?v=2026.10.15-6"></script>
-  <script src="js/tela-frase.js?v=2026.10.15-6"></script>
-  <script src="js/tela-nuvem.js?v=2026.10.15-6"></script>
+  <script src="js/icones.js?v=2026.10.15-7"></script>
+  <script src="js/categorias.js?v=2026.10.15-7"></script>
+  <script src="js/storage.js?v=2026.10.15-7"></script>
+  <script src="js/lancamentos.js?v=2026.10.15-7"></script>
+  <script src="js/contas.js?v=2026.10.15-7"></script>
+  <script src="js/frase.js?v=2026.10.15-7"></script>
+  <script src="js/calendario.js?v=2026.10.15-7"></script>
+  <script src="js/orcamentos.js?v=2026.10.15-7"></script>
+  <script src="js/analises.js?v=2026.10.15-7"></script>
+  <script src="js/projecao.js?v=2026.10.15-7"></script>
+  <script src="js/backup.js?v=2026.10.15-7"></script>
+  <script src="js/nuvem.js?v=2026.10.15-7"></script>
+  <script src="js/app.js?v=2026.10.15-7"></script>
+  <script src="js/tela-contas.js?v=2026.10.15-7"></script>
+  <script src="js/tela-dashboard.js?v=2026.10.15-7"></script>
+  <script src="js/tela-orcamentos.js?v=2026.10.15-7"></script>
+  <script src="js/tela-analises.js?v=2026.10.15-7"></script>
+  <script src="js/tela-projecao.js?v=2026.10.15-7"></script>
+  <script src="js/tela-avisos.js?v=2026.10.15-7"></script>
+  <script src="js/tela-frase.js?v=2026.10.15-7"></script>
+  <script src="js/tela-nuvem.js?v=2026.10.15-7"></script>
 </body>
 </html>
