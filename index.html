@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=2026.10.14-4">
+  <link rel="stylesheet" href="css/style.css?v=2026.10.15-1">
 </head>
 <body>
   <header class="topo">
@@ -110,16 +110,17 @@
     <!-- ===== Aba Contas ===== -->
     <div class="aba" data-aba="contas" hidden>
     <!-- Contas fixas do mês (Fase 2) -->
-    <section id="secao-contas" class="contas" aria-label="Contas fixas do mês">
+    <section id="secao-contas" class="contas" aria-label="Fixos do mês">
       <div class="subtitulo-linha">
-        <h2 class="subtitulo">Contas fixas</h2>
-        <button type="button" id="botao-nova-conta" class="link">+ Nova conta</button>
+        <h2 class="subtitulo">Fixos do mês</h2>
+        <button type="button" id="botao-nova-conta" class="link">+ Novo fixo</button>
       </div>
       <ul id="lista-contas" class="lista"></ul>
       <p id="contas-vazio" class="vazio vazio-contas">
-        Cadastre as contas que se repetem todo mês (aluguel, internet, assinaturas) e o app avisa quando estiverem para vencer.
+        O que se repete todo mês aparece aqui: contas (aluguel, internet) e entradas (salário).
+        Ao lançar, ligue <strong>Repete todo mês</strong>. O app avisa quando uma conta estiver para vencer.
       </p>
-      <button type="button" id="botao-calendario" class="botao botao-secundario botao-calendario" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Adicionar contas ao Calendário</button>
+      <button type="button" id="botao-calendario" class="botao botao-secundario botao-calendario" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Adicionar fixos ao Calendário</button>
       <p id="mensagem-calendario" class="mensagem-backup" role="status"></p>
     </section>
 
@@ -252,7 +253,7 @@
 
     <div class="marca">
       <span class="marca-nome">sobra<span class="marca-ponto">.</span></span>
-      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.14-4</span>
+      <span class="versao">Quanto entra, quanto sai, quanto sobra.<br>Versão 2026.10.15-1</span>
     </div>
     </div>
   </main>
@@ -334,6 +335,24 @@
         <label><input type="radio" name="tipo" value="profissional"><span>Profissional</span></label>
       </fieldset>
 
+      <!-- Recorrência (D39): ligar cria a conta fixa junto com o lançamento -->
+      <div id="bloco-repete" class="bloco-repete">
+        <label class="interruptor">
+          <span class="interruptor-texto">
+            <span>Repete todo mês</span>
+            <small id="repete-ajuda">Vira uma conta fixa e aparece nos próximos meses</small>
+          </span>
+          <input type="checkbox" name="repete" role="switch">
+          <span class="interruptor-trilho" aria-hidden="true"></span>
+        </label>
+        <label id="campo-repete-dia" class="repete-dia" hidden>
+          <span id="repete-dia-rotulo">Vence todo dia</span>
+          <input name="dia" type="number" inputmode="numeric" min="1" max="31">
+        </label>
+      </div>
+      <!-- Lançamento que já faz parte de uma conta fixa -->
+      <p id="info-conta" class="info-conta" hidden></p>
+
       <p id="erro" class="erro" role="alert"></p>
 
       <button type="submit" class="botao botao-primario botao-largo">Salvar</button>
@@ -353,6 +372,12 @@
     <form id="formulario-conta" method="dialog" novalidate>
       <h2 id="titulo-conta">Nova conta fixa</h2>
 
+      <fieldset class="alternador alternador-movimento">
+        <legend class="sr-only">Movimento</legend>
+        <label><input type="radio" name="movimento" value="saida" checked><span>Saída</span></label>
+        <label><input type="radio" name="movimento" value="entrada"><span>Entrada</span></label>
+      </fieldset>
+
       <label class="campo">
         <span>Descrição</span>
         <input name="descricao" type="text" maxlength="60" placeholder="Ex.: Aluguel" autocomplete="off" required>
@@ -364,7 +389,7 @@
       </label>
 
       <label class="campo">
-        <span>Vence todo dia</span>
+        <span id="rotulo-dia-conta">Vence todo dia</span>
         <input name="dia" type="number" inputmode="numeric" min="1" max="31" placeholder="Ex.: 7" required>
       </label>
 
@@ -385,8 +410,8 @@
         <button type="button" id="cancelar-conta" class="botao botao-secundario">Cancelar</button>
         <button type="submit" class="botao botao-primario">Salvar</button>
       </div>
-      <button type="button" id="calendario-conta" class="botao botao-secundario botao-calendario" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Adicionar só esta conta ao Calendário</button>
-      <button type="button" id="excluir-conta" class="botao-excluir" hidden>Excluir conta fixa</button>
+      <button type="button" id="calendario-conta" class="botao botao-secundario botao-calendario" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Adicionar só este fixo ao Calendário</button>
+      <button type="button" id="excluir-conta" class="botao-excluir" hidden>Excluir fixo</button>
     </form>
   </dialog>
 
@@ -419,26 +444,26 @@
        (aqui e em Ajustes) e o celular é obrigado a baixar os arquivos novos. -->
   <!-- A ordem importa: cada arquivo usa o que foi carregado antes dele -->
   <!-- Nuvem: configuração do projeto e biblioteca do Supabase (incluída no app, sem CDN) -->
-  <script src="js/config.js?v=2026.10.14-4"></script>
+  <script src="js/config.js?v=2026.10.15-1"></script>
   <script src="js/vendor/supabase-2.117.3.js"></script>
-  <script src="js/icones.js?v=2026.10.14-4"></script>
-  <script src="js/categorias.js?v=2026.10.14-4"></script>
-  <script src="js/storage.js?v=2026.10.14-4"></script>
-  <script src="js/lancamentos.js?v=2026.10.14-4"></script>
-  <script src="js/contas.js?v=2026.10.14-4"></script>
-  <script src="js/frase.js?v=2026.10.14-4"></script>
-  <script src="js/calendario.js?v=2026.10.14-4"></script>
-  <script src="js/orcamentos.js?v=2026.10.14-4"></script>
-  <script src="js/analises.js?v=2026.10.14-4"></script>
-  <script src="js/backup.js?v=2026.10.14-4"></script>
-  <script src="js/nuvem.js?v=2026.10.14-4"></script>
-  <script src="js/app.js?v=2026.10.14-4"></script>
-  <script src="js/tela-contas.js?v=2026.10.14-4"></script>
-  <script src="js/tela-dashboard.js?v=2026.10.14-4"></script>
-  <script src="js/tela-orcamentos.js?v=2026.10.14-4"></script>
-  <script src="js/tela-analises.js?v=2026.10.14-4"></script>
-  <script src="js/tela-avisos.js?v=2026.10.14-4"></script>
-  <script src="js/tela-frase.js?v=2026.10.14-4"></script>
-  <script src="js/tela-nuvem.js?v=2026.10.14-4"></script>
+  <script src="js/icones.js?v=2026.10.15-1"></script>
+  <script src="js/categorias.js?v=2026.10.15-1"></script>
+  <script src="js/storage.js?v=2026.10.15-1"></script>
+  <script src="js/lancamentos.js?v=2026.10.15-1"></script>
+  <script src="js/contas.js?v=2026.10.15-1"></script>
+  <script src="js/frase.js?v=2026.10.15-1"></script>
+  <script src="js/calendario.js?v=2026.10.15-1"></script>
+  <script src="js/orcamentos.js?v=2026.10.15-1"></script>
+  <script src="js/analises.js?v=2026.10.15-1"></script>
+  <script src="js/backup.js?v=2026.10.15-1"></script>
+  <script src="js/nuvem.js?v=2026.10.15-1"></script>
+  <script src="js/app.js?v=2026.10.15-1"></script>
+  <script src="js/tela-contas.js?v=2026.10.15-1"></script>
+  <script src="js/tela-dashboard.js?v=2026.10.15-1"></script>
+  <script src="js/tela-orcamentos.js?v=2026.10.15-1"></script>
+  <script src="js/tela-analises.js?v=2026.10.15-1"></script>
+  <script src="js/tela-avisos.js?v=2026.10.15-1"></script>
+  <script src="js/tela-frase.js?v=2026.10.15-1"></script>
+  <script src="js/tela-nuvem.js?v=2026.10.15-1"></script>
 </body>
 </html>

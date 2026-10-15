@@ -17,6 +17,7 @@ Object.assign(el, {
   cardPrevisao: document.getElementById('card-previsao'),
   previsao: document.getElementById('previsao'),
   previsaoDetalhe: document.getElementById('previsao-detalhe'),
+  rotuloDiaConta: document.getElementById('rotulo-dia-conta'),
   mensagemCalendario: document.getElementById('mensagem-calendario'),
 });
 
@@ -36,15 +37,18 @@ function renderizarContas() {
 // Ícone de cada status: o selo nunca depende só da cor
 const ICONE_STATUS_CONTA = { paga: 'check', atrasada: 'alerta', hoje: 'relogio', proxima: 'relogio', futura: 'calendario' };
 
-// Texto curto do status, ex.: "Vence em 3 dias", "Atrasada há 2 dias"
-function textoStatus({ status, dias, pagamento, vencimento }) {
+// Texto curto do status, ex.: "Vence em 3 dias", "Atrasada há 2 dias".
+// Entrada fixa fala diferente: "Cai em 3 dias", "Recebida 05/10".
+function textoStatus({ conta, status, dias, pagamento, vencimento }) {
   const [, mes, dia] = (pagamento ? pagamento.data : vencimento).split('-');
+  const entrada = Contas.ehEntrada(conta);
+  const verbo = entrada ? 'Cai' : 'Vence';
   switch (status) {
-    case 'paga': return `Paga ${dia}/${mes}`;
+    case 'paga': return `${entrada ? 'Recebida' : 'Paga'} ${dia}/${mes}`;
     case 'atrasada': return `Atrasada há ${-dias} ${plural(-dias, 'dia', 'dias')}`;
-    case 'hoje': return 'Vence hoje';
-    case 'proxima': return `Vence em ${dias} ${plural(dias, 'dia', 'dias')}`;
-    default: return `Vence ${dia}/${mes}`;
+    case 'hoje': return `${verbo} hoje`;
+    case 'proxima': return `${verbo} em ${dias} ${plural(dias, 'dia', 'dias')}`;
+    default: return `${verbo} ${dia}/${mes}`;
   }
 }
 
@@ -53,15 +57,17 @@ function criarItemConta(ocorrencia) {
   const categoria = buscarCategoria(conta.categoria);
   // Paga: mostra o valor que de fato saiu. Pendente: o valor previsto.
   const valor = pagamento ? pagamento.valor : conta.valor;
+  const entrada = Contas.ehEntrada(conta);
+  const feito = entrada ? 'recebido' : 'pago';
 
   const li = document.createElement('li');
-  li.className = `conta conta-${status}`;
+  li.className = `conta conta-${status}${entrada ? ' conta-entrada' : ''}`;
   li.innerHTML = `
     <button type="button" class="item">
       <span class="item-icone">${icone(categoria.icone)}</span>
       <span class="item-texto">
         <span class="item-descricao"></span>
-        <span class="item-detalhe">Todo dia ${conta.dia} · ${pagamento ? 'pago' : 'previsto'} ${Dinheiro.formatar(valor)}</span>
+        <span class="item-detalhe">Todo dia ${conta.dia} · ${pagamento ? feito : 'previsto'} ${entrada ? '+' : ''}${Dinheiro.formatar(valor)}</span>
       </span>
       <span class="selo selo-${status}">${icone(ICONE_STATUS_CONTA[status], 14)}${textoStatus(ocorrencia)}</span>
     </button>
@@ -73,7 +79,7 @@ function criarItemConta(ocorrencia) {
     const paguei = document.createElement('button');
     paguei.type = 'button';
     paguei.className = 'botao-paguei';
-    paguei.textContent = 'Paguei';
+    paguei.textContent = entrada ? 'Recebi' : 'Paguei';
     paguei.addEventListener('click', () => pagarConta(ocorrencia));
     li.append(paguei);
   }
@@ -98,18 +104,24 @@ function pagarConta({ conta, vencimento }) {
 function renderizarPrevisao(saldo) {
   const hoje = hojeISO();
   const mesPassado = competencia(estado.ano, estado.mes) < hoje.slice(0, 7);
-  const { temContas, quantidade, total } = Contas.aPagarNoMes(estado.ano, estado.mes, hoje, estado.filtros);
+  const { temContas, aPagar, aReceber } = Contas.pendentesNoMes(estado.ano, estado.mes, hoje, estado.filtros);
 
-  // Só faz sentido no mês atual ou nos futuros, e se houver contas fixas
+  // Só faz sentido no mês atual ou nos futuros, e se houver fixos
   el.cardPrevisao.hidden = mesPassado || !temContas;
   if (el.cardPrevisao.hidden) return;
 
-  const previsto = saldo - total;
+  // Previsão = saldo de hoje + o que ainda vai entrar − o que ainda vai sair
+  const previsto = saldo + aReceber.total - aPagar.total;
   el.previsao.textContent = Dinheiro.formatar(previsto);
   el.previsao.classList.toggle('negativo', previsto < 0);
-  el.previsaoDetalhe.textContent = quantidade === 0
-    ? 'Todas as contas fixas do mês estão pagas.'
-    : `Saldo ${Dinheiro.formatar(saldo)} − ${Dinheiro.formatar(total)} de ${quantidade} ${plural(quantidade, 'conta a pagar', 'contas a pagar')}`;
+  const partes = [`Saldo ${Dinheiro.formatar(saldo)}`];
+  if (aReceber.quantidade) partes.push(`+ ${Dinheiro.formatar(aReceber.total)} a receber`);
+  if (aPagar.quantidade) {
+    partes.push(`− ${Dinheiro.formatar(aPagar.total)} de ${aPagar.quantidade} ${plural(aPagar.quantidade, 'conta a pagar', 'contas a pagar')}`);
+  }
+  el.previsaoDetalhe.textContent = partes.length === 1
+    ? 'Todos os fixos do mês já foram pagos e recebidos.'
+    : partes.join(' ');
 }
 
 // ---------- Formulário de conta fixa ----------
@@ -121,12 +133,13 @@ function abrirFormularioConta(conta = null, sugestao = null) {
   el.erroConta.textContent = '';
   estado.editandoContaId = conta ? conta.id : null;
 
-  el.tituloConta.textContent = conta ? 'Editar conta fixa' : sugestao ? 'Confira a conta fixa' : 'Nova conta fixa';
   el.excluirConta.hidden = !conta;
   el.calendarioConta.hidden = !conta;
-  f.categoria.replaceChildren(...CATEGORIAS.saida.map((c) => new Option(c.nome, c.id)));
 
   const dados = conta || sugestao;
+  f.movimento.value = dados ? Contas.movimento(dados) : 'saida';
+  atualizarMovimentoConta();
+  el.tituloConta.textContent = conta ? 'Editar fixo' : sugestao ? 'Confira o fixo' : 'Novo fixo';
   if (dados) {
     f.descricao.value = dados.descricao;
     f.valor.value = Dinheiro.paraCampo(dados.valor);
@@ -139,6 +152,21 @@ function abrirFormularioConta(conta = null, sugestao = null) {
   if (!dados) f.descricao.focus();
 }
 
+// Saída ou entrada: muda as categorias e o texto do dia ("Vence" x "Cai")
+function atualizarMovimentoConta() {
+  const f = el.formularioConta.elements;
+  const movimento = f.movimento.value;
+  const escolhida = f.categoria.value;
+  f.categoria.replaceChildren(...CATEGORIAS[movimento].map((c) => new Option(c.nome, c.id)));
+  if (CATEGORIAS[movimento].some((c) => c.id === escolhida)) f.categoria.value = escolhida;
+  el.rotuloDiaConta.textContent = movimento === 'entrada' ? 'Cai todo dia' : 'Vence todo dia';
+  f.descricao.placeholder = movimento === 'entrada' ? 'Ex.: Salário' : 'Ex.: Aluguel';
+}
+
+el.formularioConta.addEventListener('change', (evento) => {
+  if (evento.target.name === 'movimento') atualizarMovimentoConta();
+});
+
 function lerFormularioConta() {
   const f = el.formularioConta.elements;
   const valor = Dinheiro.paraCentavos(f.valor.value);
@@ -148,6 +176,7 @@ function lerFormularioConta() {
   if (!Number.isInteger(dia) || dia < 1 || dia > 31) return { erro: 'O dia do vencimento vai de 1 a 31.' };
   return {
     dados: {
+      movimento: f.movimento.value,
       descricao: f.descricao.value,
       valor,
       dia,
@@ -179,7 +208,7 @@ el.formularioConta.addEventListener('submit', (evento) => {
 
 el.excluirConta.addEventListener('click', () => {
   if (!estado.editandoContaId) return;
-  const ok = confirm('Excluir esta conta fixa? Ela deixa de aparecer nos próximos meses.\n\nOs pagamentos já feitos continuam nos lançamentos.');
+  const ok = confirm('Excluir este fixo? Ele deixa de aparecer nos próximos meses.\n\nOs lançamentos já feitos continuam lá.');
   if (!ok) return;
   Contas.excluir(estado.editandoContaId);
   el.dialogoConta.close();

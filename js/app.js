@@ -9,6 +9,7 @@ const estado = {
   mes: hoje.getMonth() + 1, // getMonth() começa em 0 (janeiro = 0)
   editandoId: null, // id do lançamento aberto no formulário (null = novo)
   pagando: null, // { contaId, competencia } quando o formulário registra o pagamento de uma conta
+  diaTocado: false, // a pessoa mexeu no "todo dia"? Se não, ele acompanha a data escolhida
   filtros: { tipo: '', categoria: '' }, // '' = todos
 };
 
@@ -39,6 +40,11 @@ const el = {
   chipsData: document.querySelectorAll('.chip-opcao[data-quando]'),
   chipCalendario: document.querySelector('.chip-calendario'),
   fraseEntendida: document.getElementById('frase-entendida'),
+  blocoRepete: document.getElementById('bloco-repete'),
+  campoRepeteDia: document.getElementById('campo-repete-dia'),
+  repeteDiaRotulo: document.getElementById('repete-dia-rotulo'),
+  repeteAjuda: document.getElementById('repete-ajuda'),
+  infoConta: document.getElementById('info-conta'),
   toast: document.getElementById('toast'),
   toastTexto: document.getElementById('toast-texto'),
   toastDesfazer: document.getElementById('toast-desfazer'),
@@ -287,7 +293,7 @@ function abrirFormulario(lancamento = null, pagamento = null, sugestao = null) {
   estado.pagando = pagamento ? { contaId: pagamento.conta.id, competencia: pagamento.competencia } : null;
 
   el.tituloFormulario.textContent = lancamento ? 'Editar lançamento'
-    : pagamento ? `Pagar: ${pagamento.conta.descricao}`
+    : pagamento ? `${Contas.ehEntrada(pagamento.conta) ? 'Receber' : 'Pagar'}: ${pagamento.conta.descricao}`
       : sugestao ? 'Confira e salve' : 'Novo lançamento';
   el.botaoExcluir.hidden = !lancamento;
   el.fraseEntendida.hidden = !sugestao;
@@ -296,7 +302,7 @@ function abrirFormulario(lancamento = null, pagamento = null, sugestao = null) {
   if (pagamento) {
     const { conta } = pagamento;
     // O valor da conta é previsto: dá para ajustar antes de salvar
-    preencherCampos({ ...conta, movimento: 'saida', data: pagamento.data });
+    preencherCampos({ ...conta, movimento: Contas.movimento(conta), data: pagamento.data });
   } else if (lancamento) {
     preencherCampos(lancamento);
   } else if (sugestao) {
@@ -306,12 +312,42 @@ function abrirFormulario(lancamento = null, pagamento = null, sugestao = null) {
   }
   atualizarChipsData();
   ajustarLarguraValor();
+  prepararRepete(pagamento ? pagamento.conta : lancamento && lancamento.contaId ? Contas.buscar(lancamento.contaId) : null,
+    Boolean(pagamento || (lancamento && lancamento.contaId)));
 
   el.dialogo.showModal();
   // No modo novo, já abre o teclado no valor. Na confirmação da frase rápida,
   // o foco vai para o Salvar (um segundo "Enter" já salva). Nos outros, nada.
   if (sugestao) el.formulario.querySelector('[type=submit]').focus();
   else if (!lancamento && !pagamento) f.valor.focus();
+}
+
+// ---------- Repete todo mês (D39) ----------
+
+// Lançamento que já faz parte de um fixo: no lugar da chave, mostra de qual fixo ele é.
+// Os outros (novo ou avulso) podem ligar a chave e virar fixo.
+function prepararRepete(conta, jaEhFixo) {
+  el.blocoRepete.hidden = jaEhFixo;
+  el.infoConta.hidden = !conta;
+  if (conta) el.infoConta.textContent = `Faz parte do fixo “${conta.descricao}”, todo dia ${conta.dia}. Para mudar, vá em Fixos.`;
+  estado.diaTocado = false;
+  el.campoRepeteDia.hidden = true;
+  atualizarTextosRepete();
+}
+
+function atualizarTextosRepete() {
+  const entrada = el.formulario.elements.movimento.value === 'entrada';
+  el.repeteDiaRotulo.textContent = entrada ? 'Cai todo dia' : 'Vence todo dia';
+  el.repeteAjuda.textContent = entrada
+    ? 'Vira uma entrada fixa (ex.: salário) e entra na previsão'
+    : 'Vira uma conta fixa: aparece nos próximos meses e avisa do vencimento';
+}
+
+// Sem mexer no dia, ele acompanha a data do lançamento (pagou dia 10 -> todo dia 10)
+function sugerirDiaRepete() {
+  const f = el.formulario.elements;
+  if (estado.diaTocado || !f.data.value) return;
+  f.dia.value = Number(f.data.value.slice(8, 10));
 }
 
 function lerFormulario() {
@@ -323,7 +359,15 @@ function lerFormulario() {
   if (!f.descricao.value.trim()) return { erro: 'Informe uma descrição.' };
   if (!f.data.value) return { erro: 'Informe a data.' };
 
+  let repete = null;
+  if (f.repete.checked && !el.blocoRepete.hidden) {
+    const dia = Number(f.dia.value);
+    if (!Number.isInteger(dia) || dia < 1 || dia > 31) return { erro: 'O dia que se repete vai de 1 a 31.' };
+    repete = { dia };
+  }
+
   return {
+    repete,
     dados: {
       movimento: f.movimento.value,
       valor,
@@ -348,16 +392,27 @@ function ajustarLarguraValor() {
 el.formulario.addEventListener('input', (evento) => {
   el.erro.textContent = ''; // corrigiu algo: some a mensagem de erro
   if (evento.target.name === 'valor') ajustarLarguraValor();
+  if (evento.target.name === 'dia') estado.diaTocado = true;
 });
 
 el.formulario.addEventListener('change', (evento) => {
   // Ao trocar entre Entrada e Saída, a lista de categorias muda junto
-  if (evento.target.name === 'movimento') preencherCategorias(evento.target.value);
+  if (evento.target.name === 'movimento') {
+    preencherCategorias(evento.target.value);
+    atualizarTextosRepete();
+  }
+  if (evento.target.name === 'repete') {
+    el.campoRepeteDia.hidden = !evento.target.checked;
+    sugerirDiaRepete();
+  }
   // A descrição vazia ganha o nome da categoria escolhida (menos digitação)
   if (evento.target.name === 'categoria' && !el.formulario.elements.descricao.value.trim()) {
     el.formulario.elements.descricao.value = buscarCategoria(evento.target.value).nome;
   }
-  if (evento.target.name === 'data') atualizarChipsData();
+  if (evento.target.name === 'data') {
+    atualizarChipsData();
+    sugerirDiaRepete();
+  }
   el.erro.textContent = '';
 });
 
@@ -366,22 +421,33 @@ el.chipsData.forEach((chip) => {
     const { ontemISO } = atualizarChipsData();
     el.formulario.elements.data.value = chip.dataset.quando === 'hoje' ? hojeISO() : ontemISO;
     atualizarChipsData();
+    sugerirDiaRepete();
   });
 });
 
 el.formulario.addEventListener('submit', (evento) => {
   evento.preventDefault();
-  const { dados, erro } = lerFormulario();
+  const { dados, repete, erro } = lerFormulario();
   if (erro) {
     el.erro.textContent = erro;
     return;
   }
+  // "Repete todo mês": cria o fixo (o molde) a partir deste mês, e este
+  // lançamento já fica registrado como o pagamento (ou recebimento) dele.
+  const conta = repete ? Contas.criar({ ...dados, dia: repete.dia, inicio: dados.data.slice(0, 7) }) : null;
+  const vinculo = conta ? { contaId: conta.id, competencia: conta.inicio } : estado.pagando;
+
   if (estado.editandoId) {
-    Lancamentos.atualizar(estado.editandoId, dados);
+    Lancamentos.atualizar(estado.editandoId, { ...dados, ...(conta ? vinculo : {}) });
+    if (conta) mostrarToast(`${conta.descricao} agora se repete todo dia ${conta.dia}`);
   } else {
-    const novo = Lancamentos.criar({ ...dados, ...estado.pagando });
-    mostrarToast(`${dados.descricao.trim()} · ${Dinheiro.formatar(dados.valor)} salvo`, () => {
+    const novo = Lancamentos.criar({ ...dados, ...vinculo });
+    const texto = conta
+      ? `${conta.descricao} · fixo todo dia ${conta.dia}`
+      : `${dados.descricao.trim()} · ${Dinheiro.formatar(dados.valor)} salvo`;
+    mostrarToast(texto, () => {
       Lancamentos.excluir(novo.id);
+      if (conta) Contas.excluir(conta.id);
       renderizar();
     });
   }
