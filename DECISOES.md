@@ -303,3 +303,12 @@ Neutros: fundo `#0A0A0A`, card `#181816`, borda `#262624`, texto `#F4F4EF`, text
 - A exportação para o **Calendário** foi para **Ajustes** (é configuração, usada raramente).
 - O endereço antigo `#contas` abre a Início. O aviso "Ver contas" rola até o bloco.
 **Por quê:** menos lugares para procurar (Nielsen 6 e 8). O que vence fica ao lado do saldo e da previsão, que é onde a decisão acontece.
+
+### D42 · 🧭🛠️ Pacote A da auditoria de UX: menos toques
+**Data:** 15/10/2026
+**Contexto:** auditoria pelas heurísticas de Nielsen, contando toques por tarefa. O Bruno aprovou o pacote A.
+**O que mudou:**
+- **"Paguei" / "Recebi" em 1 toque** (antes 2): registra na hora com o valor previsto. O aviso traz **Ajustar** (abre o lançamento para corrigir o valor) e **Desfazer**.
+- **Excluir sem "Tem certeza?", com Desfazer:** vale para lançamento, fixo e limite de orçamento. Confirmar a cada exclusão treina a pessoa a tocar "OK" sem ler; desfazer protege de verdade (Nielsen 3). Ficaram com confirmação só as ações que não dá para desfazer pelo app: importar backup e sair da conta.
+- **Arrastar para a esquerda** um lançamento da lista exclui (gesto padrão do iPhone). De 3 toques e 2 rolagens para 1 gesto. Arrastar pouco não exclui, e a rolagem vertical continua normal.
+- **Categorias por uso:** no formulário, as mais usadas nos últimos 60 dias vêm primeiro, e a escolhida sempre aparece no carrossel.

@@ -50,6 +50,7 @@ const el = {
   toast: document.getElementById('toast'),
   toastTexto: document.getElementById('toast-texto'),
   toastDesfazer: document.getElementById('toast-desfazer'),
+  toastAjustar: document.getElementById('toast-ajustar'),
 };
 
 // ---------- Abas (V2) ----------
@@ -232,16 +233,92 @@ function criarItemDaLista(l) {
   li.querySelector('.item-descricao').textContent = l.descricao;
   li.querySelector('.item-detalhe').textContent =
     `${dia}/${mes} · ${categoria.nome} · ${l.tipo === 'pessoal' ? 'Pessoal' : 'Profissional'}${l.contaId ? ' · Conta fixa' : ''}`;
-  li.querySelector('button').addEventListener('click', () => abrirFormulario(l));
+  li.querySelector('button').addEventListener('click', () => {
+    if (li.dataset.arrastou) return; // o toque foi um arrastar, não um clique
+    abrirFormulario(l);
+  });
+  ativarArrastarParaExcluir(li, () => excluirLancamento(l));
   return li;
+}
+
+// ---------- Arrastar para a esquerda = excluir (com Desfazer) ----------
+// O mesmo gesto do Mail e do WhatsApp no iPhone. Na vertical, a lista rola normalmente
+// (CSS: touch-action: pan-y), e o navegador cancela o arrastar.
+
+const LIMITE_ARRASTAR = 110; // px: passou disso e soltou, exclui
+
+function ativarArrastarParaExcluir(li, aoExcluir) {
+  const item = li.querySelector('.item');
+  li.classList.add('arrastavel');
+  let inicio = null;
+  let dx = 0;
+  let arrastando = false;
+
+  item.addEventListener('pointerdown', (e) => {
+    inicio = { x: e.clientX, y: e.clientY };
+    dx = 0;
+    arrastando = false;
+    delete li.dataset.arrastou;
+  });
+  item.addEventListener('pointermove', (e) => {
+    if (!inicio) return;
+    const mx = e.clientX - inicio.x;
+    const my = e.clientY - inicio.y;
+    if (!arrastando) {
+      if (Math.abs(my) > 10) { inicio = null; return; } // é rolagem
+      if (mx > -10) return;
+      arrastando = true;
+      item.setPointerCapture(e.pointerId);
+      item.style.transition = 'none'; // segue o dedo sem atraso
+    }
+    dx = Math.min(0, mx);
+    item.style.transform = `translateX(${dx}px)`;
+    li.classList.toggle('vai-excluir', dx < -LIMITE_ARRASTAR);
+  });
+  const soltar = () => {
+    if (!inicio) return;
+    inicio = null;
+    if (!arrastando) return;
+    item.style.transition = '';
+    li.dataset.arrastou = '1';
+    setTimeout(() => delete li.dataset.arrastou, 300);
+    if (dx < -LIMITE_ARRASTAR) {
+      item.style.transform = 'translateX(-100%)';
+      setTimeout(aoExcluir, 150);
+    } else {
+      item.style.transform = '';
+      li.classList.remove('vai-excluir');
+    }
+  };
+  item.addEventListener('pointerup', soltar);
+  item.addEventListener('pointercancel', () => {
+    inicio = null;
+    item.style.transform = '';
+    li.classList.remove('vai-excluir');
+  });
+}
+
+// Excluir sem perguntar, com Desfazer: mais rápido e mais seguro que "Tem certeza?" (Nielsen 3)
+function excluirLancamento(lancamento) {
+  Lancamentos.excluir(lancamento.id);
+  renderizar();
+  mostrarToast(`${lancamento.descricao} excluído`, () => {
+    Lancamentos.restaurar(lancamento);
+    renderizar();
+  });
 }
 
 // ---------- Formulário ----------
 
 // Categorias como chips com ícone. Por baixo são botões de opção (radio) com
 // name="categoria": assim f.categoria.value continua funcionando para ler e escrever.
+// As mais usadas nos últimos 60 dias vêm primeiro (empate: ordem original).
 function preencherCategorias(movimento) {
-  const chips = CATEGORIAS[movimento].map((c) => {
+  const desde = new Date();
+  desde.setDate(desde.getDate() - 60);
+  const uso = Lancamentos.usoPorCategoria(movimento, dataISO(desde.getFullYear(), desde.getMonth() + 1, desde.getDate()));
+  const ordenadas = [...CATEGORIAS[movimento]].sort((a, b) => (uso.get(b.id) || 0) - (uso.get(a.id) || 0));
+  const chips = ordenadas.map((c) => {
     const label = document.createElement('label');
     label.className = 'chip-categoria';
     label.innerHTML = `<input type="radio" name="categoria" value="${c.id}"><span>${icone(c.icone, 16)}${c.nome}</span>`;
@@ -321,6 +398,7 @@ function abrirFormulario(lancamento = null, pagamento = null, sugestao = null) {
     Boolean(pagamento || (lancamento && lancamento.contaId)));
 
   el.dialogo.showModal();
+  mostrarCategoriaEscolhida('auto');
   // No modo novo, já abre o teclado no valor. Na confirmação da frase rápida,
   // o foco vai para o Salvar (um segundo "Enter" já salva). Nos outros, nada.
   if (sugestao) el.formulario.querySelector('[type=submit]').focus();
@@ -371,9 +449,13 @@ function aplicarSugestaoPelaDescricao() {
   f.categoria.value = s.categoria;
   f.tipo.value = s.tipo;
   el.categoriaSugerida.hidden = false;
-  // A categoria escolhida pode estar fora da vista no carrossel
+  mostrarCategoriaEscolhida('smooth');
+}
+
+// A categoria escolhida pode estar fora da vista no carrossel
+function mostrarCategoriaEscolhida(behavior) {
   const chip = el.chipsCategoria.querySelector('input:checked');
-  if (chip) chip.closest('label').scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  if (chip) chip.closest('label').scrollIntoView({ block: 'nearest', inline: 'center', behavior });
 }
 
 function lerFormulario() {
@@ -490,23 +572,28 @@ el.formulario.addEventListener('submit', (evento) => {
 });
 
 el.botaoExcluir.addEventListener('click', () => {
-  if (!estado.editandoId) return;
-  if (!confirm('Excluir este lançamento? Essa ação não pode ser desfeita.')) return;
-  Lancamentos.excluir(estado.editandoId);
+  const lancamento = estado.editandoId && Lancamentos.buscar(estado.editandoId);
+  if (!lancamento) return;
   el.dialogo.close();
-  renderizar();
+  excluirLancamento(lancamento);
 });
 
 // ---------- Aviso rápido "Salvo · Desfazer" ----------
 
 let temporizadorToast = null;
 
-function mostrarToast(texto, aoDesfazer) {
+// aoAjustar (opcional): abre o que acabou de ser salvo para corrigir, ex.: o valor de uma conta paga
+function mostrarToast(texto, aoDesfazer, aoAjustar) {
   el.toastTexto.textContent = texto;
   el.toastDesfazer.hidden = !aoDesfazer;
   el.toastDesfazer.onclick = () => {
     esconderToast();
     aoDesfazer();
+  };
+  el.toastAjustar.hidden = !aoAjustar;
+  el.toastAjustar.onclick = () => {
+    esconderToast();
+    aoAjustar();
   };
   el.toast.hidden = false;
   clearTimeout(temporizadorToast);

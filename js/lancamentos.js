@@ -108,6 +108,25 @@ const Lancamentos = {
     return todos[indice];
   },
 
+  // Desfazer a exclusão: devolve o registro exatamente como era (mesmo id)
+  restaurar(lancamento) {
+    const todos = this.listar().filter((l) => l.id !== lancamento.id);
+    todos.push(lancamento);
+    Storage.salvar('lancamentos', todos);
+  },
+
+  // Categorias mais usadas primeiro, para o formulário (pacote A da auditoria).
+  // SELECT categoria, COUNT(*) FROM lancamentos
+  // WHERE movimento = ? AND data >= hoje - 60 dias GROUP BY categoria
+  usoPorCategoria(movimento, desdeISO) {
+    const uso = new Map();
+    for (const l of this.listar()) {
+      if (l.movimento !== movimento || l.data < desdeISO) continue;
+      uso.set(l.categoria, (uso.get(l.categoria) || 0) + 1);
+    }
+    return uso;
+  },
+
   // DELETE FROM lancamentos WHERE id = ?
   excluir(id) {
     const restantes = this.listar().filter((l) => l.id !== id);

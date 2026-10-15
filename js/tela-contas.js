@@ -116,16 +116,35 @@ function criarItemConta(ocorrencia) {
   return li;
 }
 
-// "Paguei": abre o formulário de lançamento já preenchido com a conta.
-// A data sugerida é hoje se a conta é do mês atual; senão, o dia do vencimento.
+// "Paguei" em 1 toque (pacote A): registra na hora com o valor previsto.
+// Pagou valor diferente? "Ajustar" no aviso abre o lançamento. Errou? "Desfazer".
+// A data é hoje se a conta é do mês atual; senão, o dia do vencimento.
 function pagarConta({ conta, vencimento }) {
   const hoje = hojeISO();
   const mesmoMes = vencimento.slice(0, 7) === hoje.slice(0, 7);
-  abrirFormulario(null, {
-    conta,
-    competencia: competencia(estado.ano, estado.mes),
+  const novo = Lancamentos.criar({
+    movimento: Contas.movimento(conta),
+    valor: conta.valor,
+    descricao: conta.descricao,
+    categoria: conta.categoria,
+    tipo: conta.tipo,
     data: mesmoMes ? hoje : vencimento,
+    contaId: conta.id,
+    competencia: vencimento.slice(0, 7), // o mês da conta, não o mês do pagamento
   });
+  renderizar();
+  const feito = Contas.ehEntrada(conta) ? 'recebido' : 'pago';
+  mostrarToast(
+    `${conta.descricao} ${feito} · ${Dinheiro.formatar(conta.valor)}`,
+    () => {
+      Lancamentos.excluir(novo.id);
+      renderizar();
+    },
+    () => {
+      const atual = Lancamentos.buscar(novo.id);
+      if (atual) abrirFormulario(atual);
+    },
+  );
 }
 
 // ---------- Previsão do fim do mês (Entrega 2.4) ----------
@@ -236,13 +255,17 @@ el.formularioConta.addEventListener('submit', (evento) => {
   renderizar();
 });
 
+// Sem "Tem certeza?": exclui e oferece Desfazer. Os lançamentos já feitos continuam lá.
 el.excluirConta.addEventListener('click', () => {
-  if (!estado.editandoContaId) return;
-  const ok = confirm('Excluir este fixo? Ele deixa de aparecer nos próximos meses.\n\nOs lançamentos já feitos continuam lá.');
-  if (!ok) return;
-  Contas.excluir(estado.editandoContaId);
+  const conta = estado.editandoContaId && Contas.buscar(estado.editandoContaId);
+  if (!conta) return;
+  Contas.excluir(conta.id);
   el.dialogoConta.close();
   renderizar();
+  mostrarToast(`Fixo ${conta.descricao} excluído`, () => {
+    Contas.restaurar(conta);
+    renderizar();
+  });
 });
 
 // ---------- Calendário (Entrega 2.3) ----------

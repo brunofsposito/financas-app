@@ -377,6 +377,29 @@ button { -webkit-tap-highlight-color: transparent; }
   cursor: pointer;
 }
 .item:active { background: var(--superficie-2); }
+
+/* Arrastar para a esquerda = excluir: o fundo rosa com a lixeira aparece por trás */
+.arrastavel { position: relative; background: var(--perigo-fundo); }
+.arrastavel::after {
+  content: 'Excluir';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--perigo);
+}
+.arrastavel .item {
+  position: relative;
+  z-index: 1;
+  background: var(--superficie);
+  touch-action: pan-y; /* a rolagem vertical continua com o navegador */
+  transition: transform 0.15s;
+}
+.arrastavel .item:active { background: var(--superficie-2); }
+.arrastavel.vai-excluir { background: var(--perigo); }
+.arrastavel.vai-excluir::after { color: var(--sobre-neon); }
 .item:focus-visible { outline: 2px solid var(--lima); outline-offset: -2px; }
 
 .item-icone {
@@ -973,7 +996,7 @@ button { -webkit-tap-highlight-color: transparent; }
   bottom: calc(104px + env(safe-area-inset-bottom));
   max-width: 520px;
   margin: 0 auto;
-  height: 56px;
+  min-height: 56px;
   border-radius: 28px;
   background: var(--texto);
   color: var(--sobre-neon);
@@ -996,7 +1019,32 @@ button { -webkit-tap-highlight-color: transparent; }
   align-items: center;
   justify-content: center;
 }
-.toast-texto { flex: 1; min-width: 0; font-size: 0.85rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.toast-texto {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.25;
+  /* Até 2 linhas: com "Ajustar" e "Desfazer", o texto tem menos espaço */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.toast-ajustar {
+  flex-shrink: 0;
+  height: 40px;
+  padding: 0 10px;
+  border: none;
+  background: none;
+  color: var(--sobre-neon);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.toast-ajustar[hidden] { display: none; }
 .toast-desfazer {
   flex-shrink: 0;
   height: 40px;

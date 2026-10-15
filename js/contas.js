@@ -63,6 +63,13 @@ const Contas = {
     return todas[indice];
   },
 
+  // Desfazer a exclusão do fixo
+  restaurar(conta) {
+    const todas = Storage.carregar('contas').filter((c) => c.id !== conta.id);
+    todas.push(conta);
+    Storage.salvar('contas', todas);
+  },
+
   // Excluir a conta encerra a recorrência. Os pagamentos já feitos
   // continuam nos lançamentos (são dinheiro que de fato saiu).
   excluir(id) {

@@ -16,7 +16,7 @@ App simples de finanças pessoais, feito para o celular (visual escuro com cores
 - Lista dos lançamentos do mês.
 - Filtros por tipo (pessoal ou profissional) e por categoria. O resumo também é filtrado.
 - **Aba Análises:** quanto saiu por mês (linha, com média e troca de categoria), sobrou ou faltou em cada mês (colunas), comparação com o mês anterior até o mesmo dia, e "para onde foi o dinheiro" (barras por categoria; tocar leva aos lançamentos).
-- Editar e excluir: toque num lançamento da lista.
+- Editar e excluir: toque num lançamento da lista, ou **arraste para a esquerda** para excluir. Toda exclusão tem **Desfazer**.
 - **Orçamento por categoria:** limite mensal (ex.: Mercado até R$ 800) com barra de progresso. A barra separa o que já foi gasto do que está previsto em contas fixas, e mostra os status "perto do limite", "vai estourar" e "estourou".
 - **A pagar e a receber** (na Início): contas (aluguel, internet, assinaturas) e entradas fixas (salário), com dia de vencimento, status no mês (paga/recebida, vence em X dias, atrasada) e botões **Paguei** / **Recebi**, que criam o lançamento.
 - **"Repete todo mês" no próprio lançamento:** ao lançar uma conta paga ou uma entrada, ligue a chave e ela vira fixo, sem ir a outra aba.
@@ -103,6 +103,7 @@ Não precisa instalar nada.
 - [x] **Banco na nuvem** (Supabase): salva sozinho, sem backup manual
 - [x] **Lançamento único com "Repete todo mês"** e entradas fixas (D39)
 - [x] **Sugestão de categoria pelo nome** (D40) e **fixos na Início**, sem aba própria (D41)
+- [x] **Pacote A de UX** (D42): Paguei em 1 toque, excluir com Desfazer e arrastando, categorias por uso
 - [ ] **Projeção do acumulado** (curto, médio e longo prazo, sem juros)
 
 ### Redesign "Lima neon" (D26)
@@ -240,3 +241,10 @@ Não precisa instalar nada.
 - **Fluxo de caixa com os dois lados** (fintech): a previsão agora soma o que vai entrar e subtrai o que vai sair. Separar o **fixo** (certo) do **variável** (estimado) é a base da projeção que vem a seguir.
 - **Classificação automática** (fintech): sugerir a categoria pelo nome é o que bancos fazem com o nome do estabelecimento na fatura. Histórico pessoal primeiro, regra geral depois, e a decisão final é sempre do usuário.
 - **Arquitetura de informação:** cada aba é um lugar a mais para lembrar. Juntar o que vence com o saldo e a previsão põe a informação onde a decisão acontece, e mostrar só o pendente (os pagos ficam recolhidos) reduz o ruído.
+
+### Pacote A de UX: menos toques
+- **Contar toques por tarefa** é um jeito objetivo de medir usabilidade. Pagar uma conta caiu de 2 para 1 toque, e excluir caiu de 3 toques e 2 rolagens para 1 gesto.
+- **Desfazer > confirmar** (Nielsen 3): "Tem certeza?" vira hábito e ninguém lê. Agir na hora e oferecer Desfazer é mais rápido e mais seguro. A confirmação fica só para o que não tem volta.
+- **Bons padrões** (Nielsen 5 e 7): o valor previsto já é o mais provável, então "Paguei" salva direto; o caso raro (valor diferente) tem a saída "Ajustar". As categorias se ordenam pelo seu uso.
+- **Gestos são atalhos, não o único caminho:** arrastar para excluir é para quem já conhece; o botão "Excluir lançamento" continua no formulário.
+

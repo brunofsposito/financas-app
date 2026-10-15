@@ -106,10 +106,15 @@ el.formularioOrcamento.addEventListener('submit', (evento) => {
   renderizar();
 });
 
+// Sem "Tem certeza?": remove e oferece Desfazer
 el.removerOrcamento.addEventListener('click', () => {
-  if (!estado.editandoOrcamento) return;
-  if (!confirm('Remover o limite desta categoria? Os lançamentos não são afetados.')) return;
-  Orcamentos.remover(estado.editandoOrcamento);
+  const orcamento = estado.editandoOrcamento && Orcamentos.buscar(estado.editandoOrcamento);
+  if (!orcamento) return;
+  Orcamentos.remover(orcamento.categoria);
   el.dialogoOrcamento.close();
   renderizar();
+  mostrarToast(`Limite de ${buscarCategoria(orcamento.categoria).nome} removido`, () => {
+    Orcamentos.definir(orcamento.categoria, orcamento.limite);
+    renderizar();
+  });
 });
